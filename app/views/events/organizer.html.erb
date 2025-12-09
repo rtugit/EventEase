@@ -1,0 +1,32 @@
+<h1>Organizer dashboard</h1>
+
+<% if @events.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th>Registrations</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td><%= event.title %></td>
+          <td><%= event.starts_at&.strftime("%d.%m.%Y %H:%M") %></td>
+          <td><%= event.location %></td>
+          <td>
+            <%= event.registrations.size %>
+            <% if event.capacity.present? %>
+              / <%= event.capacity %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You don’t have any events yet.</p>
+<% end %>
