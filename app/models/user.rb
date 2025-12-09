@@ -8,4 +8,5 @@ class User < ApplicationRecord
   validates :last_name, presence: true
 
   has_many :organized_events, class_name: "Event", foreign_key: "organizer_id", inverse_of: :organizer
+  has_many :events, class_name: "Event", foreign_key: "organizer_id", inverse_of: :organizer
 end
