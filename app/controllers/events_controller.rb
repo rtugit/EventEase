@@ -1,13 +1,16 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_event, only: %i[show edit update destroy]
+  before_action :set_event, only: %i[show edit update destroy check_in]
 
   def index
     @events = current_user.events.includes(:registrations).order(starts_at: :asc)
 
     return if params[:query].blank?
 
-    @events = @events.where("title ILIKE :query OR location ILIKE :query", query: "%#{params[:query]}%")
+    @events = @events.where(
+      "title ILIKE :query OR location ILIKE :query",
+      query: "%#{params[:query]}%"
+    )
   end
 
   def show
@@ -19,6 +22,7 @@ class EventsController < ApplicationController
   end
 
   def edit
+    # @event is set by before_action
   end
 
   def create
@@ -43,6 +47,15 @@ class EventsController < ApplicationController
     redirect_to events_path, status: :see_other, notice: t('.success')
   end
 
+  def check_in
+  # Only the organizer should access the check-in mode for this event
+  unless @event.organizer == current_user
+    redirect_to event_path(@event), alert: "You are not allowed to access the check-in mode for this event." and return
+  end
+
+  @registrations = @event.registrations.order(created_at: :asc)
+end
+
   private
 
   def set_event
@@ -50,6 +63,13 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:title, :location, :description, :starts_at, :ends_at, :capacity)
+    params.require(:event).permit(
+      :title,
+      :location,
+      :description,
+      :starts_at,
+      :ends_at,
+      :capacity
+    )
   end
 end
