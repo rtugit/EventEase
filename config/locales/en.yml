@@ -38,6 +38,13 @@ en:
     check_in:
       success: "Attendee checked in."
       unauthorized: "Not authorized to check in."
+  events:
+    create:
+      success: "Event created successfully."
+    update:
+      success: "Event updated successfully."
+    destroy:
+      success: "Event deleted."
   activerecord:
     errors:
       models:

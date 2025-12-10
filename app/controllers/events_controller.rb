@@ -24,7 +24,7 @@ class EventsController < ApplicationController
   def create
     @event = current_user.organized_events.build(event_params)
     if @event.save
-      redirect_to event_path(@event), notice: "Event created successfully."
+      redirect_to event_path(@event), notice: t('.success')
     else
       render :new, status: :unprocessable_content
     end
@@ -32,7 +32,7 @@ class EventsController < ApplicationController
 
   def update
     if @event.update(event_params)
-      redirect_to event_path(@event), notice: "Event updated successfully."
+      redirect_to event_path(@event), notice: t('.success')
     else
       render :edit, status: :unprocessable_content
     end
@@ -40,7 +40,7 @@ class EventsController < ApplicationController
 
   def destroy
     @event.destroy
-    redirect_to events_path, status: :see_other, notice: "Event deleted."
+    redirect_to events_path, status: :see_other, notice: t('.success')
   end
 
   private
