@@ -1,4 +1,5 @@
 <h1>Organizer dashboard</h1>
+<!-- <%= link_to "", root_path %> -->
 
 <% if @events.any? %>
   <table>
@@ -30,3 +31,9 @@
 <% else %>
   <p>You don’t have any events yet.</p>
 <% end %>
+
+<ul>
+  <% @events.each do |event| %>
+    <li><%= link_to event.name, event_path(event) %></li>
+  <% end %>
+</ul>
