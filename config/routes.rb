@@ -18,22 +18,22 @@ Rails.application.routes.draw do
 
 
   #route for new events
-  #get "events/new", to: "indexs#new" (should be index or new?)
+  get "events/new", to: "indexs#new"
 
   #route for creating events
-  #post "events", to: "indexs#create"
+  post "events", to: "indexs#create"
 
   #route for editing events
-  #get "events/:id/edit", to: "indexs#edit"
+  get "events/:id/edit", to: "indexs#edit"
 
   #route for updatting events
-  #patch "events/:id", to: "indexs#update"
+  patch "events/:id", to: "indexs#update"
 
   #route for destroying events
-  #delete "events/:id", to: "indexs#destroy"
+  delete "events/:id", to: "indexs#destroy"
 
   #route for showing events
-  #get "/events/:id", to: "indexs#show"
+  get "/events/:id", to: "indexs#show"
 
 
 end
