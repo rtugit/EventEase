@@ -1,4 +1,15 @@
 <h1>Organizer dashboard</h1>
+
+<div style="margin-bottom: 20px;">
+  <%= form_with url: events_path, method: :get, local: true do |form| %>
+    <%= form.text_field :query, value: params[:query], placeholder: "Search by title or location", style: "padding: 8px;" %>
+    <%= form.submit "Search", style: "padding: 8px;" %>
+    <% if params[:query].present? %>
+      <%= link_to "Clear", events_path, style: "margin-left: 10px;" %>
+    <% end %>
+  <% end %>
+</div>
+
 <!-- <%= link_to "", root_path %> -->
 
 <% if @events.any? %>
