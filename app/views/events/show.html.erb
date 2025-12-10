@@ -1,6 +1,82 @@
-<!-- Check and modify, Create html for form(not sure?)-->
+<h1><%= @event.title %></h1>
 
-<%= link_to "Delete",
-  restaurant_path(@event),
-  data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}
-%>
+<p>
+  <strong>Date:</strong>
+  <%= @event.starts_at&.strftime("%d.%m.%Y %H:%M") %>
+</p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @event.location %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @event.description %>
+</p>
+
+<hr>
+
+<h2>Join this Event</h2>
+
+<%# We connect the form to our Stimulus controller using data: { controller: "registration" } %>
+<%# We listen for the 'submit' event and call our 'disable' method %>
+<%= form_with(model: [@event, @event.registrations.build], 
+              local: true, 
+              data: { controller: "registration", action: "submit->registration#disable" }) do |form| %>
+
+  <div>
+    <%= form.label :email %>
+    <%= form.email_field :email, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div style="margin-top: 10px;">
+    <%# We add data: { registration_target: "submitButton" } so we can access this button in our JS %>
+    <%= form.submit "Join Event", data: { registration_target: "submitButton" } %>
+  </div>
+<% end %>
+
+<hr>
+
+<h2>Attendees (<%= @event.registrations.count %>)</h2>
+
+<% if @event.registrations.any? %>
+  <ul>
+    <% @event.registrations.each do |registration| %>
+      <li style="margin-bottom: 10px;">
+        <strong><%= registration.name.presence || registration.email %></strong>
+        (<%= registration.email %>)
+        - 
+        <span style="color: <%= registration.status == 'checked_in' ? 'green' : 'gray' %>">
+          <%= registration.status.humanize %>
+        </span>
+
+        <% if registration.status == "registered" %>
+          <%# Connect to checkin controller. form: { ... } attributes go to the form tag. %>
+          <%= button_to "Check In", 
+              check_in_registration_path(registration), 
+              method: :patch, 
+              form: { 
+                style: "display: inline-block; margin-left: 10px;",
+                data: { 
+                  controller: "checkin", 
+                  action: "submit->checkin#confirm" 
+                } 
+              },
+              data: { checkin_target: "button" } %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No attendees yet.</p>
+<% end %>
+
+
+<br>
+<%= link_to "Back to Dashboard", dashboard_path %>
