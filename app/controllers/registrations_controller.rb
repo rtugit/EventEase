@@ -15,10 +15,11 @@ class RegistrationsController < ApplicationController
 
     if @registration.save
       # If successful, redirect to the event page with a success message
-      redirect_to event_path(@event), notice: "You have successfully joined the event!"
+      redirect_to event_path(@event), notice: t('.success')
     else
       # If saving fails (e.g. missing email), go back to the event page and show the error
-      redirect_to event_path(@event), alert: "RSVP failed: #{@registration.errors.full_messages.join(', ')}"
+      redirect_to event_path(@event),
+                  alert: t('.failure', errors: @registration.errors.full_messages.join(', '))
     end
   end
 
@@ -28,7 +29,7 @@ class RegistrationsController < ApplicationController
     @registration.destroy
 
     # Redirect the user back to the event page
-    redirect_to event_path(@registration.event), notice: "RSVP cancelled."
+    redirect_to event_path(@registration.event), notice: t('.cancelled')
   end
 
   # PATCH /registrations/:id/check_in
@@ -37,10 +38,10 @@ class RegistrationsController < ApplicationController
     if @registration.event.organizer == current_user
       # If authorized, mark the registration as checked in
       @registration.check_in!
-      redirect_to dashboard_path, notice: "Attendee checked in."
+      redirect_to dashboard_path, notice: t('.success')
     else
       # If not authorized, show an error
-      redirect_to dashboard_path, alert: "Not authorized to check in."
+      redirect_to dashboard_path, alert: t('.unauthorized')
     end
   end
 

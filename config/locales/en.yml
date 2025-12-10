@@ -29,3 +29,19 @@
 
 en:
   hello: "Hello world"
+  registrations:
+    create:
+      success: "You have successfully joined the event!"
+      failure: "RSVP failed: %{errors}"
+    destroy:
+      cancelled: "RSVP cancelled."
+    check_in:
+      success: "Attendee checked in."
+      unauthorized: "Not authorized to check in."
+  activerecord:
+    errors:
+      models:
+        registration:
+          attributes:
+            email:
+              taken: "is already registered for this event"
