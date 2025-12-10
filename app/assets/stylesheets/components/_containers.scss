@@ -1,0 +1,34 @@
+// Container styles
+@import "../config/colors";
+@import "../config/fonts";
+
+.container-auth {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: $background;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-card {
+  background-color: $background;
+  border-radius: 16px;
+  padding: 48px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.container-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 20px;
+}
+

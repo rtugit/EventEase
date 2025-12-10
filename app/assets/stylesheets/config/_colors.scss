@@ -1,10 +1,29 @@
 // Define variables for your color scheme
 
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
+// Background
+$background: #FFFFFF;
+
+// Buttons
+$button-color: #122927;
+
+// Fonts
+$primary-font: #333333; // Dark gray
+$sub-font-green: #367C76; // Light green
+$sub-font-gray: #6C7278; // Gray
+
+// Point/Location mark
+$point-color: #357872;
+
+// Other colors
+$light-gray: #F2F2F2;
+$light-bg: #F8FFFE;
+$light-yellow: #FFFDF5; // Optional
+$light-yellow-alt: #FEF3C7; // Optional
+
+// Bootstrap compatibility colors (mapped to new scheme)
+$gray: $sub-font-gray;
+$blue: $sub-font-green;
+$green: $sub-font-green;
+$yellow: $light-yellow-alt;
+$red: #dc3545; // Standard error red
+$orange: #fd7e14; // Standard warning orange

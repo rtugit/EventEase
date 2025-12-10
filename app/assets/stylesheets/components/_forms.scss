@@ -1,0 +1,75 @@
+// Form styles
+@import "../config/colors";
+@import "../config/fonts";
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  color: $primary-font;
+  font-family: $body-font;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid $light-gray;
+  border-radius: 8px;
+  font-family: $body-font;
+  font-size: 16px;
+  color: $primary-font;
+  background-color: $background;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $sub-font-green;
+    box-shadow: 0 0 0 3px rgba(54, 124, 118, 0.1);
+  }
+
+  &::placeholder {
+    color: $sub-font-gray;
+  }
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .form-check-input {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  .form-check-label {
+    color: $sub-font-gray;
+    font-family: $body-font;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+
+.form-actions {
+  margin-top: 32px;
+}
+
+.form-hint {
+  color: $sub-font-gray;
+  font-family: $body-font;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-message {
+  color: #dc3545;
+  font-family: $body-font;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
