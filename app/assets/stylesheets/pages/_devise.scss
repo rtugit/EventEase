@@ -1,0 +1,199 @@
+// Devise pages (login, sign up) styles
+@import "../config/colors";
+@import "../config/fonts";
+
+.devise-container {
+  background-color: $background;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.devise-logo {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .logo-img {
+    width: 120px;
+    height: auto;
+    margin: 0 auto 16px;
+    display: block;
+  }
+
+  h1 {
+    font-family: $headers-font;
+    font-weight: 700;
+    font-size: 32px;
+    color: $primary-font;
+    margin: 0;
+  }
+}
+
+.devise-form {
+  h2 {
+    font-family: $headers-font;
+    font-weight: 700;
+    font-size: 28px;
+    color: $primary-font;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .form-subtitle {
+    text-align: center;
+    color: $sub-font-gray;
+    font-family: $body-font;
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .form-inputs {
+    margin-bottom: 0;
+  }
+}
+
+.devise-links {
+  margin-top: 24px;
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid $light-gray;
+
+  a.devise-link {
+    color: $sub-font-green;
+    text-decoration: none;
+    font-family: $body-font;
+    font-weight: 500;
+    font-size: 14px;
+    transition: color 0.3s ease;
+    display: inline-block;
+    margin: 4px 0;
+
+    &:hover {
+      color: darken($sub-font-green, 10%);
+      text-decoration: underline;
+    }
+  }
+}
+
+.error-notification {
+  background-color: $light-yellow-alt;
+  border: 1px solid darken($light-yellow-alt, 20%);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  color: $primary-font;
+  font-family: $body-font;
+  font-size: 14px;
+
+  ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+  }
+}
+
+// Simple form styling integration
+.simple_form {
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  label {
+    color: $primary-font;
+    font-family: $body-font;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $light-gray;
+    border-radius: 8px;
+    font-family: $body-font;
+    font-size: 16px;
+    color: $primary-font;
+    background-color: $background;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $sub-font-green;
+      box-shadow: 0 0 0 3px rgba(54, 124, 118, 0.1);
+    }
+
+    &::placeholder {
+      color: $sub-font-gray;
+    }
+  }
+
+  .error {
+    color: #dc3545;
+    font-family: $body-font;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .field_with_errors {
+    input {
+      border-color: #dc3545;
+    }
+  }
+
+  .hint {
+    color: $sub-font-gray;
+    font-family: $body-font;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      min-height: 18px;
+      appearance: checkbox;
+      -webkit-appearance: checkbox;
+      -moz-appearance: checkbox;
+      border: 2px solid $light-gray;
+      border-radius: 3px;
+      background-color: $background;
+      flex-shrink: 0;
+
+      &:checked {
+        background-color: $button-color;
+        border-color: $button-color;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M10 3L4.5 8.5L2 6l1.5-1.5L4.5 6l4-4L10 3z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 12px 12px;
+      }
+
+      &:focus {
+        outline: 2px solid $sub-font-green;
+        outline-offset: 2px;
+      }
+    }
+
+    label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-weight: 500;
+      user-select: none;
+    }
+  }
+}
+

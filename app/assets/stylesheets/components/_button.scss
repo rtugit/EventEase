@@ -1,0 +1,56 @@
+// Button styles
+@import "../config/colors";
+@import "../config/fonts";
+
+.btn-primary {
+  background-color: $button-color;
+  border-color: $button-color;
+  color: white;
+  font-family: $body-font;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: darken($button-color, 5%);
+    border-color: darken($button-color, 5%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid $button-color;
+  color: $button-color;
+  font-family: $body-font;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $button-color;
+    color: white;
+    transform: translateY(-1px);
+  }
+}
+
+.btn-link {
+  color: $sub-font-green;
+  text-decoration: none;
+  font-family: $body-font;
+  font-weight: 500;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: darken($sub-font-green, 10%);
+    text-decoration: underline;
+  }
+}
+
