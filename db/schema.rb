@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.1].define(version: 2025_12_10_232752) do
-=======
-ActiveRecord::Schema[7.1].define(version: 2025_12_10_170743) do
->>>>>>> 47f22ac3f5836ff1fd2c065108515b07a49648b4
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +75,29 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_170743) do
     t.index ["user_id"], name: "index_registrations_on_user_id"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "registration_id", null: false
+    t.integer "rating", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "registration_id"], name: "index_reviews_on_event_id_and_registration_id", unique: true
+    t.index ["event_id"], name: "index_reviews_on_event_id"
+    t.index ["registration_id"], name: "index_reviews_on_registration_id"
+  end
+
+  create_table "rundown_items", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.string "heading"
+    t.text "description"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "position"], name: "index_rundown_items_on_event_id_and_position"
+    t.index ["event_id"], name: "index_rundown_items_on_event_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -99,4 +118,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_170743) do
   add_foreign_key "events", "users", column: "organizer_id"
   add_foreign_key "registrations", "events"
   add_foreign_key "registrations", "users"
+  add_foreign_key "reviews", "events"
+  add_foreign_key "reviews", "registrations"
+  add_foreign_key "rundown_items", "events"
 end
