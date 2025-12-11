@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "pages#home"
 
-  resources :events, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+  resources :events do
+    member do
+      get :check_in
+    end
+
     resources :registrations, only: [:create]
   end
 
@@ -13,27 +17,5 @@ Rails.application.routes.draw do
   end
 
   get "dashboard", to: "events#index"
-
   get "up" => "rails/health#show", as: :rails_health_check
-
-
-  #route for new events
-  get "events/new", to: "indexs#new"
-
-  #route for creating events
-  post "events", to: "indexs#create"
-
-  #route for editing events
-  get "events/:id/edit", to: "indexs#edit"
-
-  #route for updatting events
-  patch "events/:id", to: "indexs#update"
-
-  #route for destroying events
-  delete "events/:id", to: "indexs#destroy"
-
-  #route for showing events
-  get "/events/:id", to: "indexs#show"
-
-
 end
