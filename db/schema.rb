@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.1].define(version: 2025_12_10_232752) do
+=======
+ActiveRecord::Schema[7.1].define(version: 2025_12_10_170743) do
+>>>>>>> 47f22ac3f5836ff1fd2c065108515b07a49648b4
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,6 +65,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_232752) do
 
   create_table "registrations", force: :cascade do |t|
     t.bigint "event_id", null: false
+    t.bigint "user_id"
     t.string "email", null: false
     t.string "name"
     t.string "status", default: "registered", null: false
@@ -68,8 +73,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_232752) do
     t.datetime "cancelled_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "checked_in"
     t.index ["event_id", "email"], name: "index_registrations_on_event_id_and_email", unique: true
     t.index ["event_id"], name: "index_registrations_on_event_id"
+    t.index ["user_id"], name: "index_registrations_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -91,4 +98,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_232752) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "events", "users", column: "organizer_id"
   add_foreign_key "registrations", "events"
+  add_foreign_key "registrations", "users"
 end

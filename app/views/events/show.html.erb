@@ -17,6 +17,14 @@
   <%= @event.description %>
 </p>
 
+<p>
+  <% if @event.organizer == current_user %>
+    <%= link_to "Open check-in mode",
+                check_in_event_path(@event),
+                class: "btn btn-outline-primary" %>
+  <% end %>
+</p>
+
 <hr>
 
 <h2>Join this Event</h2>
@@ -78,7 +86,6 @@
 <% else %>
   <p>No attendees yet.</p>
 <% end %>
-
 
 <br>
 <%= link_to "Back to Dashboard", dashboard_path %>

@@ -1,23 +1,20 @@
 class RegistrationsController < ApplicationController
-  # We need to make sure a user is logged in before they can check someone in.
+  # Only organizers need to be logged in for check-in
   before_action :authenticate_user!, only: [:check_in]
 
-  # Find the event before creating a registration, so we know which event it belongs to.
+  # Used when creating a new registration for a specific event
   before_action :set_event, only: [:create]
 
-  # Find the specific registration for actions that need to modify or delete it.
+  # Used when cancelling or checking in a specific registration
   before_action :set_registration, only: %i[destroy check_in]
 
   # POST /events/:event_id/registrations
   def create
-    # Build a new registration for the specific event using the form data (params)
     @registration = @event.registrations.build(registration_params)
 
     if @registration.save
-      # If successful, redirect to the event page with a success message
       redirect_to event_path(@event), notice: t('.success')
     else
-      # If saving fails (e.g. missing email), go back to the event page and show the error
       redirect_to event_path(@event),
                   alert: t('.failure', errors: @registration.errors.full_messages.join(', '))
     end
@@ -25,41 +22,39 @@ class RegistrationsController < ApplicationController
 
   # DELETE /registrations/:id
   def destroy
-    # Delete the registration from the database
-    @registration.destroy
-
-    # Redirect the user back to the event page
+    # Use model logic to cancel instead of hard delete
+    @registration.cancel!
     redirect_to event_path(@registration.event), notice: t('.cancelled')
   end
 
   # PATCH /registrations/:id/check_in
   def check_in
-    # First, ensure the current user is actually the organizer of this event
-    if @registration.event.organizer == current_user
-      # If authorized, mark the registration as checked in
-      @registration.check_in!
-      redirect_to dashboard_path, notice: t('.success')
-    else
-      # If not authorized, show an error
-      redirect_to dashboard_path, alert: t('.unauthorized')
+    # Only the organizer of the event is allowed to check people in
+    unless @registration.event.organizer == current_user
+      redirect_to dashboard_path, alert: t('.unauthorized') and return
     end
+
+    # Toggle between "checked_in" and "registered"
+    if @registration.status == "checked_in"
+      @registration.update!(status: "registered", check_in_at: nil)
+    else
+      @registration.check_in!
+    end
+
+    # Stay on the event's check-in mode page
+    redirect_to check_in_event_path(@registration.event), notice: t('.success')
   end
 
   private
 
-  # These methods are only used internally by this controller
-
   def set_event
-    # Find the event using the 'event_id' from the URL
     @event = Event.find(params[:event_id])
   end
 
   def set_registration
-    # Find the registration using the 'id' from the URL
     @registration = Registration.find(params[:id])
   end
 
-  # Strong Parameters: only allow specific fields to be submitted for security
   def registration_params
     params.require(:registration).permit(:email, :name)
   end
