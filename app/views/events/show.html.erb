@@ -1,5 +1,7 @@
 <h1><%= @event.title %></h1>
-
+<% @event.photos.each do |photo| %>
+  <%= cl_image_tag photo.key, height: 300, width: 400, crop: :fill %>
+<% end %>
 <p>
   <strong>Date:</strong>
   <%= @event.starts_at&.strftime("%d.%m.%Y %H:%M") %>
@@ -21,8 +23,8 @@
 
 <%# We connect the form to our Stimulus controller using data: { controller: "registration" } %>
 <%# We listen for the 'submit' event and call our 'disable' method %>
-<%= form_with(model: [@event, @event.registrations.build], 
-              local: true, 
+<%= form_with(model: [@event, @event.registrations.build],
+              local: true,
               data: { controller: "registration", action: "submit->registration#disable" }) do |form| %>
 
   <div>
@@ -51,22 +53,22 @@
       <li style="margin-bottom: 10px;">
         <strong><%= registration.name.presence || registration.email %></strong>
         (<%= registration.email %>)
-        - 
+        -
         <span style="color: <%= registration.status == 'checked_in' ? 'green' : 'gray' %>">
           <%= registration.status.humanize %>
         </span>
 
         <% if registration.status == "registered" %>
           <%# Connect to checkin controller. form: { ... } attributes go to the form tag. %>
-          <%= button_to "Check In", 
-              check_in_registration_path(registration), 
-              method: :patch, 
-              form: { 
+          <%= button_to "Check In",
+              check_in_registration_path(registration),
+              method: :patch,
+              form: {
                 style: "display: inline-block; margin-left: 10px;",
-                data: { 
-                  controller: "checkin", 
-                  action: "submit->checkin#confirm" 
-                } 
+                data: {
+                  controller: "checkin",
+                  action: "submit->checkin#confirm"
+                }
               },
               data: { checkin_target: "button" } %>
         <% end %>

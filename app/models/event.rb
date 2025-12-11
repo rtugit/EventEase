@@ -9,6 +9,18 @@ class Event < ApplicationRecord
   validates :status, presence: true, inclusion: { in: %w[draft published archived] }
   validate :ends_at_after_starts_at
 
+  scope :search_title, ->(q) { where("title ILIKE ?", "%#{q}%") if q.present? }
+  scope :search_location, ->(l) { where("location ILIKE ?", "%#{l}%") if l.present? }
+  scope :search_date, ->(d) { where(date: d) if d.present? }
+
+  # For now, we will treat newest events as "popular"
+  scope :popular, -> { order(created_at: :desc).limit(10) }
+
+  # New events = upcoming soonest
+  scope :upcoming, -> { order(starts_at: :asc).limit(10) }
+
+  has_many_attached :photos
+
   private
 
   def ends_at_after_starts_at
