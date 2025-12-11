@@ -1,0 +1,69 @@
+.splash-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("/assets/landing_bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* Logo top */
+.splash-logo img {
+  width: 380px;
+  height: auto;
+  margin-bottom: 12px;   /* was 32px — now tighter */
+}
+
+/* "EventEase" */
+.splash-title {
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 32px;   /* bigger gap BELOW the title */
+  color: #ffffff;
+  line-height: 1;        /* eliminates vertical offset/shift */
+  text-align: center;
+}
+
+/* "Discover Events Around You" */
+.splash-tagline {
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+/* subtitle */
+.splash-tagline {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Button */
+.splash-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  border-radius: 999px;
+  background-color: #073a36;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+}
+
+.splash-btn:hover {
+  text-decoration: none;
+  background-color: #052f2b;
+}

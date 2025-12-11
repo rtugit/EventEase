@@ -14,11 +14,10 @@
   </head>
 
   <body>
-    <% unless devise_controller? %>
+    <% unless devise_controller? || (controller_name == 'events' && action_name == 'show') %>
       <%= render "shared/navbar" %>
     <% end %>
     <%= render "shared/flashes" %>
-
     <%= yield %>
   </body>
 </html>

@@ -29,18 +29,25 @@ class EventsController < ApplicationController
 
   def show
     # @event is set by before_action
+    @reviews = @event.reviews.recent.includes(:registration)
+    # Find user's registration if they're signed in
+    @user_registration = @event.registrations.find_by(email: current_user.email) if user_signed_in?
   end
 
   def new
     @event = Event.new
+    @event.rundown_items.build
   end
 
   def edit
     # @event is set by before_action
+    authorize_organizer
   end
 
   def create
-    @event = current_user.organized_events.build(event_params)
+    @event = current_user.events.build(event_params)
+    combine_date_time(@event)
+    assign_rundown_positions(@event)
     if @event.save
       redirect_to event_path(@event), notice: t('.success')
     else
@@ -49,6 +56,8 @@ class EventsController < ApplicationController
   end
 
   def update
+    combine_date_time(@event)
+    assign_rundown_positions(@event)
     if @event.update(event_params)
       redirect_to event_path(@event), notice: t('.success')
     else
@@ -57,6 +66,7 @@ class EventsController < ApplicationController
   end
 
   def destroy
+    authorize_organizer
     @event.destroy
     redirect_to events_path, status: :see_other, notice: t('.success')
   end
@@ -84,7 +94,43 @@ class EventsController < ApplicationController
       :starts_at,
       :ends_at,
       :capacity,
-      photos:[]
+      :event_date,
+      :event_time,
+      photos: [],
+      rundown_items_attributes: [:id, :heading, :description, :position, :_destroy]
     )
+  end
+
+  def combine_date_time(event)
+    if event.event_date.present? && event.event_time.present?
+      begin
+        date = Date.parse(event.event_date)
+        time = Time.parse(event.event_time)
+        event.starts_at = Time.zone.local(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.min
+        )
+      rescue ArgumentError => e
+        # If parsing fails, leave starts_at as is (will be validated by model)
+        Rails.logger.error("Failed to parse date/time: #{e.message}")
+      end
+    end
+  end
+
+  def assign_rundown_positions(event)
+    return unless event.rundown_items.present?
+
+    event.rundown_items.reject(&:marked_for_destruction?).each_with_index do |item, index|
+      item.position = index + 1
+    end
+  end
+
+  def authorize_organizer
+    unless @event.organizer == current_user
+      redirect_to event_path(@event), alert: "You are not authorized to perform this action." and return
+    end
   end
 end

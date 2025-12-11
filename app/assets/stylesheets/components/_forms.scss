@@ -6,6 +6,11 @@
   margin-bottom: 24px;
 }
 
+.form-inputs {
+  margin-left: 48px;
+  margin-right: 48px;
+}
+
 .form-label {
   color: $primary-font;
   font-family: $body-font;
@@ -57,6 +62,13 @@
 
 .form-actions {
   margin-top: 32px;
+  margin-bottom: 48px;
+  margin-left: 48px;
+  margin-right: 48px;
+
+  .btn {
+    width: 100%;
+  }
 }
 
 .form-hint {
@@ -71,5 +83,13 @@
   font-family: $body-font;
   font-size: 14px;
   margin-top: 4px;
+}
+
+// Remove dotted underline from required field asterisks
+.simple_form abbr[title],
+form abbr[title] {
+  text-decoration: none;
+  border-bottom: none;
+  cursor: help;
 }
 

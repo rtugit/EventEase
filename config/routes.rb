@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  root to: "pages#home"
+  root to: "pages#landing"
 
   resources :events do
     member do
@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
 
     resources :registrations, only: [:create]
+    resources :reviews, only: [:create, :update, :destroy]
   end
 
   resources :registrations, only: [:destroy] do

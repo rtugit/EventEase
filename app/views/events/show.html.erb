@@ -1,91 +1,453 @@
-<h1><%= @event.title %></h1>
-<% @event.photos.each do |photo| %>
-  <%= cl_image_tag photo.key, height: 300, width: 400, crop: :fill %>
-<% end %>
-<p>
-  <strong>Date:</strong>
-  <%= @event.starts_at&.strftime("%d.%m.%Y %H:%M") %>
-</p>
-
-<p>
-  <strong>Location:</strong>
-  <%= @event.location %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @event.description %>
-</p>
-
-<p>
-  <% if @event.organizer == current_user %>
-    <%= link_to "Open check-in mode",
-                check_in_event_path(@event),
-                class: "btn btn-outline-primary" %>
-  <% end %>
-</p>
-
-<hr>
-
-<h2>Join this Event</h2>
-
-<%# We connect the form to our Stimulus controller using data: { controller: "registration" } %>
-<%# We listen for the 'submit' event and call our 'disable' method %>
-<%= form_with(model: [@event, @event.registrations.build],
-              local: true,
-              data: { controller: "registration", action: "submit->registration#disable" }) do |form| %>
-
-  <div>
-    <%= form.label :email %>
-    <%= form.email_field :email, required: true %>
-  </div>
-
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div style="margin-top: 10px;">
-    <%# We add data: { registration_target: "submitButton" } so we can access this button in our JS %>
-    <%= form.submit "Join Event", data: { registration_target: "submitButton" } %>
-  </div>
-<% end %>
-
-<hr>
-
-<h2>Attendees (<%= @event.registrations.count %>)</h2>
-
-<% if @event.registrations.any? %>
-  <ul>
-    <% @event.registrations.each do |registration| %>
-      <li style="margin-bottom: 10px;">
-        <strong><%= registration.name.presence || registration.email %></strong>
-        (<%= registration.email %>)
-        -
-        <span style="color: <%= registration.status == 'checked_in' ? 'green' : 'gray' %>">
-          <%= registration.status.humanize %>
-        </span>
-
-        <% if registration.status == "registered" %>
-          <%# Connect to checkin controller. form: { ... } attributes go to the form tag. %>
-          <%= button_to "Check In",
-              check_in_registration_path(registration),
-              method: :patch,
-              form: {
-                style: "display: inline-block; margin-left: 10px;",
-                data: {
-                  controller: "checkin",
-                  action: "submit->checkin#confirm"
-                }
-              },
-              data: { checkin_target: "button" } %>
-        <% end %>
-      </li>
+<main class="event-show">
+  <!-- Navigation Header -->
+  <nav class="event-nav-header">
+    <%= link_to events_path, class: "nav-back-button" do %>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
     <% end %>
-  </ul>
-<% else %>
-  <p>No attendees yet.</p>
-<% end %>
+    <h1 class="nav-title">Event Details</h1>
+    <% if user_signed_in? && @event.organizer == current_user %>
+      <div class="nav-actions">
+        <%= link_to edit_event_path(@event), class: "nav-action-button nav-edit-button" do %>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <span>Edit</span>
+        <% end %>
+        <%= button_to event_path(@event),
+                    method: :delete,
+                    class: "nav-action-button nav-delete-button",
+                    form: { 
+                      data: { 
+                        confirm: "Are you sure you want to delete this event? This action cannot be undone." 
+                      } 
+                    } do %>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          <span>Delete</span>
+        <% end %>
+      </div>
+    <% else %>
+      <button type="button" class="nav-menu-button" aria-label="More options">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="1"/>
+          <circle cx="12" cy="5" r="1"/>
+          <circle cx="12" cy="19" r="1"/>
+        </svg>
+      </button>
+    <% end %>
+  </nav>
 
-<br>
-<%= link_to "Back to Dashboard", dashboard_path %>
+  <!-- Main Event Image Section -->
+  <section class="event-image-section">
+    <% if @event.photos.attached? %>
+      <div class="event-image-container">
+        <%= cl_image_tag @event.photos.first.key, 
+                        height: 600, 
+                        width: 1200, 
+                        crop: :fill,
+                        class: "event-image",
+                        alt: @event.title %>
+        
+        <!-- Overlay Card -->
+        <div class="event-overlay-card">
+          <div class="event-date-badge">
+            <span class="event-day"><%= @event.starts_at&.strftime("%d") %></span>
+            <span class="event-month"><%= @event.starts_at&.strftime("%b") %></span>
+          </div>
+          <div class="event-overlay-content">
+            <h1 class="event-title-overlay"><%= @event.title %></h1>
+            <p class="event-location-overlay">
+              <svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <%= @event.location %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <!-- Fallback if no image -->
+      <div class="event-image-container event-image-placeholder">
+        <div class="event-overlay-card">
+          <div class="event-date-badge">
+            <span class="event-day"><%= @event.starts_at&.strftime("%d") %></span>
+            <span class="event-month"><%= @event.starts_at&.strftime("%b") %></span>
+          </div>
+          <div class="event-overlay-content">
+            <h1 class="event-title-overlay"><%= @event.title %></h1>
+            <p class="event-location-overlay">
+              <svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <%= @event.location %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <!-- Main Content Container -->
+  <div class="event-content-container">
+    <!-- Event Info Section (below image) -->
+    <header class="event-info-header">
+      <h1 class="event-title-main"><%= @event.title %></h1>
+      <p class="event-location-main">
+        <svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <%= @event.location %>
+      </p>
+      <div class="event-joined-count">
+        <div class="attendee-avatars">
+          <% @event.registrations.limit(3).each do |reg| %>
+            <div class="attendee-avatar" title="<%= reg.name.presence || reg.email %>">
+              <%= (reg.name.presence || reg.email).first.upcase %>
+            </div>
+          <% end %>
+          <% if @event.registrations.count > 3 %>
+            <div class="attendee-avatar attendee-more">+<%= @event.registrations.count - 3 %></div>
+          <% end %>
+        </div>
+        <span class="joined-text">
+          <%= @event.registrations.count %>+ People are joined
+        </span>
+      </div>
+    </header>
+
+    <!-- Tabs Section -->
+    <section class="event-tabs-section" data-controller="tabs">
+      <div class="tabs-header" role="tablist">
+        <button type="button"
+                class="tab-button active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="details-panel"
+                id="details-tab"
+                data-tabs-target="tab"
+                data-action="click->tabs#switchTab"
+                data-tab="details">
+          Details
+        </button>
+        <button type="button"
+                class="tab-button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="guests-panel"
+                id="guests-tab"
+                data-tabs-target="tab"
+                data-action="click->tabs#switchTab"
+                data-tab="guests">
+          Guests
+        </button>
+        <button type="button"
+                class="tab-button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="reviews-panel"
+                id="reviews-tab"
+                data-tabs-target="tab"
+                data-action="click->tabs#switchTab"
+                data-tab="reviews">
+          Reviews
+        </button>
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="tabs-content">
+        <!-- Details Panel -->
+        <div id="details-panel"
+             class="tab-panel active"
+             role="tabpanel"
+             aria-labelledby="details-tab"
+             data-tabs-target="panel"
+             data-panel="details">
+          <div class="event-description">
+            <p class="description-text"><%= simple_format(@event.description) %></p>
+          </div>
+
+          <% if @event.rundown_items.any? %>
+            <div class="event-rundown">
+              <h2 class="section-title">Rundown</h2>
+              <div class="rundown-list" data-controller="rundown-collapse">
+                <% @event.rundown_items.ordered.each do |item| %>
+                  <div class="rundown-item-collapsible" data-rundown-collapse-target="item">
+                    <button type="button" 
+                            class="rundown-item-header"
+                            data-action="click->rundown-collapse#toggle"
+                            data-rundown-collapse-target="header">
+                      <span class="rundown-item-title"><%= item.heading %></span>
+                      <svg class="rundown-arrow" 
+                           width="20" 
+                           height="20" 
+                           viewBox="0 0 24 24" 
+                           fill="none" 
+                           stroke="currentColor" 
+                           stroke-width="2"
+                           data-rundown-collapse-target="arrow">
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    <div class="rundown-item-content" data-rundown-collapse-target="content">
+                      <p class="rundown-description"><%= simple_format(item.description) %></p>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Location Map Section (only in Details tab) -->
+          <div class="location-map-section">
+            <h2 class="section-title">Location</h2>
+            <div id="event-map" 
+                 class="map-container"
+                 data-location="<%= @event.location %>"
+                 data-controller="map-placeholder">
+              <!-- TODO: Integrate Mapbox map here -->
+              <div class="map-placeholder">
+                <p>Map will be displayed here</p>
+                <p class="map-location-text"><%= @event.location %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guests Panel -->
+        <div id="guests-panel"
+             class="tab-panel"
+             role="tabpanel"
+             aria-labelledby="guests-tab"
+             data-tabs-target="panel"
+             data-panel="guests">
+          <div class="guests-content">
+            <h2 class="section-title">Guests</h2>
+            <% if @event.registrations.any? %>
+              <ul class="guests-list">
+                <% @event.registrations.each do |registration| %>
+                  <li class="guest-item">
+                    <div class="guest-info">
+                      <strong class="guest-name"><%= registration.name.presence || registration.email %></strong>
+                      <span class="guest-email">(<%= registration.email %>)</span>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="empty-state">No guests registered yet.</p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Reviews Panel -->
+        <div id="reviews-panel"
+             class="tab-panel"
+             role="tabpanel"
+             aria-labelledby="reviews-tab"
+             data-tabs-target="panel"
+             data-panel="reviews">
+          <div class="reviews-content">
+            <h2 class="section-title">Reviews</h2>
+            
+            <% if @event.past? && user_signed_in? %>
+              <% if @user_registration && !@user_registration.reviewed? %>
+                <!-- Review Form -->
+                <div class="review-form-container">
+                  <%= form_with(model: [@event, @event.reviews.build],
+                                url: event_reviews_path(@event),
+                                local: true,
+                                class: "review-form") do |form| %>
+                    <div class="form-group">
+                      <%= form.label :rating, "Rating", class: "form-label" %>
+                      <div class="rating-input">
+                        <% (1..5).each do |rating| %>
+                          <label class="rating-option">
+                            <%= form.radio_button :rating, rating, required: true %>
+                            <span class="rating-star">★</span>
+                          </label>
+                        <% end %>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <%= form.label :comment, "Your Review", class: "form-label" %>
+                      <%= form.text_area :comment,
+                                        class: "form-control",
+                                        rows: 4,
+                                        placeholder: "Share your experience at this event...",
+                                        maxlength: 1000 %>
+                    </div>
+                    
+                    <%= form.submit "Submit Review", class: "btn-submit-review" %>
+                  <% end %>
+                </div>
+              <% elsif @user_registration && @user_registration.reviewed? %>
+                <% user_review = @user_registration.review %>
+                <% if user_review %>
+                  <div class="review-form-container">
+                    <p class="review-notice">You have already reviewed this event. You can edit or delete your review below.</p>
+                    <div class="review-edit-form" data-controller="review-edit">
+                      <div class="review-item" data-review-edit-target="display">
+                        <div class="review-header">
+                          <div class="reviewer-info">
+                            <strong class="reviewer-name">Your Review</strong>
+                            <div class="review-rating">
+                              <% user_review.rating.times do %>
+                                <span class="star-filled">★</span>
+                              <% end %>
+                              <% (5 - user_review.rating).times do %>
+                                <span class="star-empty">★</span>
+                              <% end %>
+                            </div>
+                          </div>
+                          <div class="review-actions">
+                            <button type="button" 
+                                    class="btn-edit-review"
+                                    data-action="click->review-edit#showEdit">
+                              Edit
+                            </button>
+                            <%= button_to "Delete",
+                                        event_review_path(@event, user_review),
+                                        method: :delete,
+                                        class: "btn-delete-review",
+                                        form: { 
+                                          data: { 
+                                            confirm: "Are you sure you want to delete your review?" 
+                                          } 
+                                        } %>
+                          </div>
+                        </div>
+                        <% if user_review.comment.present? %>
+                          <p class="review-comment"><%= simple_format(user_review.comment) %></p>
+                        <% end %>
+                      </div>
+                      
+                      <div class="review-edit-form-content" data-review-edit-target="editForm" style="display: none;">
+                        <%= form_with(model: [@event, user_review],
+                                    url: event_review_path(@event, user_review),
+                                    method: :patch,
+                                    local: true,
+                                    class: "review-form") do |form| %>
+                          <div class="form-group">
+                            <%= form.label :rating, "Rating", class: "form-label" %>
+                            <div class="rating-input">
+                              <% (1..5).each do |rating| %>
+                                <label class="rating-option">
+                                  <%= form.radio_button :rating, rating, required: true, checked: (user_review.rating == rating) %>
+                                  <span class="rating-star">★</span>
+                                </label>
+                              <% end %>
+                            </div>
+                          </div>
+                          
+                          <div class="form-group">
+                            <%= form.label :comment, "Your Review", class: "form-label" %>
+                            <%= form.text_area :comment,
+                                              class: "form-control",
+                                              rows: 4,
+                                              placeholder: "Share your experience at this event...",
+                                              maxlength: 1000,
+                                              value: user_review.comment %>
+                          </div>
+                          
+                          <div class="review-form-actions">
+                            <%= form.submit "Update Review", class: "btn-submit-review" %>
+                            <button type="button" 
+                                    class="btn-cancel-edit"
+                                    data-action="click->review-edit#hideEdit">
+                              Cancel
+                            </button>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% elsif !@user_registration %>
+                <p class="review-notice">You must join the event before you can review it.</p>
+              <% end %>
+            <% elsif !@event.past? %>
+              <p class="review-notice">Reviews are available after the event has ended.</p>
+            <% end %>
+
+            <!-- Reviews List -->
+            <% if @event.reviews.any? %>
+              <div class="reviews-list">
+                <% @event.reviews.recent.each do |review| %>
+                  <% is_own_review = user_signed_in? && review.registration.email == current_user.email %>
+                  <% next if is_own_review %> <!-- Skip own review as it's shown above -->
+                  <div class="review-item">
+                    <div class="review-header">
+                      <div class="reviewer-info">
+                        <strong class="reviewer-name"><%= review.registration.name.presence || review.registration.email %></strong>
+                        <div class="review-rating">
+                          <% review.rating.times do %>
+                            <span class="star-filled">★</span>
+                          <% end %>
+                          <% (5 - review.rating).times do %>
+                            <span class="star-empty">★</span>
+                          <% end %>
+                        </div>
+                      </div>
+                      <span class="review-date"><%= review.created_at.strftime("%B %d, %Y") %></span>
+                    </div>
+                    <% if review.comment.present? %>
+                      <p class="review-comment"><%= simple_format(review.comment) %></p>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="empty-state">No reviews yet. Be the first to review this event!</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Join/Unjoin Button (sticky at bottom) -->
+  <div class="join-button-container">
+    <% if user_signed_in? %>
+      <% if @user_registration %>
+        <!-- User has joined - show Unjoin button -->
+        <%= button_to "Unjoin",
+                    registration_path(@user_registration),
+                    method: :delete,
+                    class: "btn-join-event btn-unjoin-event",
+                    form: { 
+                      class: "unjoin-form",
+                      data: { 
+                        controller: "registration",
+                        action: "submit->registration#disable"
+                      }
+                    },
+                    data: { registration_target: "submitButton" } %>
+      <% else %>
+        <!-- User hasn't joined - show Join button -->
+        <%= form_with(model: [@event, @event.registrations.build],
+                    url: event_registrations_path(@event),
+                    method: :post,
+                    local: true,
+                    class: "join-form",
+                    data: { controller: "registration", action: "submit->registration#disable" }) do |form| %>
+          <%= form.hidden_field :email, value: current_user.email %>
+          <%= form.hidden_field :name, value: "#{current_user.first_name} #{current_user.last_name}".strip %>
+          <%= form.submit "Join", class: "btn-join-event", data: { registration_target: "submitButton" } %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= link_to "Join", new_user_session_path, class: "btn-join-event" %>
+    <% end %>
+  </div>
+
+</main>
