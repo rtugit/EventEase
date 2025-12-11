@@ -9,3 +9,9 @@
   <%= f.number_field :rating %>
   <%= f.submit %>
 <% end %>
+
+<%= simple_form_for(event) do |f| %>
+  <!-- [...] -->
+  <%= f.input :photos, as: :file, input_html: { multiple: true } %>
+  <!-- [...] -->
+<% end %>

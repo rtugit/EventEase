@@ -3,9 +3,23 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy check_in]
 
   def index
+    @popular_events = Event.popular
+    @new_events     = Event.upcoming
+
+    @events = Event.all
     @events = current_user.events.includes(:registrations).order(starts_at: :asc)
 
-    return if params[:query].blank?
+    if params[:query].present?
+      @events = @events.where("title ILIKE ?", "%#{params[:query]}%")
+    end
+
+    if params[:location].present?
+      @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
+    end
+
+    if params[:date].present?
+      @events = @events.where(date: params[:date])
+    end
 
     @events = @events.where(
       "title ILIKE :query OR location ILIKE :query",
@@ -48,13 +62,13 @@ class EventsController < ApplicationController
   end
 
   def check_in
-  # Only the organizer should access the check-in mode for this event
-  unless @event.organizer == current_user
-    redirect_to event_path(@event), alert: "You are not allowed to access the check-in mode for this event." and return
-  end
+    # Only the organizer should access the check-in mode for this event
+    unless @event.organizer == current_user
+      redirect_to event_path(@event), alert: "You are not allowed to access the check-in mode for this event." and return
+    end
 
-  @registrations = @event.registrations.order(created_at: :asc)
-end
+    @registrations = @event.registrations.order(created_at: :asc)
+  end
 
   private
 
@@ -69,7 +83,8 @@ end
       :description,
       :starts_at,
       :ends_at,
-      :capacity
+      :capacity,
+      photos:[]
     )
   end
 end

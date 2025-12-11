@@ -1,5 +1,7 @@
 <h1><%= @event.title %></h1>
-
+<% @event.photos.each do |photo| %>
+  <%= cl_image_tag photo.key, height: 300, width: 400, crop: :fill %>
+<% end %>
 <p>
   <strong>Date:</strong>
   <%= @event.starts_at&.strftime("%d.%m.%Y %H:%M") %>
