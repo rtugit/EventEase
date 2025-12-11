@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
 
     resources :registrations, only: [:create]
+    resources :reviews, only: [:create, :update, :destroy]
   end
 
   resources :registrations, only: [:destroy] do

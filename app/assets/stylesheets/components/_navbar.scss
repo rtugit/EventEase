@@ -1,12 +1,113 @@
-.navbar-lewagon {
+// EventEase Navbar Styles
+@import "../config/colors";
+@import "../config/fonts";
+
+.navbar-eventease {
   justify-content: space-between;
-  background: white;
-}
+  background-color: $background;
+  border-bottom: 1px solid $light-gray;
+  padding: 12px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
-}
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 
-.navbar-lewagon .navbar-brand img {
-  width: 40px;
+    .navbar-logo {
+      width: 40px;
+      height: auto;
+    }
+  }
+
+  .navbar-collapse {
+    flex-grow: 0;
+  }
+
+  .navbar-nav {
+    align-items: center;
+    gap: 8px;
+
+    .nav-item {
+      .nav-link {
+        color: $primary-font;
+        font-family: $body-font;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: $sub-font-green;
+          background-color: $light-bg;
+        }
+      }
+    }
+
+    .avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: $sub-font-green;
+      color: white;
+      text-decoration: none;
+      font-family: $body-font;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: darken($sub-font-green, 10%);
+        transform: scale(1.05);
+      }
+
+      .avatar-initials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .dropdown-menu {
+      border: 1px solid $light-gray;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 8px;
+
+      .dropdown-item {
+        color: $primary-font;
+        font-family: $body-font;
+        font-size: 14px;
+        padding: 10px 16px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: $light-bg;
+          color: $sub-font-green;
+        }
+      }
+    }
+  }
+
+  .navbar-toggler {
+    border: none;
+    padding: 4px 8px;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(51, 51, 51, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  }
 }
