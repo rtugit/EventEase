@@ -22,4 +22,6 @@ Rails.application.routes.draw do
   get "dashboard", to: "events#index"
   get "up" => "rails/health#show", as: :rails_health_check
   get '/dashboard', to: 'dashboard#index'
+  get 'account/personal_info', to: 'accounts#personal_info', as: :personal_info
+  patch 'account/update', to: 'accounts#update', as: :update_user
 end
