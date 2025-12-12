@@ -1,0 +1,302 @@
+// Mobile-First Design System for EventEase
+// This file ensures responsive design starting from mobile devices
+
+// ============================================
+// 1. ROOT & VIEWPORT SETTINGS
+// ============================================
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+// ============================================
+// 2. MOBILE-FIRST CONTAINERS
+// ============================================
+
+.container-mobile {
+  width: 100%;
+  padding: 0 16px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+// Safe area insets for notched devices
+.safe-area {
+  // Wrap env() inside calc/max to keep Sass happy and provide a fallback
+  padding-left: calc(max(16px, env(safe-area-inset-left)));
+  padding-right: calc(max(16px, env(safe-area-inset-right)));
+  padding-top: calc(max(16px, env(safe-area-inset-top)));
+  padding-bottom: calc(max(16px, env(safe-area-inset-bottom)));
+}
+
+// ============================================
+// 3. TOUCH-FRIENDLY TARGETS
+// ============================================
+
+// Ensure all interactive elements are at least 44x44px (recommended by Apple)
+a, button, .btn, .menu-item, .event-card, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================
+// 4. RESPONSIVE SPACING
+// ============================================
+
+// Viewport width breakpoints (mobile-first)
+$mobile: 320px;      // Small phones
+$mobile-lg: 480px;   // Large phones
+$tablet: 768px;      // Tablets
+$desktop: 1024px;    // Desktop
+$desktop-lg: 1440px; // Large desktop
+
+// Mobile-first padding/margin utilities
+.p-mobile { padding: 16px; }
+.p-mobile-lg { padding: 20px; }
+.m-mobile { margin: 16px; }
+.gap-mobile { gap: 16px; }
+
+// ============================================
+// 5. RESPONSIVE TEXT
+// ============================================
+
+// Mobile-first typography
+h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  
+  @media (min-width: $tablet) {
+    font-size: 32px;
+  }
+  
+  @media (min-width: $desktop) {
+    font-size: 36px;
+  }
+}
+
+h2 {
+  font-size: 24px;
+  
+  @media (min-width: $tablet) {
+    font-size: 28px;
+  }
+}
+
+h3 {
+  font-size: 20px;
+  
+  @media (min-width: $tablet) {
+    font-size: 24px;
+  }
+}
+
+// Body text - exclude special components like badges
+p:not(.event-date-badge *), 
+span:not(.event-date-badge *):not(.badge *):not([class*="btn"] *), 
+a:not(.event-date-badge *):not(.btn):not(.badge) {
+  font-size: 14px;
+  color: black;
+  
+  @media (min-width: $tablet) {
+    font-size: 15px;
+    color: black;
+  }
+}
+
+// ============================================
+// 6. MOBILE APP-LIKE BOTTOM NAVIGATION
+// ============================================
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+  
+  @media (min-width: $tablet) {
+    position: relative;
+    height: auto;
+    padding: 20px;
+    justify-content: flex-start;
+    gap: 20px;
+    border-top: none;
+  }
+}
+
+// Adjust body padding for fixed footer on mobile
+body {
+  padding-bottom: 60px;
+  
+  @media (min-width: $tablet) {
+    padding-bottom: 0;
+  }
+}
+
+// ============================================
+// 7. RESPONSIVE GRIDS
+// ============================================
+
+.grid-mobile {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  
+  @media (min-width: $mobile-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: $tablet) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (min-width: $desktop) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Event cards grid
+.events-grid {
+  @extend .grid-mobile;
+}
+
+// ============================================
+// 8. MOBILE NAVIGATION OPTIMIZATION
+// ============================================
+
+nav.navbar {
+  @media (max-width: ($tablet - 1px)) {
+    padding: 12px 16px;
+    
+    .nav-item {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+  }
+}
+
+// ============================================
+// 9. MODAL & OVERLAY MOBILE OPTIMIZATION
+// ============================================
+
+.modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
+  
+  @media (min-width: $tablet) {
+    max-height: 60vh;
+  }
+}
+
+// ============================================
+// 10. FORM MOBILE OPTIMIZATION
+// ============================================
+
+form {
+  input, textarea, select {
+    font-size: 16px; // Prevents zoom on iOS
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+    
+    &:focus {
+      outline: none;
+      border-color: #367C76;
+      box-shadow: 0 0 0 3px rgba(54, 124, 118, 0.1);
+    }
+  }
+  
+  .btn {
+    font-size: 16px;
+    padding: 14px 20px;
+    width: 100%;
+    
+    @media (min-width: $tablet) {
+      width: auto;
+    }
+  }
+}
+
+// ============================================
+// 11. IMAGE RESPONSIVENESS
+// ============================================
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-responsive {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+// ============================================
+// 12. VIEWPORT META OPTIMIZATION
+// ============================================
+
+// Ensure proper viewport handling (add to layout)
+// <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+// ============================================
+// 13. LANDSCAPE MODE HANDLING
+// ============================================
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .bottom-nav {
+    height: 50px;
+    
+    .nav-item {
+      font-size: 12px;
+    }
+  }
+  
+  h1, h2, h3 {
+    margin: 8px 0;
+  }
+}
+
+// ============================================
+// 14. HIGH DPI SCREENS (RETINA)
+// ============================================
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  border, .border {
+    border-width: 0.5px;
+  }
+}
+
+// ============================================
+// 15. DARK MODE SUPPORT (Optional)
+// ============================================
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+  
+  .card, .menu-item {
+    background-color: #1e1e1e;
+    border-color: #333;
+  }
+}

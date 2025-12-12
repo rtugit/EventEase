@@ -154,12 +154,15 @@
       <% if event.photos.attached? && !event.new_record? %>
         <div class="photo-preview">
           <p>Current photo:</p>
-          <%= cl_image_tag event.photos.first.key, 
-                          height: 200, 
-                          width: 400, 
-                          crop: :fill,
-                          class: "img-fluid",
-                          style: "max-width: 100%; border-radius: 8px;" %>
+          <%= responsive_image(nil,
+                               :photo,
+                               "eventease-logo.svg",
+                               attachment: event.photos.first,
+                               height: 200,
+                               width: 400,
+                               crop: :fill,
+                               class: "img-fluid",
+                               style: "max-width: 100%; border-radius: 8px;") %>
           <p>Upload a new photo to replace it</p>
         </div>
       <% end %>
