@@ -1,5 +1,42 @@
 <!-- Shows header and username -->
 <div class="home-page">
+  <header class="home-header">
+    <div class="header-top">
+      <div class="welcome-text">
+        <p class="greeting">Welcome Back</p>
+        <h1 class="username">
+          <%= current_user&.first_name.presence ||
+              current_user&.email&.split('@')&.first&.capitalize ||
+              "Guest" %>
+        </h1>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn" aria-label="Notifications">
+          <span class="badge"></span>
+        </button>
+
+        <div class="profile-wrapper">
+          <% if current_user %>
+            <%= link_to edit_user_registration_path, class: "profile-btn" do %>
+              <span class="initials">
+                <%= (current_user.first_name.presence || current_user.email&.first).to_s.first.upcase %>
+              </span>
+            <% end %>
+          <% else %>
+            <%= link_to new_user_session_path, class: "profile-btn" do %>
+              <span class="initials">?</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-subline">
+      <h2 class="page-title">Discover Events near you!</h2>
+    </div>
+  </header>
+
   <!-- Renders search input form -->
   <section class="search-section search-section-no-header">
     <div class="search-card">
@@ -75,59 +112,40 @@
   <% else %>
     <!-- Shows popular events list -->
     <section class="events-section">
-      <div class="section-header">
-        <h3 class="section-title">Popular Event</h3>
-        <% if @popular_events.present? %>
-          <%= link_to "See all", events_path, class: "see-all-link" %>
+    <div class="section-header">
+      <h3 class="section-title">Popular Event</h3>
+      <% if @popular_events.present? %>
+        <%= link_to "See all", events_path, class: "see-all-link" %>
+      <% end %>
+    </div>
+
+    <% if @popular_events.present? %>
+      <div class="events-grid">
+        <% @popular_events.each do |event| %>
+          <%= render "event_card", event: event %>
         <% end %>
       </div>
-
-      <% if @popular_events.present? %>
-        <div class="events-grid">
-          <% @popular_events.each do |event| %>
-            <%= render "event_card", event: event %>
-          <% end %>
-        </div>
-      <% else %>
-        <p>You don't have any events yet.</p>
-      <% end %>
-    </section>
+    <% else %>
+      <p>You don’t have any events yet.</p>
+    <% end %>
+  </section>
 
     <!-- Displays new events section -->
     <section class="events-section">
       <div class="section-header">
         <h3 class="section-title">New Event</h3>
-        <%= link_to "Create event", new_event_path, class: "primary-link" %>
-      </div>
+        <%= link_to "Create Event", new_event_path, class: "search-btn" %>
+    </div>
 
-      <% if @events.present? %>
-        <table class="events-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @events.each do |event| %>
-              <tr>
-                <td><%= event.title %></td>
-                <td><%= event.location %></td>
-                <td>
-                  <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
-                </td>
-                <td class="text-end">
-                  <%= link_to "View", event_path(event), class: "table-link" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p>You don't have any events yet.</p>
-      <% end %>
+    <% if @events.present? %>
+      <div class="events-grid">
+        <% @events.each do |event| %>
+          <%= render "event_card", event: event %>
+        <% end %>
+      </div>
+    <% else %>
+      <p>You don’t have any events yet.</p>
+    <% end %>
     </section>
   <% end %>
 
@@ -151,7 +169,7 @@
     <% end %>
 
     <%= link_to new_event_path, class: "nav-item nav-item-add" do %>
-      <i class="fa-solid fa-plus"></i>
+      <span>Add</span>
     <% end %>
 
     <%= link_to events_path, class: "nav-item" do %>
