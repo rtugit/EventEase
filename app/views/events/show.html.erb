@@ -16,13 +16,16 @@
           </svg>
           <span>Edit</span>
         <% end %>
+      <%= link_to check_in_event_path(@event), class: "nav-action-button nav-edit-button" do %>
+        <span>Check-in</span>
+      <% end %>
         <%= button_to event_path(@event),
                     method: :delete,
                     class: "nav-action-button nav-delete-button",
-                    form: { 
-                      data: { 
-                        confirm: "Are you sure you want to delete this event? This action cannot be undone." 
-                      } 
+                    form: {
+                      data: {
+                        confirm: "Are you sure you want to delete this event? This action cannot be undone."
+                      }
                     } do %>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -49,7 +52,12 @@
       <div class="event-image-container">
         <%# Use responsive_image helper to handle Cloudinary/ActiveStorage separation %>
         <%= responsive_image(@event, :photos, alt: @event.title, class: "event-image") %>
-        
+        <%= cl_image_tag @event.photos.first.key,
+                        height: 600,
+                        width: 1200,
+                        crop: :fill,
+                        class: "event-image",
+                        alt: @event.title %>
         <!-- Overlay Card -->
         <div class="event-overlay-card">
           <div class="event-date-badge">
@@ -162,11 +170,11 @@
       <div class="tabs-content">
         <!-- Details Panel -->
         <div id="details-panel"
-             class="tab-panel active"
-             role="tabpanel"
-             aria-labelledby="details-tab"
-             data-tabs-target="panel"
-             data-panel="details">
+            class="tab-panel active"
+            role="tabpanel"
+            aria-labelledby="details-tab"
+            data-tabs-target="panel"
+            data-panel="details">
           <div class="event-description">
             <p class="description-text"><%= simple_format(@event.description) %></p>
           </div>
@@ -177,19 +185,19 @@
               <div class="rundown-list" data-controller="rundown-collapse">
                 <% @event.rundown_items.ordered.each do |item| %>
                   <div class="rundown-item-collapsible" data-rundown-collapse-target="item">
-                    <button type="button" 
+                    <button type="button"
                             class="rundown-item-header"
                             data-action="click->rundown-collapse#toggle"
                             data-rundown-collapse-target="header">
                       <span class="rundown-item-title"><%= item.heading %></span>
-                      <svg class="rundown-arrow" 
-                           width="20" 
-                           height="20" 
-                           viewBox="0 0 24 24" 
-                           fill="none" 
-                           stroke="currentColor" 
-                           stroke-width="2"
-                           data-rundown-collapse-target="arrow">
+                      <svg class="rundown-arrow"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          data-rundown-collapse-target="arrow">
                         <path d="M6 9l6 6 6-6"/>
                       </svg>
                     </button>
@@ -205,10 +213,10 @@
           <!-- Location Map Section (only in Details tab) -->
           <div class="location-map-section">
             <h2 class="section-title">Location</h2>
-            <div id="event-map" 
-                 class="map-container"
-                 data-location="<%= @event.location %>"
-                 data-controller="map-placeholder">
+            <div id="event-map"
+                class="map-container"
+                data-location="<%= @event.location %>"
+                data-controller="map-placeholder">
               <!-- TODO: Integrate Mapbox map here -->
               <div class="map-placeholder">
                 <p>Map will be displayed here</p>
@@ -220,11 +228,11 @@
 
         <!-- Guests Panel -->
         <div id="guests-panel"
-             class="tab-panel"
-             role="tabpanel"
-             aria-labelledby="guests-tab"
-             data-tabs-target="panel"
-             data-panel="guests">
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="guests-tab"
+            data-tabs-target="panel"
+            data-panel="guests">
           <div class="guests-content">
             <h2 class="section-title">Guests</h2>
             <% if @event.registrations.any? %>
@@ -246,14 +254,14 @@
 
         <!-- Reviews Panel -->
         <div id="reviews-panel"
-             class="tab-panel"
-             role="tabpanel"
-             aria-labelledby="reviews-tab"
-             data-tabs-target="panel"
-             data-panel="reviews">
+            class="tab-panel"
+            role="tabpanel"
+            aria-labelledby="reviews-tab"
+            data-tabs-target="panel"
+            data-panel="reviews">
           <div class="reviews-content">
             <h2 class="section-title">Reviews</h2>
-            
+
             <% if @event.past? && user_signed_in? %>
               <% if @user_registration && !@user_registration.reviewed? %>
                 <!-- Review Form -->
@@ -273,7 +281,7 @@
                         <% end %>
                       </div>
                     </div>
-                    
+
                     <div class="form-group">
                       <%= form.label :comment, "Your Review", class: "form-label" %>
                       <%= form.text_area :comment,
@@ -282,7 +290,7 @@
                                         placeholder: "Share your experience at this event...",
                                         maxlength: 1000 %>
                     </div>
-                    
+
                     <%= form.submit "Submit Review", class: "btn-submit-review" %>
                   <% end %>
                 </div>
@@ -306,7 +314,7 @@
                             </div>
                           </div>
                           <div class="review-actions">
-                            <button type="button" 
+                            <button type="button"
                                     class="btn-edit-review"
                                     data-action="click->review-edit#showEdit">
                               Edit
@@ -315,10 +323,10 @@
                                         event_review_path(@event, user_review),
                                         method: :delete,
                                         class: "btn-delete-review",
-                                        form: { 
-                                          data: { 
-                                            confirm: "Are you sure you want to delete your review?" 
-                                          } 
+                                        form: {
+                                          data: {
+                                            confirm: "Are you sure you want to delete your review?"
+                                          }
                                         } %>
                           </div>
                         </div>
@@ -326,7 +334,7 @@
                           <p class="review-comment"><%= simple_format(user_review.comment) %></p>
                         <% end %>
                       </div>
-                      
+
                       <div class="review-edit-form-content" data-review-edit-target="editForm" style="display: none;">
                         <%= form_with(model: [@event, user_review],
                                     url: event_review_path(@event, user_review),
@@ -344,7 +352,7 @@
                               <% end %>
                             </div>
                           </div>
-                          
+
                           <div class="form-group">
                             <%= form.label :comment, "Your Review", class: "form-label" %>
                             <%= form.text_area :comment,
@@ -354,10 +362,10 @@
                                               maxlength: 1000,
                                               value: user_review.comment %>
                           </div>
-                          
+
                           <div class="review-form-actions">
                             <%= form.submit "Update Review", class: "btn-submit-review" %>
-                            <button type="button" 
+                            <button type="button"
                                     class="btn-cancel-edit"
                                     data-action="click->review-edit#hideEdit">
                               Cancel
@@ -420,9 +428,9 @@
                     registration_path(@user_registration),
                     method: :delete,
                     class: "btn-join-event btn-unjoin-event",
-                    form: { 
+                    form: {
                       class: "unjoin-form",
-                      data: { 
+                      data: {
                         controller: "registration",
                         action: "submit->registration#disable"
                       }
