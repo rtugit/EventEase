@@ -1,13 +1,12 @@
-<<<<<<< HEAD
-<h1><%= @event.title %></h1>
+<main class="event-show">
+  <!-- Navigation Header -->
   <nav class="event-nav-header">
     <%= link_to events_path, class: "nav-back-button" do %>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
       </svg>
->>>>>>> a8aa32664111a31d86b605b5f4715d9e3dfe34b0
     <% end %>
-    <% end %>
+    <h1 class="nav-title">Event Details</h1>
     <% if user_signed_in? && @event.organizer == current_user %>
       <div class="nav-actions">
         <%= link_to edit_event_path(@event), class: "nav-action-button nav-edit-button" do %>
@@ -47,14 +46,14 @@
   <!-- Main Event Image Section -->
   <section class="event-image-section">
     <% if @event.photos.attached? %>
-    <% if @event.photos.attached? %>
-        <%= cl_image_tag @event.photos.first.key, 
+      <div class="event-image-container">
         <%# Use ActiveStorage image when available to avoid Cloudinary dependency %>
         <%= image_tag url_for(@event.photos.first),
                       height: 600,
                       width: 1200,
                       class: "event-image",
                       alt: @event.title %>
+        
         <!-- Overlay Card -->
         <div class="event-overlay-card">
           <div class="event-date-badge">
@@ -385,7 +384,7 @@
               <div class="reviews-list">
                 <% @event.reviews.recent.each do |review| %>
                   <% is_own_review = user_signed_in? && review.registration.email == current_user.email %>
-                  <% next if is_own_review %> <!-- Skip own review as it's shown above -->
+                  <% next if is_own_review %>
                   <div class="review-item">
                     <div class="review-header">
                       <div class="reviewer-info">
