@@ -33,7 +33,7 @@
     </div>
 
     <div class="header-subline">
-      <h2 class="page-title">Demo</h2>
+      <h2 class="page-title">Discover Events near you!</h2>
     </div>
   </header>
 
@@ -112,7 +112,7 @@
   <section class="events-section">
     <div class="section-header">
       <h3 class="section-title">New Event</h3>
-      <%= link_to "Create event", new_event_path, class: "primary-link" %>
+      <%= link_to "Create Event", new_event_path, class: "search-btn" %>
     </div>
 
     <% if @events.present? %>
@@ -127,13 +127,13 @@
   </section>
 
   <!-- Renders minimal event list -->
-  <section class="events-list-section">
+  <!--<section class="events-list-section">
     <ul class="events-list">
       <% @events.each do |event| %>
         <li><%= link_to event.title, event_path(event) %></li>
       <% end %>
     </ul>
-  </section>
+  </section> -->
 
   <!-- Displays bottom navigation bar -->
   <nav class="bottom-nav">
