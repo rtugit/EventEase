@@ -1,0 +1,55 @@
+<div class="account-page">
+  <h1 class="page-header">My Account</h1>
+
+  <div class="card-account">
+    <div class="user-photo">
+      <%= cl_image_tag current_user.photo.key || "eventease-logo.svg", class: "avatar-img"%>
+    </div>
+
+    <div class="card-account-infos">
+      <h3 class="user-name"><%= current_user.full_name || "Guest" %></h3>
+      <p class="user-email"><%= current_user.email || "eventease@eventease.com" %></p>
+    </div>
+  </div>
+
+  <div class="menu-list">
+    <div class="menu-item">
+      <div class="menu-left">
+        <i class="fa-solid fa-user"></i>
+        <%= link_to "Personal Info", "#edit_user_registration_path" %>
+      </div>
+      <i class="fa-solid fa-angle-right menu-arrow"></i>
+    </div>
+
+    <div class="menu-item">
+      <div class="menu-left">
+        <i class="fa-solid fa-key"></i>
+        <%= link_to "Change Password", "#edit_user_password_path" %>
+      </div>
+      <i class="fa-solid fa-angle-right menu-arrow"></i>
+    </div>
+
+    <div class="menu-item">
+      <div class="menu-left">
+        <i class="fa-solid fa-ticket"></i>
+        <%= link_to "My Ticket", "#user_tickets_path" %>
+      </div>
+      <i class="fa-solid fa-angle-right menu-arrow"></i>
+    </div>
+
+    <div class="menu-item">
+      <div class="menu-left">
+        <i class="fa-solid fa-bookmark"></i>
+        <%= link_to "My RSVPs", "#user_rsvps_path" %>
+      </div>
+      <i class="fa-solid fa-angle-right menu-arrow"></i>
+    </div>
+
+    <div class="menu-item-logout">
+      <div class="menu-left">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete } %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+<%= simple_form_for(event) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title,
+                required: true,
+                autofocus: true,
+                label: "Event Title",
+                placeholder: "Enter event title",
+                input_html: { 
+                  class: "form-control"
+                },
+                wrapper_html: { class: "form-group" } %>
+
+    <%= f.input :description,
+                required: true,
+                as: :text,
+                label: "Description",
+                placeholder: "Describe your event...",
+                input_html: { 
+                  class: "form-control",
+                  rows: 5
+                },
+                wrapper_html: { class: "form-group" } %>
+
+    <%= f.input :location,
+                required: true,
+                label: "Location",
+                placeholder: "e.g. Berlin, Germany",
+                input_html: { 
+                  class: "form-control"
+                },
+                wrapper_html: { class: "form-group" } %>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= f.label :event_date, "Date", class: "form-label" %>
+          <%= f.date_field :event_date,
+                          required: true,
+                          class: "form-control" %>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= f.label :event_time, "Time", class: "form-label" %>
+          <%= f.time_field :event_time,
+                          required: true,
+                          class: "form-control" %>
+        </div>
+      </div>
+    </div>
+
+    <%= f.input :capacity,
+                required: false,
+                label: "Capacity",
+                placeholder: "Leave empty for unlimited",
+                input_html: { 
+                  class: "form-control",
+                  type: "number",
+                  min: 1
+                },
+                wrapper_html: { class: "form-group" } %>
+
+    <div class="rundown-section" data-controller="rundown-items">
+      <h3>Event Rundown</h3>
+      
+      <div data-rundown-items-target="container">
+        <%= f.fields_for :rundown_items do |rundown_form| %>
+          <div class="rundown-item" data-rundown-items-target="item">
+            <%= rundown_form.hidden_field :id if rundown_form.object.persisted? %>
+            
+            <div class="form-group">
+              <%= rundown_form.label :heading, "Heading", class: "form-label" %>
+              <%= rundown_form.text_field :heading,
+                                          class: "form-control",
+                                          placeholder: "Enter heading" %>
+            </div>
+            
+            <div class="form-group">
+              <%= rundown_form.label :description, "Description", class: "form-label" %>
+              <%= rundown_form.text_area :description,
+                                        class: "form-control",
+                                        rows: 3,
+                                        placeholder: "Enter description" %>
+            </div>
+            
+            <%= rundown_form.hidden_field :position, value: rundown_form.index %>
+            <%= rundown_form.hidden_field :_destroy, value: false, data: { rundown_items_target: "destroyField" } %>
+            
+            <button type="button" 
+                    class="btn btn-sm btn-outline-danger" 
+                    data-action="click->rundown-items#removeItem">
+              Remove
+            </button>
+          </div>
+        <% end %>
+      </div>
+      
+      <button type="button" 
+              class="btn btn-sm btn-outline-primary" 
+              data-action="click->rundown-items#addItem">
+        Add Another Item
+      </button>
+      
+      <template data-rundown-items-target="template">
+        <div class="rundown-item" data-rundown-items-target="item">
+          <div class="form-group">
+            <label class="form-label">Heading</label>
+            <input type="text" 
+                   name="event[rundown_items_attributes][NEW_INDEX][heading]" 
+                   class="form-control"
+                   placeholder="Enter heading" />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="event[rundown_items_attributes][NEW_INDEX][description]" 
+                      class="form-control"
+                      rows="3"
+                      placeholder="Enter description"></textarea>
+          </div>
+          
+          <input type="hidden" 
+                 name="event[rundown_items_attributes][NEW_INDEX][position]" 
+                 value="NEW_INDEX" />
+          <input type="hidden" 
+                 name="event[rundown_items_attributes][NEW_INDEX][_destroy]" 
+                 value="false"
+                 data-rundown-items-target="destroyField" />
+          
+          <button type="button" 
+                  class="btn btn-sm btn-outline-danger" 
+                  data-action="click->rundown-items#removeItem">
+            Remove
+          </button>
+        </div>
+      </template>
+    </div>
+
+    <div class="event-photo-section">
+      <%= f.input :photos,
+                  required: false,
+                  label: "Event Photo",
+                  as: :file,
+                  input_html: { 
+                    multiple: true,
+                    accept: "image/*",
+                    class: "form-control"
+                  },
+                  wrapper_html: { class: "form-group" },
+                  hint: "Upload a photo for your event" %>
+      
+      <% if event.photos.attached? && !event.new_record? %>
+        <div class="photo-preview">
+          <p>Current photo:</p>
+          <%= cl_image_tag event.photos.first.key, 
+                          height: 200, 
+                          width: 400, 
+                          crop: :fill,
+                          class: "img-fluid",
+                          style: "max-width: 100%; border-radius: 8px;" %>
+          <p>Upload a new photo to replace it</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, event.new_record? ? "Create Event" : "Update Event", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
