@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :account, only: [:show]
+
   get "dashboard", to: "events#index"
   get "up" => "rails/health#show", as: :rails_health_check
+  get '/dashboard', to: 'dashboard#index'
 end
