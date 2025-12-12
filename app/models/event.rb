@@ -47,22 +47,24 @@ class Event < ApplicationRecord
   # Check if event has available spots
   def has_available_spots?
     return true if capacity.nil? # Unlimited capacity
+
     active_registrations_count < capacity
   end
 
   # Get number of available spots
   def available_spots
     return nil if capacity.nil? # Unlimited
+
     [capacity - active_registrations_count, 0].max
   end
 
   private
 
   def set_date_time_from_starts_at
-    if starts_at.present?
-      self.event_date ||= starts_at.strftime("%Y-%m-%d")
-      self.event_time ||= starts_at.strftime("%H:%M")
-    end
+    return if starts_at.blank?
+
+    self.event_date ||= starts_at.strftime("%Y-%m-%d")
+    self.event_time ||= starts_at.strftime("%H:%M")
   end
 
   def ends_at_after_starts_at

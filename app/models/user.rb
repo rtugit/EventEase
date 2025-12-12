@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true
 
   has_many :events, class_name: "Event", foreign_key: "organizer_id", inverse_of: :organizer,
-                              dependent: :destroy
+                    dependent: :destroy
   has_one_attached :photo
 
   # Instance methods

@@ -7,4 +7,3 @@ class RundownItem < ApplicationRecord
 
   scope :ordered, -> { order(:position) }
 end
-
