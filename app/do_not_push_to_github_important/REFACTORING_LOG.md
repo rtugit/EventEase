@@ -30,13 +30,14 @@ plugins:
 - `app/controllers/registrations_controller.rb`
 - `app/models/registration.rb`
 - `config/locales/en.yml`
+- `app/controllers/events_controller.rb` (New)
 
 **Change:** Extracted hardcoded strings into the locale file.
 **Reason:** To satisfy `Rails/I18nLocaleTexts` rule and support future translation/localization of the app.
 
 **Key Changes:**
 
-- Defined keys under `en.registrations` and `en.activerecord.errors.models.registration`.
+- Defined keys under `en.registrations`, `en.events`, and `en.activerecord.errors.models.registration`.
 - Replaced strings in controller and model with `t("key")` helpers.
 
 ## 3. User Model Associations
@@ -65,3 +66,67 @@ has_many :organized_events, class_name: "Event", foreign_key: "organizer_id", in
 ## Verification
 
 Ran `rubocop -A` which is now passing with no offenses.
+
+---
+
+# Stimulus Registration Controller Implementation
+
+## Overview
+
+Implemented a Stimulus controller to handle registration form interactions, specifically disabling the submit button to prevent double submissions.
+
+## 1. Stimulus Controller
+
+**File:** `app/javascript/controllers/registration_controller.js`
+
+**Logic:**
+
+- Defines a `submitButton` target.
+- `disable(event)` method: Changes button text to "Joining..." and sets the `disabled` attribute.
+
+## 2. Event Show View
+
+**File:** `app/views/events/show.html.erb`
+
+**Changes:**
+
+- Created the view to display event details.
+- Added usage of the `registration` controller in the `form_with`.
+- `data: { controller: "registration", action: "submit->registration#disable" }` on the form.
+- `data: { registration_target: "submitButton" }` on the submit button.
+
+---
+
+# Check-in Controller and Event Search
+
+## Overview
+
+Implemented a Stimulus check-in controller for real-time feedback and a basic event search feature.
+
+## 1. Stimulus Check-in Controller
+
+**File:** `app/javascript/controllers/checkin_controller.js`
+
+**Logic:**
+
+- `confirm(event)`: Prevents default if not confirmed (optional), changes button text to "Checking in..." and disables it.
+
+## 2. Attendees Check-in UI
+
+**File:** `app/views/events/show.html.erb`
+
+**Changes:**
+
+- Added "Attendees" list section.
+- Added "Check In" button for each registered attendee, connected to `checkin_controller`.
+
+## 3. Basic Event Search
+
+**File:** `app/controllers/events_controller.rb`
+
+- Updated `index` action to filter by `params[:query]` using SQL `LIKE`.
+- Fixed various syntax errors in the controller.
+
+**File:** `app/views/events/index.html.erb`
+
+- Added a search form (GET request) at the top of the page.
