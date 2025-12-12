@@ -1,0 +1,150 @@
+.personal-info-page {
+  padding: 10px 30px 10px 30px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.back-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #122927;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  i {
+    font-size: 1.125rem;
+  }
+
+  &:hover {
+    color: #367C76;
+  }
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #122927;
+  margin: 0;
+}
+
+.header-spacer {
+  width: 40px;
+}
+
+.profile-photo-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #367C76;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #122927;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e5e5;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: #367C76;
+  }
+
+  &:focus {
+    border-bottom-color: #367C76;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.form-select {
+  width: 100%;
+  padding: 10px 15px 10px 0;
+  font-size: 14px;
+  color: #434242;
+  background: transparent;
+  border-bottom: 1px solid #e5e5e5;
+  transition: border-color 0.2s ease;
+  padding-left: 15px;
+
+  &:focus {
+    border-bottom-color: #367C76;
+  }
+
+  option {
+    padding: 10px;
+  }
+}
+
+.select-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #367C76;
+  pointer-events: none;
+}
+
+.form-submit {
+  margin-top: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #122927;
+  border: none;
+  border-radius: 50px;
+  transition: background-color 0.2s ease;
+
+  &:hover, &:active {
+    background-color: #367C76;
+  }
+}

@@ -11,7 +11,6 @@ class User < ApplicationRecord
                     dependent: :destroy
   has_one_attached :photo
 
-  # Instance methods
   def full_name
     "#{first_name} #{last_name}"
   end

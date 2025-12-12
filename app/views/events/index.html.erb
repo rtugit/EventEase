@@ -1,78 +1,185 @@
-<!-- Welcome Bar -->
-<div class="container1">
-  <div class="welcome-section">
-    <p>Welcome Back</p>
-    <h2><%= current_user.first_name || "Guest" %></h2>
-  </div>
-</div>
+<!-- Shows header and username -->
+<div class="home-page">
+  <header class="home-header">
+    <div class="header-top">
+      <div class="welcome-text">
+        <p class="greeting">Welcome Back</p>
+        <h1 class="username">
+          <%= current_user&.first_name.presence ||
+              current_user&.email&.split('@')&.first&.capitalize ||
+              "Guest" %>
+        </h1>
+      </div>
 
-<!-- Search Bar -->
-<div class="search-box">
-  <%= form_with url: events_path, method: :get, class: "d-flex gap-2" do %>
-  <div class="form-group">
-    <%= label_tag :query, "Title" %>
-    <%= text_field_tag :query,
-        params[:query],
-        class: "form-control",
-        placeholder: "Search events..."
-      %>
-  </div>
-  <div class="form-group">
-    <%= label_tag :location, "Location" %>
-    <%= text_field_tag :location,
-        params[:location],
-        class: "form-control"
-      %>
-  </div>
-  <div class="form-group">
-    <%= label_tag :date, "Date" %>
-    <%= date_field_tag :date,
-        params[:date],
-        class: "form-control"
-      %>
-  </div>
+      <div class="header-actions">
+        <button class="notification-btn" aria-label="Notifications">
+          <span class="badge"></span>
+        </button>
 
-
-  <%= submit_tag "Search", name: "", class: "btn btn-primary" %>
-  <% end %>
-</div>
-
-<!-- Your Events -->
-<h3 class="section-title">Your Events</h3>
-
-<% if @events.any? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Date</th>
-        <th>Location</th>
-        <th>Registrations</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @events.each do |event| %>
-        <tr>
-          <td><%= event.title %></td>
-          <td><%= event.starts_at.strftime("%d.%m.%Y %H:%M") %></td>
-          <td><%= event.location %></td>
-          <td>
-            <%= event.registrations.size %>
-            <% if event.capacity.present? %>
-              / <%= event.capacity %>
+        <div class="profile-wrapper">
+          <% if current_user %>
+            <%= link_to edit_user_registration_path, class: "profile-btn" do %>
+              <span class="initials">
+                <%= (current_user.first_name.presence || current_user.email&.first).to_s.first.upcase %>
+              </span>
             <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>You don’t have any events yet.</p>
-<% end %>
+          <% else %>
+            <%= link_to new_user_session_path, class: "profile-btn" do %>
+              <span class="initials">?</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
 
-<ul>
-  <% @events.each do |event| %>
-    <li><%= link_to event.title, event_path(event) %></li>
-  <% end %>
-</ul>
+    <div class="header-subline">
+      <h2 class="page-title">Demo</h2>
+    </div>
+  </header>
+
+  <!-- Renders search input form -->
+  <section class="search-section">
+    <div class="search-card">
+      <%= form_with url: events_path, method: :get, class: "search-form", local: true do |f| %>
+        <div class="search-field">
+          <label for="search_title">Title</label>
+          <%= text_field_tag :title, params[:title], placeholder: "Search events...", id: "search_title" %>
+        </div>
+
+        <div class="search-field">
+          <label for="search_location">Location</label>
+          <%= text_field_tag :location, params[:location], placeholder: "City or venue", id: "search_location" %>
+        </div>
+
+        <div class="search-field">
+          <label for="search_date">Date</label>
+          <%= date_field_tag :date, params[:date], id: "search_date" %>
+        </div>
+
+        <div class="search-action">
+          <button type="submit" class="search-btn">Search</button>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- Displays event category chips -->
+  <section class="categories-section">
+    <div class="categories-scroll">
+      <%= link_to dashboard_path, class: "category-chip #{'active' unless params[:category]}" do %>
+        <span>All</span>
+      <% end %>
+
+      <%= link_to dashboard_path(category: "music"), class: "category-chip #{'active' if params[:category] == 'music'}" do %>
+        <span>Music</span>
+      <% end %>
+
+      <%= link_to dashboard_path(category: "art"), class: "category-chip #{'active' if params[:category] == 'art'}" do %>
+        <span>Art</span>
+      <% end %>
+
+      <%= link_to dashboard_path(category: "sports"), class: "category-chip #{'active' if params[:category] == 'sports'}" do %>
+        <span>Sports</span>
+      <% end %>
+
+      <%= link_to dashboard_path(category: "food"), class: "category-chip #{'active' if params[:category] == 'food'}" do %>
+        <span>Food</span>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- Shows popular events list -->
+  <section class="events-section">
+    <div class="section-header">
+      <h3 class="section-title">Popular Event</h3>
+      <% if @popular_events.present? %>
+        <%= link_to "See all", events_path, class: "see-all-link" %>
+      <% end %>
+    </div>
+
+    <% if @popular_events.present? %>
+      <div class="events-grid">
+        <% @popular_events.each do |event| %>
+          <%= render "event_card", event: event %>
+        <% end %>
+      </div>
+    <% else %>
+      <p>You don’t have any events yet.</p>
+    <% end %>
+  </section>
+
+  <!-- Displays new events section -->
+  <section class="events-section">
+    <div class="section-header">
+      <h3 class="section-title">New Event</h3>
+      <%= link_to "Create event", new_event_path, class: "primary-link" %>
+    </div>
+
+    <% if @events.present? %>
+      <table class="events-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <tr>
+              <td><%= event.title %></td>
+              <td><%= event.location %></td>
+              <td>
+                <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
+              </td>
+              <td class="text-end">
+                <%= link_to "View", event_path(event), class: "table-link" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>You don’t have any events yet.</p>
+    <% end %>
+  </section>
+
+  <!-- Renders minimal event list -->
+  <section class="events-list-section">
+    <ul class="events-list">
+      <% @events.each do |event| %>
+        <li><%= link_to event.title, event_path(event) %></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <!-- Displays bottom navigation bar -->
+  <nav class="bottom-nav">
+    <%= link_to dashboard_path, class: "nav-item" do %>
+      <span>Home</span>
+    <% end %>
+
+    <%= link_to events_path, class: "nav-item" do %>
+      <span>Explore</span>
+    <% end %>
+
+    <%= link_to new_event_path, class: "nav-item nav-item-add" do %>
+      <span>Add</span>
+    <% end %>
+
+    <%= link_to events_path, class: "nav-item" do %>
+      <span>Events</span>
+    <% end %>
+
+    <% if current_user %>
+      <%= link_to edit_user_registration_path, class: "nav-item" do %>
+        <span>Profile</span>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path, class: "nav-item" do %>
+        <span>Login</span>
+      <% end %>
+    <% end %>
+  </nav>
+</div>
