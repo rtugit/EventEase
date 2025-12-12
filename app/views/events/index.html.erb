@@ -135,8 +135,6 @@
       <div class="section-header">
         <h3 class="section-title">New Event</h3>
         <%= link_to "Create Event", new_event_path, class: "search-btn" %>
-    </div>
-
     <% if @events.present? %>
       <div class="events-grid">
         <% @events.each do |event| %>
@@ -148,15 +146,6 @@
     <% end %>
     </section>
   <% end %>
-
-  <!-- Renders minimal event list -->
-  <section class="events-list-section">
-    <ul class="events-list">
-      <% @events.each do |event| %>
-        <li><%= link_to event.title, event_path(event) %></li>
-      <% end %>
-    </ul>
-  </section>
 
   <!-- Displays bottom navigation bar -->
   <nav class="bottom-nav">
