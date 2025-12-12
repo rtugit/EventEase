@@ -1,16 +1,11 @@
-// Specific CSS for your home-page
-// ============================================
-// BASE STYLES
-// ============================================
+
 .home-page {
   background-color: $light-bg;
   min-height: 100vh;
   padding-bottom: 100px;
 }
 
-// ============================================
-// HEADER SECTION
-// ============================================
+
 .home-header {
   padding: 24px 20px 16px;
   background: linear-gradient(135deg, $button-color 0%, $point-color 100%);
@@ -98,9 +93,6 @@
   }
 }
 
-// ============================================
-// SEARCH SECTION
-// ============================================
 .search-section {
   padding: 0 20px;
   margin-top: -30px;
@@ -209,9 +201,6 @@
   }
 }
 
-// ============================================
-// CATEGORIES SECTION
-// ============================================
 .categories-section {
   padding: 0 20px;
   margin-bottom: 28px;
@@ -264,9 +253,6 @@
   }
 }
 
-// ============================================
-// EVENTS SECTIONS
-// ============================================
 .events-section {
   margin-bottom: 32px;
 }
@@ -328,9 +314,6 @@
   padding: 4px 20px 8px;
 }
 
-// ============================================
-// EVENT CARD
-// ============================================
 .event-card {
   flex-shrink: 0;
   width: 280px;
@@ -457,9 +440,11 @@
   color: $primary-font;
   margin: 0 0 8px;
   line-height: 1.3;
+
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
   overflow: hidden;
 }
 
@@ -541,9 +526,6 @@
   }
 }
 
-// ============================================
-// EMPTY STATE
-// ============================================
 .empty-state {
   text-align: center;
   padding: 48px 20px;
@@ -601,9 +583,6 @@
   }
 }
 
-// ============================================
-// BOTTOM NAVIGATION
-// ============================================
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -682,9 +661,6 @@
   }
 }
 
-// ============================================
-// RESPONSIVE
-// ============================================
 @media (min-width: 768px) {
   .home-header {
     padding: 32px 40px 24px;
