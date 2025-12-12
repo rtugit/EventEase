@@ -9,7 +9,7 @@
 
   <div class="profile-photo-section">
     <div class="profile-photo">
-      <%= cl_image_tag current_user.photo.key || "eventease-logo.svg", class: "avatar-img" %>
+      <%= responsive_image(current_user, :photo, "eventease-logo.svg", class: "avatar-img") %>
     </div>
   </div>
 

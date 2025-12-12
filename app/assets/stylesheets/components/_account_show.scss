@@ -58,7 +58,8 @@
   justify-content: space-between;
   padding: 20px 0;
   border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  background-color: transparent;
 
   &:hover {
     background-color: #F8FFFE;

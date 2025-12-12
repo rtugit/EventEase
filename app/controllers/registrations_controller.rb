@@ -62,8 +62,8 @@ class RegistrationsController < ApplicationController
 
   def authorize_registration
     # User can only unjoin their own registration
-    unless @registration.email == current_user.email
-      redirect_to event_path(@registration.event), alert: "You can only unjoin your own registration."
-    end
+    return if @registration.email == current_user.email
+
+    redirect_to event_path(@registration.event), alert: "You can only unjoin your own registration."
   end
 end

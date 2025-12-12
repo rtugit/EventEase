@@ -3,28 +3,27 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy check_in]
 
   def index
-    @popular_events = Event.popular
-    @new_events     = Event.upcoming
-
-    @events = Event.all
+    # Fetch current user's events (organizer's own events)
     @events = current_user.events.includes(:registrations).order(starts_at: :asc)
 
-    if params[:query].present?
-      @events = @events.where("title ILIKE ?", "%#{params[:query]}%")
+    # Fetch popular and upcoming events for discovery
+    @popular_events = Event.where(status: 'published').popular.includes(:registrations)
+    @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
+
+    # Search by title
+    if params[:title].present?
+      @events = @events.where("title ILIKE ?", "%#{params[:title]}%")
     end
 
+    # Filter by location
     if params[:location].present?
       @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
     end
 
+    # Filter by date
     if params[:date].present?
-      @events = @events.where(date: params[:date])
+      @events = @events.where("DATE(starts_at) = ?", params[:date])
     end
-
-    @events = @events.where(
-      "title ILIKE :query OR location ILIKE :query",
-      query: "%#{params[:query]}%"
-    )
   end
 
   def show
@@ -74,7 +73,8 @@ class EventsController < ApplicationController
   def check_in
     # Only the organizer should access the check-in mode for this event
     unless @event.organizer == current_user
-      redirect_to event_path(@event), alert: "You are not allowed to access the check-in mode for this event." and return
+      redirect_to event_path(@event),
+                  alert: "You are not allowed to access the check-in mode for this event." and return
     end
 
     @registrations = @event.registrations.order(created_at: :asc)
@@ -97,31 +97,31 @@ class EventsController < ApplicationController
       :event_date,
       :event_time,
       photos: [],
-      rundown_items_attributes: [:id, :heading, :description, :position, :_destroy]
+      rundown_items_attributes: %i[id heading description position _destroy]
     )
   end
 
   def combine_date_time(event)
-    if event.event_date.present? && event.event_time.present?
-      begin
-        date = Date.parse(event.event_date)
-        time = Time.parse(event.event_time)
-        event.starts_at = Time.zone.local(
-          date.year,
-          date.month,
-          date.day,
-          time.hour,
-          time.min
-        )
-      rescue ArgumentError => e
-        # If parsing fails, leave starts_at as is (will be validated by model)
-        Rails.logger.error("Failed to parse date/time: #{e.message}")
-      end
+    return unless event.event_date.present? && event.event_time.present?
+
+    begin
+      date = Date.parse(event.event_date)
+      time = Time.zone.parse(event.event_time)
+      event.starts_at = Time.zone.local(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.min
+      )
+    rescue ArgumentError => e
+      # If parsing fails, leave starts_at as is (will be validated by model)
+      Rails.logger.error("Failed to parse date/time: #{e.message}")
     end
   end
 
   def assign_rundown_positions(event)
-    return unless event.rundown_items.present?
+    return if event.rundown_items.blank?
 
     event.rundown_items.reject(&:marked_for_destruction?).each_with_index do |item, index|
       item.position = index + 1
@@ -129,8 +129,8 @@ class EventsController < ApplicationController
   end
 
   def authorize_organizer
-    unless @event.organizer == current_user
-      redirect_to event_path(@event), alert: "You are not authorized to perform this action." and return
-    end
+    return if @event.organizer == current_user
+
+    redirect_to event_path(@event), alert: "You are not authorized to perform this action." and return
   end
 end

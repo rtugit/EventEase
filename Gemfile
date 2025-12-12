@@ -52,7 +52,7 @@ gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 
 group :development, :test do
-  gem "dotenv-rails"
+  gem "faker"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows]
   gem "rubocop-rails", require: false
@@ -76,4 +76,8 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# Environment variable management
+gem "dotenv-rails", groups: %i[development test]
+
+# Image upload service
 gem "cloudinary"

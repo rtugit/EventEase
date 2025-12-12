@@ -17,9 +17,9 @@ class Registration < ApplicationRecord
     return if event.nil?
     return if event.capacity.nil? # Unlimited capacity
 
-    if event.active_registrations_count >= event.capacity
-      errors.add(:base, "This event is at full capacity. No more registrations can be accepted.")
-    end
+    return unless event.active_registrations_count >= event.capacity
+
+    errors.add(:base, "This event is at full capacity. No more registrations can be accepted.")
   end
 
   def check_in!

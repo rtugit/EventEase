@@ -3,7 +3,11 @@
 
   <div class="card-account">
     <div class="user-photo">
-      <%= cl_image_tag current_user.photo.key || "eventease-logo.svg", class: "avatar-img"%>
+      <% if current_user.photo.attached? %>
+        <%= responsive_image(current_user, :photo, "eventease-logo.svg", class: "avatar-img") %>
+      <% else %>
+        <%= image_tag "eventease-logo.svg", class: "avatar-img" %>
+      <% end %>
     </div>
 
     <div class="card-account-infos">
