@@ -114,9 +114,27 @@
       <div class="event-joined-count">
         <div class="attendee-avatars">
           <% @event.registrations.limit(3).each do |reg| %>
-            <div class="attendee-avatar" title="<%= reg.name.presence || reg.email %>">
-              <%= (reg.name.presence || reg.email).first.upcase %>
-            </div>
+            <% 
+              # Find user by email to get their photo
+              user = User.find_by(email: reg.email)
+              
+              # If user exists and has photo, show it; otherwise use hash-based avatar or initial
+              if user && user.photo.attached?
+            %>
+              <div class="attendee-avatar" title="<%= reg.name.presence || reg.email %>">
+                <%= responsive_image(user, :photo, class: "avatar-image") %>
+              </div>
+            <% else
+              # Use same hash-based avatar selection as event cards
+              require 'zlib'
+              avatars = ['girl.png', 'girll.png', 'man.png', 'mann.png']
+              selected_avatar = avatars[Zlib.crc32(reg.email) % avatars.size]
+              avatar_path = "/images/avatars/#{selected_avatar}"
+            %>
+              <div class="attendee-avatar" title="<%= reg.name.presence || reg.email %>">
+                <%= image_tag(avatar_path, class: "avatar-image", alt: reg.name.presence || reg.email) %>
+              </div>
+            <% end %>
           <% end %>
           <% if @event.registrations.count > 3 %>
             <div class="attendee-avatar attendee-more">+<%= @event.registrations.count - 3 %></div>
