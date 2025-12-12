@@ -159,11 +159,11 @@ puts "Creating events..."
 events = []
 
 EVENT_TITLES.each_with_index do |title, index|
+  # All events owned by Duck Duck Go user
   start_time = Faker::Time.between(from: Time.current, to: 60.days.from_now)
   end_time = start_time + Faker::Number.between(from: 1, to: 8).hours
-
   event = Event.create!(
-    organizer: organizers.sample,
+    organizer: duck_user,
     title: title,
     description: EVENT_DESCRIPTIONS[index],
     location: LOCATIONS.sample,
