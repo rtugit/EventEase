@@ -172,12 +172,14 @@ friday_pub_event = Event.create!(
   title: "Regular Friday Pub",
   description: regular_friday_pub_description.strip,
   location: "Butler - Bar, Café, Lounge, Karlstraße 15, 40210 Düsseldorf",
-  starts_at: Time.now + 1.day + 21.hours,
-  ends_at: Time.now + 2.days + 1.hour,
+  starts_at: Time.parse("2025-12-12 21:00:00"),
+  ends_at: Time.parse("2025-12-13 01:00:00"),
   capacity: 50,
   status: "published",
   registration_open_from: Time.now - 7.days,
-  registration_open_until: Time.now + 12.hours
+  registration_open_until: Time.parse("2025-12-12 20:00:00"),
+  created_at: Time.parse("2025-12-11 12:00:00"),
+  updated_at: Time.parse("2025-12-11 12:00:00")
 )
 events << friday_pub_event
 puts "✓ Created special event: #{friday_pub_event.title}"
