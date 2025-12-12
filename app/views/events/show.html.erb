@@ -47,12 +47,8 @@
   <section class="event-image-section">
     <% if @event.photos.attached? %>
       <div class="event-image-container">
-        <%# Use ActiveStorage image when available to avoid Cloudinary dependency %>
-        <%= image_tag url_for(@event.photos.first),
-                      height: 600,
-                      width: 1200,
-                      class: "event-image",
-                      alt: @event.title %>
+        <%# Use responsive_image helper to handle Cloudinary/ActiveStorage separation %>
+        <%= responsive_image(@event, :photos, alt: @event.title, class: "event-image") %>
         
         <!-- Overlay Card -->
         <div class="event-overlay-card">

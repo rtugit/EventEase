@@ -1,9 +1,8 @@
+<% require 'zlib' %>
 <%= link_to event_path(event), class: "event-card" do %>
   <div class="event-card-image">
-    <% if event.respond_to?(:photo) && event.photo.attached? %>
-      <%= image_tag event.photo, alt: event.title %>
-    <% elsif event.respond_to?(:image) && event.image.attached? %>
-      <%= image_tag event.image, alt: event.title %>
+    <% if event.photos.attached? %>
+      <%= responsive_image(event, :photos) %>
     <% else %>
       <div class="placeholder-image">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -31,15 +30,27 @@
   </div>
 
   <div class="avatars">
-    <% event.registrations.limit(3).each do |registration| %>
-      <% handle = registration.email.to_s.split("@").first %>
-      <% initials = handle[0, 2].to_s.upcase %>
-      <div class="avatar"><%= initials.presence || "?" %></div>
+    <% avatars = %w[/images/avatars/girl.png /images/avatars/girll.png /images/avatars/man.png /images/avatars/mann.png] %>
+    <% registrations = event.registrations.limit(4).to_a %>
+    <% registrations.each_with_index do |registration, index| %>
+      <% email = registration.email.to_s %>
+      <% hash_index = Zlib.crc32(email) % avatars.size rescue 0 %>
+      <% avatar_file = avatars[hash_index] %>
+      <% handle = email.split("@").first %>
+      <% initial = handle[0].to_s.upcase.presence || "?" %>
+
+      <% if avatar_file.present? %>
+        <div class="avatar" title="<%= registration.name.presence || email %>">
+          <img src="<%= asset_path(avatar_file) %>" alt="<%= registration.name.presence || email %>">
+        </div>
+      <% else %>
+        <div class="avatar" title="<%= registration.name.presence || email %>"><%= initial %></div>
+      <% end %>
     <% end %>
 
-    <% if event.registrations.count > 3 %>
-      <div class="avatar avatar-more">
-        +<%= event.registrations.count - 3 %>
+    <% if event.registrations.count > registrations.size %>
+      <div class="avatar avatar-more" title="<%= event.registrations.count - registrations.size %> more">
+        +<%= event.registrations.count - registrations.size %>
       </div>
     <% end %>
   </div>

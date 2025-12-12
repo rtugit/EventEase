@@ -4,6 +4,20 @@
 
 require 'faker'
 
+# Image files available
+EVENT_IMAGES = [
+  "public/images/photo-1.jpg",
+  "public/images/photo-2.jpg",
+  "public/images/photo-3.jpg"
+].freeze
+
+AVATAR_IMAGES = [
+  "public/images/avatars/girl.png",
+  "public/images/avatars/girll.png",
+  "public/images/avatars/man.png",
+  "public/images/avatars/mann.png"
+].freeze
+
 # Clear existing data (safe for development)
 puts "Clearing existing data..."
 Registration.delete_all
@@ -86,6 +100,17 @@ organizers = []
     last_name: last_name,
     time_zone: "Europe/Berlin"
   )
+  
+  # Attach avatar to 50% of organizers
+  if rand < 0.5
+    avatar_filename = AVATAR_IMAGES.sample
+    user.photo.attach(
+      io: File.open(Rails.root.join(avatar_filename)),
+      filename: File.basename(avatar_filename),
+      content_type: 'image/png'
+    )
+  end
+  
   organizers << user
   puts "✓ Created organizer: #{user.full_name} (#{email})"
 end
@@ -99,6 +124,15 @@ demo_user = User.create!(
   last_name: "User",
   time_zone: "Europe/Berlin"
 )
+
+# Attach avatar to demo user
+avatar_filename = AVATAR_IMAGES.sample
+demo_user.photo.attach(
+  io: File.open(Rails.root.join(avatar_filename)),
+  filename: File.basename(avatar_filename),
+  content_type: 'image/png'
+)
+
 organizers << demo_user
 puts "✓ Created demo user: #{demo_user.full_name}"
 
@@ -111,6 +145,15 @@ duck_duck_go_user = User.create!(
   last_name: "Duck Go",
   time_zone: "Europe/Berlin"
 )
+
+# Attach avatar to Duck Duck Go user
+avatar_filename = AVATAR_IMAGES.sample
+duck_duck_go_user.photo.attach(
+  io: File.open(Rails.root.join(avatar_filename)),
+  filename: File.basename(avatar_filename),
+  content_type: 'image/png'
+)
+
 organizers << duck_duck_go_user
 puts "✓ Created special user: #{duck_duck_go_user.full_name} (#{duck_duck_go_user.email})"
 
@@ -134,6 +177,15 @@ EVENT_TITLES.each_with_index do |title, index|
     registration_open_from: start_time - 7.days,
     registration_open_until: start_time - 1.hour
   )
+  
+  # Attach random event image
+  image_filename = EVENT_IMAGES.sample
+  event.photos.attach(
+    io: File.open(Rails.root.join(image_filename)),
+    filename: File.basename(image_filename),
+    content_type: 'image/jpeg'
+  )
+  
   events << event
   puts "✓ Event #{index + 1}: #{event.title} (Organizer: #{organizer.full_name})"
 end
@@ -181,6 +233,15 @@ friday_pub_event = Event.create!(
   created_at: Time.parse("2025-12-11 12:00:00"),
   updated_at: Time.parse("2025-12-11 12:00:00")
 )
+
+# Attach random event image
+image_filename = EVENT_IMAGES.sample
+friday_pub_event.photos.attach(
+  io: File.open(Rails.root.join(image_filename)),
+  filename: File.basename(image_filename),
+  content_type: 'image/jpeg'
+)
+
 events << friday_pub_event
 puts "✓ Created special event: #{friday_pub_event.title}"
 puts "  └─ Organizer: #{duck_duck_go_user.full_name}"

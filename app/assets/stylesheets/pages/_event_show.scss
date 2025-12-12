@@ -218,6 +218,7 @@
 .event-overlay-content {
   flex: 1;
   min-width: 0;
+  margin-left: 50px;
 
   .event-title-overlay {
     font-family: $headers-font;
@@ -425,11 +426,19 @@
 .event-description {
   margin-bottom: 32px;
 
+  p, .description-text {
+    font-family: $body-font;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $primary-font !important;
+    margin: 0;
+  }
+
   .description-text {
     font-family: $body-font;
     font-size: 16px;
     line-height: 1.6;
-    color: $primary-font;
+    color: $primary-font !important;
     margin: 0;
   }
 }

@@ -4,7 +4,7 @@
   <div class="card-account">
     <div class="user-photo">
       <% if current_user.photo.attached? %>
-        <%= image_tag current_user.photo, class: "avatar-img" %>
+        <%= responsive_image(current_user, :photo, "eventease-logo.svg", class: "avatar-img") %>
       <% else %>
         <%= image_tag "eventease-logo.svg", class: "avatar-img" %>
       <% end %>

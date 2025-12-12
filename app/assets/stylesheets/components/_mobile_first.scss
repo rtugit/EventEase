@@ -99,19 +99,6 @@ h3 {
   }
 }
 
-// Body text - exclude special components like badges
-p:not(.event-date-badge *), 
-span:not(.event-date-badge *):not(.badge *):not([class*="btn"] *), 
-a:not(.event-date-badge *):not(.btn):not(.badge) {
-  font-size: 14px;
-  color: black;
-  
-  @media (min-width: $tablet) {
-    font-size: 15px;
-    color: black;
-  }
-}
-
 // ============================================
 // 6. MOBILE APP-LIKE BOTTOM NAVIGATION
 // ============================================
