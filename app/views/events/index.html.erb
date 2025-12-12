@@ -108,7 +108,7 @@
     <% end %>
   </section>
 
-  <!-- Displays new events section -->
+  <!-- Displays new events section (matches Popular section layout) -->
   <section class="events-section">
     <div class="section-header">
       <h3 class="section-title">New Event</h3>
@@ -116,30 +116,11 @@
     </div>
 
     <% if @events.present? %>
-      <table class="events-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Date</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @events.each do |event| %>
-            <tr>
-              <td><%= event.title %></td>
-              <td><%= event.location %></td>
-              <td>
-                <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
-              </td>
-              <td class="text-end">
-                <%= link_to "View", event_path(event), class: "table-link" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <div class="events-grid">
+        <% @events.each do |event| %>
+          <%= render "event_card", event: event %>
+        <% end %>
+      </div>
     <% else %>
       <p>You don’t have any events yet.</p>
     <% end %>
