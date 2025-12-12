@@ -11,6 +11,14 @@ class Registration < ApplicationRecord
   validates :email, uniqueness: { scope: :event_id }
   validate :event_has_capacity, on: :create
 
+  def check_in!
+    update!(status: "checked_in", check_in_at: Time.current)
+  end
+
+  def cancel!
+    update!(status: "cancelled", cancelled_at: Time.current)
+  end
+
   private
 
   def event_has_capacity
@@ -20,13 +28,5 @@ class Registration < ApplicationRecord
     return unless event.active_registrations_count >= event.capacity
 
     errors.add(:base, "This event is at full capacity. No more registrations can be accepted.")
-  end
-
-  def check_in!
-    update!(status: "checked_in", check_in_at: Time.current)
-  end
-
-  def cancel!
-    update!(status: "cancelled", cancelled_at: Time.current)
   end
 end
