@@ -1,0 +1,33 @@
+<%= link_to event_path(event), class: "event-card" do %>
+  <div class="event-card-image">
+    <% if event.respond_to?(:photo) && event.photo.attached? %>
+      <%= image_tag event.photo, alt: event.title %>
+    <% elsif event.respond_to?(:image) && event.image.attached? %>
+      <%= image_tag event.image, alt: event.title %>
+    <% else %>
+      <div class="placeholder-image">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+    <% end %>
+
+    <!-- rest of your card markup here -->
+    ...
+            <% event.registrations.limit(3).each do |registration| %>
+              <div class="avatar">
+                <%= registration.user&.first_name&.first&.upcase || registration.user&.email&.first&.upcase || '?' %>
+              </div>
+            <% end %>
+            <% if event.registrations.count > 3 %>
+              <div class="avatar avatar-more">+<%= event.registrations.count - 3 %></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
