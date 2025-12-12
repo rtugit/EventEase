@@ -277,13 +277,15 @@ img {
 // ============================================
 
 @media (prefers-color-scheme: dark) {
+  /* Keep app background consistent; avoid black body on form pages */
   body {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: $background;
+    color: $primary-font;
   }
-  
+
+  /* Optional subtle dark adjustments within components only */
   .card, .menu-item {
-    background-color: #1e1e1e;
-    border-color: #333;
+    background-color: lighten($light-gray, 2%);
+    border-color: darken($light-gray, 10%);
   }
 }
