@@ -45,7 +45,7 @@
 
             <%= button_to(
                   (registration.status == "checked_in" ? "Undo" : "Check in"),
-                  check_in_registration_path(registration),
+                  check_in_event_registration_path(@event, registration),
                   method: :patch,
                   class: "btn btn-sm btn-primary"
                 ) %>

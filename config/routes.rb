@@ -7,14 +7,13 @@ Rails.application.routes.draw do
       get :check_in
     end
 
-    resources :registrations, only: [:create]
-    resources :reviews, only: [:create, :update, :destroy]
-  end
-
-  resources :registrations, only: [:destroy] do
-    member do
-      patch :check_in
+    resources :registrations, only: [:create] do
+      member do
+        patch :check_in
+      end
     end
+
+    resources :reviews, only: [:create, :update, :destroy]
   end
 
   resource :account, only: [:show]
