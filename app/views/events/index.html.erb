@@ -66,23 +66,23 @@
   <!-- Displays event category chips -->
   <section class="categories-section">
     <div class="categories-scroll">
-      <%= link_to dashboard_path, class: "category-chip #{'active' unless params[:category]}" do %>
+      <%= link_to events_path, class: "category-chip #{'active' unless params[:category]}" do %>
         <span>All</span>
       <% end %>
 
-      <%= link_to dashboard_path(category: "music"), class: "category-chip #{'active' if params[:category] == 'music'}" do %>
+      <%= link_to events_path(category: "music"), class: "category-chip #{'active' if params[:category] == 'music'}" do %>
         <span>Music</span>
       <% end %>
 
-      <%= link_to dashboard_path(category: "art"), class: "category-chip #{'active' if params[:category] == 'art'}" do %>
+      <%= link_to events_path(category: "art"), class: "category-chip #{'active' if params[:category] == 'art'}" do %>
         <span>Art</span>
       <% end %>
 
-      <%= link_to dashboard_path(category: "sports"), class: "category-chip #{'active' if params[:category] == 'sports'}" do %>
+      <%= link_to events_path(category: "sports"), class: "category-chip #{'active' if params[:category] == 'sports'}" do %>
         <span>Sports</span>
       <% end %>
 
-      <%= link_to dashboard_path(category: "food"), class: "category-chip #{'active' if params[:category] == 'food'}" do %>
+      <%= link_to events_path(category: "food"), class: "category-chip #{'active' if params[:category] == 'food'}" do %>
         <span>Food</span>
       <% end %>
     </div>
@@ -156,7 +156,7 @@
 
   <!-- Displays bottom navigation bar -->
   <nav class="bottom-nav">
-    <%= link_to dashboard_path, class: "nav-item" do %>
+    <%= link_to events_path, class: "nav-item" do %>
       <span>Home</span>
     <% end %>
 

@@ -3,19 +3,27 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy check_in]
 
   def index
-    # Fetch current user's events
+    # Fetch current user's events (organizer's own events)
     @events = current_user.events.includes(:registrations).order(starts_at: :asc)
 
-    # Search by title or location
-    if params[:query].present?
-      @events = @events.where("title ILIKE ? OR location ILIKE ?",
-                              "%#{params[:query]}%", "%#{params[:query]}%")
+    # Fetch popular and upcoming events for discovery
+    @popular_events = Event.where(status: 'published').popular.includes(:registrations)
+    @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
+
+    # Search by title
+    if params[:title].present?
+      @events = @events.where("title ILIKE ?", "%#{params[:title]}%")
     end
 
     # Filter by location
-    return if params[:location].blank?
+    if params[:location].present?
+      @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
+    end
 
-    @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
+    # Filter by date
+    if params[:date].present?
+      @events = @events.where("DATE(starts_at) = ?", params[:date])
+    end
   end
 
   def show
