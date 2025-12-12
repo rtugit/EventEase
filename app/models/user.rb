@@ -9,6 +9,7 @@ class User < ApplicationRecord
 
   has_many :events, class_name: "Event", foreign_key: "organizer_id", inverse_of: :organizer,
                               dependent: :destroy
+  has_one_attached :photo
 
   # Instance methods
   def full_name
