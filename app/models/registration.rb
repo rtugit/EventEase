@@ -1,9 +1,9 @@
 class Registration < ApplicationRecord
   belongs_to :event, inverse_of: :registrations
-  has_one :review, dependent: :destroy
+  has_many :reviews, dependent: :destroy
 
   def reviewed?
-    review.present?
+    reviews.present?
   end
 
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
