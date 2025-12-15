@@ -1,5 +1,6 @@
 class Registration < ApplicationRecord
   belongs_to :event, inverse_of: :registrations
+  belongs_to :user, optional: true
   has_many :reviews, dependent: :destroy
 
   def reviewed?

@@ -96,6 +96,10 @@ class EventsController < ApplicationController
 
   private
 
+  def authorize_organizer
+    redirect_to event_path(@event), alert: "You are not authorized to perform this action." unless @event.organizer == current_user
+  end
+
   def set_event
     @event = Event.find(params[:id])
   end
