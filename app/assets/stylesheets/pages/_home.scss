@@ -311,12 +311,6 @@
   }
 }
 
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 4px 20px 8px;
-}
 
 .event-card {
   flex-shrink: 0;
@@ -331,7 +325,6 @@
   color: inherit;
   display: flex;
   flex-direction: column;
-  margin: 20px;
 
   &:hover {
     transform: translateY(-4px);
@@ -443,21 +436,6 @@
 .event-card-body {
   padding: 12px;
   text-align: left;
-}
-
-.event-card-category-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background-color: $sub-font-green;
-  color: white;
-  border-radius: 12px;
-  font-family: $body-font;
-  font-size: 11px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
 }
 
 .event-title {
@@ -756,7 +734,9 @@
     padding: 4px 40px 8px;
   }
 
-  .event-card {
+  // Keep fixed card width only for the horizontal scroll section,
+  // so grid-based layouts can let cards stretch to the track width.
+  .events-scroll .event-card {
     width: 320px;
   }
 }

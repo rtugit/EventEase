@@ -33,31 +33,31 @@
         <%= event.location %>
       </p>
     <% end %>
-  </div>
 
-  <div class="avatars-guest">
-    <% avatars = %w[/images/avatars/girl.png /images/avatars/girll.png /images/avatars/man.png /images/avatars/mann.png] %>
-    <% registrations = event.registrations.limit(4).to_a %>
-    <% registrations.each_with_index do |registration, index| %>
-      <% email = registration.email.to_s %>
-      <% hash_index = Zlib.crc32(email) % avatars.size rescue 0 %>
-      <% avatar_file = avatars[hash_index] %>
-      <% handle = email.split("@").first %>
-      <% initial = handle[0].to_s.upcase.presence || "?" %>
+    <div class="avatars-guest">
+      <% avatars = %w[/images/avatars/girl.png /images/avatars/girll.png /images/avatars/man.png /images/avatars/mann.png] %>
+      <% registrations = event.registrations.limit(4).to_a %>
+      <% registrations.each_with_index do |registration, index| %>
+        <% email = registration.email.to_s %>
+        <% hash_index = Zlib.crc32(email) % avatars.size rescue 0 %>
+        <% avatar_file = avatars[hash_index] %>
+        <% handle = email.split("@").first %>
+        <% initial = handle[0].to_s.upcase.presence || "?" %>
 
-      <% if avatar_file.present? %>
-        <div class="avatar-guest" title="<%= registration.name.presence || email %>">
-          <img src="<%= asset_path(avatar_file) %>" alt="<%= registration.name.presence || email %>">
-        </div>
-      <% else %>
-        <div class="avatar-guest" title="<%= registration.name.presence || email %>"><%= initial %></div>
+        <% if avatar_file.present? %>
+          <div class="avatar-guest" title="<%= registration.name.presence || email %>">
+            <img src="<%= asset_path(avatar_file) %>" alt="<%= registration.name.presence || email %>">
+          </div>
+        <% else %>
+          <div class="avatar-guest" title="<%= registration.name.presence || email %>"><%= initial %></div>
+        <% end %>
       <% end %>
-    <% end %>
 
-    <% if event.registrations.count > registrations.size %>
-      <div class="avatar-guest avatar-more" title="<%= event.registrations.count - registrations.size %> more">
-        +<%= event.registrations.count - registrations.size %>
-      </div>
-    <% end %>
+      <% if event.registrations.count > registrations.size %>
+        <div class="avatar-guest avatar-more" title="<%= event.registrations.count - registrations.size %> more">
+          +<%= event.registrations.count - registrations.size %>
+        </div>
+      <% end %>
+    </div>
   </div>
 <% end %>
