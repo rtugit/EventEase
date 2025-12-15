@@ -15,7 +15,8 @@
         <%= image_tag current_user.photo, class: "avatar-img" %>
       <% else %>
         <div class="avatar-placeholder">
-          <%= current_user.first_name&.first&.upcase || "?" %>
+          <span class="placeholder-icon">📷</span>
+          <span class="placeholder-text">Add Photo</span>
         </div>
       <% end %>
       <div class="photo-overlay">📷</div>
