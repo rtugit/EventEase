@@ -51,13 +51,7 @@
     <% if @event.photos.attached? %>
       <div class="event-image-container">
         <%# Use responsive_image helper to handle Cloudinary/ActiveStorage separation %>
-        <%= responsive_image(@event, :photos, alt: @event.title, class: "event-image") %>
-        <%= cl_image_tag @event.photos.first.key,
-                        height: 600,
-                        width: 1200,
-                        crop: :fill,
-                        class: "event-image",
-                        alt: @event.title %>
+        <%= responsive_image(@event, :photos, alt: @event.title, class: "event-image", height: 600, width: 1200, crop: :fill) %>
         <!-- Overlay Card -->
         <div class="event-overlay-card">
           <div class="event-date-badge">
