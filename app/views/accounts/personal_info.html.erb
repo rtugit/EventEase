@@ -9,24 +9,20 @@
     <div class="header-spacer"></div>
   </div>
 
-<div class="profile-photo-section">
   <div class="profile-photo-section">
-  <div class="profile-photo" data-action="click->camera#openCamera">
-    <% if current_user.photo.attached? %>
-      <%= image_tag current_user.photo, class: "avatar-img" %>
-    <% else %>
-      <div class="avatar-placeholder">
-        <%= current_user.first_name&.first&.upcase || "?" %>
-      </div>
-    <% end %>
-    <div class="photo-overlay">📷</div>
+    <div class="profile-photo" data-action="click->camera#openCamera">
+      <% if current_user.photo.attached? %>
+        <%= image_tag current_user.photo, class: "avatar-img" %>
+      <% else %>
+        <div class="avatar-placeholder">
+          <%= current_user.first_name&.first&.upcase || "?" %>
+        </div>
+      <% end %>
+      <div class="photo-overlay">📷</div>
+    </div>
+    <p class="photo-hint">Click to change photo</p>
+    <img data-camera-target="avatar" class="hidden">
   </div>
-  <p class="photo-hint">Klicken zum Ändern</p>
-  <img data-camera-target="avatar" class="hidden">
-</div>
-  <p class="photo-hint">Klicken zum Ändern</p>
-  <img data-camera-target="avatar" class="hidden">
-</div>
 
   <%= form_with model: current_user, url: update_user_path(current_user), method: :patch, class: "personal-info-form" do |f| %>
     <%= f.hidden_field :photo_data, data: { camera_target: "photoInput" } %>
@@ -71,6 +67,7 @@
       <%= f.submit "Update Info", class: "submit-btn" %>
     </div>
   <% end %>
+
   <div class="camera-modal" data-camera-target="modal">
     <div class="camera-modal-content">
       <button type="button" class="close-btn" data-action="click->camera#closeModal">✕</button>
@@ -79,14 +76,13 @@
       <img data-camera-target="preview" class="hidden">
       <canvas data-camera-target="canvas" class="hidden"></canvas>
 
-      <p class="status" data-camera-target="status">Initialisiere...</p>
+      <p class="status" data-camera-target="status">Initializing...</p>
 
       <div class="camera-actions">
-        <button type="button" data-camera-target="captureBtn" data-action="click->camera#capture" disabled>📸 Aufnehmen</button>
-        <button type="button" data-camera-target="saveBtn" data-action="click->camera#save" class="hidden">✅ Übernehmen</button>
-        <button type="button" data-action="click->camera#retake">🔄 Neu</button>
+        <button type="button" data-camera-target="captureBtn" data-action="click->camera#capture" disabled>📸 Capture</button>
+        <button type="button" data-camera-target="saveBtn" data-action="click->camera#save" class="hidden">✅ Save</button>
+        <button type="button" data-action="click->camera#retake">🔄 Retake</button>
       </div>
     </div>
   </div>
-</div>
 </div>
