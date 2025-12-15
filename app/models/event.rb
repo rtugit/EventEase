@@ -1,6 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :organizer, class_name: "User"
-  has_many :registrations, dependent: :destroy, inverse_of: :event
+  has_many :registrations, dependent: :destroy, inverse_of: :event, counter_cache: true
+  has_many :active_registrations, -> { where.not(status: 'cancelled') }, class_name: 'Registration'
   has_many :rundown_items, dependent: :destroy
   has_many :reviews, dependent: :destroy
 
@@ -21,13 +22,16 @@ class Event < ApplicationRecord
     "Other"
   ].freeze
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: 255 }
   validates :description, presence: true
-  validates :location, presence: true
+  validates :location, presence: true, length: { maximum: 255 }
   validates :starts_at, presence: true
   validates :status, presence: true, inclusion: { in: %w[draft published archived] }
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validate :ends_at_after_starts_at
+
+  # Sanitize HTML content to prevent XSS attacks
+  before_save :sanitize_inputs
 
   # Set virtual attributes from starts_at when loading the model
   after_initialize :set_date_time_from_starts_at
@@ -52,7 +56,7 @@ class Event < ApplicationRecord
 
   # Count active registrations (not cancelled)
   def active_registrations_count
-    registrations.where.not(status: 'cancelled').count
+    active_registrations.count
   end
 
   # Check if event has available spots
@@ -84,6 +88,13 @@ class Event < ApplicationRecord
     return unless ends_at < starts_at
 
     errors.add(:ends_at, "must be after the start date")
+  end
+
+  def sanitize_inputs
+    self.title = ActionController::Base.helpers.sanitize(title, tags: [], attributes: []) if title.present?
+    self.location = ActionController::Base.helpers.sanitize(location, tags: [], attributes: []) if location.present?
+    # Description can include basic formatting
+    self.description = ActionController::Base.helpers.sanitize(description, tags: %w[p br ul ol li strong em], attributes: []) if description.present?
   end
 
   def enforce_capacity_limit

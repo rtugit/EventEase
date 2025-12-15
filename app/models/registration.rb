@@ -10,9 +10,17 @@ class Registration < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :status, presence: true, inclusion: { in: %w[registered checked_in cancelled] }
   validates :email, uniqueness: { scope: :event_id }
+  validates :name, length: { maximum: 255 }, allow_blank: true
   validate :event_has_capacity, on: :create
 
+  # Sanitize inputs to prevent XSS
+  before_save :sanitize_inputs
+
   private
+
+  def sanitize_inputs
+    self.name = ActionController::Base.helpers.sanitize(name, tags: [], attributes: []) if name.present?
+  end
 
   def event_has_capacity
     return if event.nil?
