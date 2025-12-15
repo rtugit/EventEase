@@ -3,12 +3,26 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[show edit update destroy check_in]
 
   def index
-    # Fetch current user's events (organizer's own events)
-    @events = current_user.events.includes(:registrations).order(starts_at: :asc)
+    # Check if filtering by "My Events"
+    if params[:filter] == 'my_events'
+      # Events where user is organizer OR user has a registration (by user_id or email)
+      my_event_ids = current_user.events.pluck(:id)
+      registered_event_ids = Registration.where(user_id: current_user.id)
+                                         .or(Registration.where(email: current_user.email))
+                                         .pluck(:event_id)
+      all_my_event_ids = (my_event_ids + registered_event_ids).uniq
+      
+      @events = Event.where(id: all_my_event_ids).includes(:registrations, :organizer).order(starts_at: :asc)
+    else
+      # Fetch current user's events (organizer's own events)
+      @events = current_user.events.includes(:registrations).order(starts_at: :asc)
+    end
 
-    # Fetch popular and upcoming events for discovery
-    @popular_events = Event.where(status: 'published').popular.includes(:registrations)
-    @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
+    # Fetch popular and upcoming events for discovery (only if not filtering my events)
+    unless params[:filter] == 'my_events'
+      @popular_events = Event.where(status: 'published').popular.includes(:registrations)
+      @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
+    end
 
     # Search by title
     if params[:title].present?
@@ -94,6 +108,7 @@ class EventsController < ApplicationController
       :starts_at,
       :ends_at,
       :capacity,
+      :category,
       :event_date,
       :event_time,
       photos: [],

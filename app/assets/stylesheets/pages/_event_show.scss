@@ -259,12 +259,33 @@
   padding: 20px;
   background-color: $background;
 
+  .event-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
   .event-title-main {
     font-family: $headers-font;
     font-size: 24px;
     font-weight: 700;
     color: $primary-font;
-    margin: 0 0 8px 0;
+    margin: 0;
+  }
+
+  .event-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background-color: $sub-font-green;
+    color: white;
+    border-radius: 20px;
+    font-family: $body-font;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
   }
 
   .event-location-main {

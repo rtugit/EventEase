@@ -7,6 +7,7 @@ class RegistrationsController < ApplicationController
 
   # Used when cancelling or checking in a specific registration
   before_action :set_registration, only: %i[destroy check_in]
+  before_action :set_event_from_registration, only: [:destroy]
   before_action :authorize_registration, only: [:destroy]
 
   # POST /events/:event_id/registrations
@@ -21,9 +22,8 @@ class RegistrationsController < ApplicationController
     end
   end
 
-  # DELETE /registrations/:id
+  # DELETE /events/:event_id/registrations/:id
   def destroy
-    @event = @registration.event
     @registration.destroy
     redirect_to event_path(@event), notice: "You have successfully unjoined the event."
   end
@@ -54,6 +54,10 @@ class RegistrationsController < ApplicationController
 
   def set_registration
     @registration = Registration.find(params[:id])
+  end
+
+  def set_event_from_registration
+    @event = @registration.event
   end
 
   def registration_params

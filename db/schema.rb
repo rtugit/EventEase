@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_12_102424) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_12_103000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -56,6 +56,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_12_102424) do
     t.integer "registrations_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category"
     t.index ["organizer_id"], name: "index_events_on_organizer_id"
   end
 

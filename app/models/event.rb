@@ -11,11 +11,22 @@ class Event < ApplicationRecord
   # Virtual attributes for date/time form fields
   attr_accessor :event_date, :event_time
 
+  CATEGORIES = [
+    "Networking",
+    "Sport & Activity",
+    "Party & Social",
+    "Talk",
+    "Community",
+    "Study",
+    "Other"
+  ].freeze
+
   validates :title, presence: true
   validates :description, presence: true
   validates :location, presence: true
   validates :starts_at, presence: true
   validates :status, presence: true, inclusion: { in: %w[draft published archived] }
+  validates :category, presence: true, inclusion: { in: CATEGORIES }
   validate :ends_at_after_starts_at
 
   # Set virtual attributes from starts_at when loading the model

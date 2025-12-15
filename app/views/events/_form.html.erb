@@ -1,5 +1,31 @@
 <%= simple_form_for(event) do |f| %>
-  <%= f.error_notification %>
+  <% if event.errors.any? %>
+    <div class="error-notification alert-error">
+      <strong>The following fields need to be corrected:</strong>
+      <ul class="mb-0 mt-2">
+        <% event.errors.each do |error| %>
+          <li>
+            <% field_name = error.attribute.to_s.humanize %>
+            <% friendly_name = case field_name
+                 when "Starts at" then "Date and Time"
+                 when "Ends at" then "End Date"
+                 when "Event date" then "Date"
+                 when "Event time" then "Time"
+                 else field_name
+               end %>
+            <% message = error.message %>
+            <% if message == "can't be blank" %>
+              <strong><%= friendly_name %></strong> must be filled in
+            <% elsif message.include?("must be after") %>
+              <strong><%= friendly_name %></strong> <%= message.downcase %>
+            <% else %>
+              <strong><%= friendly_name %></strong> <%= message %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
   <div class="form-inputs">
     <%= f.input :title,
@@ -32,10 +58,22 @@
                 },
                 wrapper_html: { class: "form-group" } %>
 
+    <%= f.input :category,
+                required: true,
+                label: "Event Category",
+                collection: Event::CATEGORIES,
+                prompt: "Select a category",
+                input_html: { 
+                  class: "form-control"
+                },
+                wrapper_html: { class: "form-group" } %>
+
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
-          <%= f.label :event_date, "Date", class: "form-label" %>
+          <%= f.label :event_date, class: "form-label" do %>
+            Date <abbr title="required">*</abbr>
+          <% end %>
           <%= f.date_field :event_date,
                           required: true,
                           class: "form-control" %>
@@ -43,7 +81,9 @@
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <%= f.label :event_time, "Time", class: "form-label" %>
+          <%= f.label :event_time, class: "form-label" do %>
+            Time <abbr title="required">*</abbr>
+          <% end %>
           <%= f.time_field :event_time,
                           required: true,
                           class: "form-control" %>

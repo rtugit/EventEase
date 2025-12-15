@@ -103,7 +103,12 @@
   <div class="event-content-container">
     <!-- Event Info Section (below image) -->
     <header class="event-info-header">
-      <h1 class="event-title-main"><%= @event.title %></h1>
+      <div class="event-title-wrapper">
+        <h1 class="event-title-main"><%= @event.title %></h1>
+        <% if @event.category.present? %>
+          <span class="event-category-badge"><%= @event.category %></span>
+        <% end %>
+      </div>
       <p class="event-location-main">
         <svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -429,7 +434,7 @@
       <% if @user_registration %>
         <!-- User has joined - show Unjoin button -->
         <%= button_to "Unjoin",
-                    registration_path(@user_registration),
+                    event_registration_path(@event, @user_registration),
                     method: :delete,
                     class: "btn-join-event btn-unjoin-event",
                     form: {

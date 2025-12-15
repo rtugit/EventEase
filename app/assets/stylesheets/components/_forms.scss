@@ -71,6 +71,34 @@
   }
 }
 
+.error-notification.alert-error {
+  background-color: #fee;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  color: $primary-font;
+  font-family: $body-font;
+  font-size: 14px;
+
+  strong {
+    color: #dc3545;
+  }
+
+  ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 4px;
+      
+      strong {
+        color: #dc3545;
+      }
+    }
+  }
+}
+
 .form-hint {
   color: $sub-font-gray;
   font-family: $body-font;
@@ -85,10 +113,20 @@
   margin-top: 4px;
 }
 
-// Remove dotted underline from required field asterisks
+// Remove dotted underline from required field asterisks and style them
 .simple_form abbr[title],
 form abbr[title] {
   text-decoration: none;
   border-bottom: none;
   cursor: help;
+  color: #dc3545;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+// Ensure required asterisks are visible
+.simple_form label abbr[title="required"],
+form label abbr[title="required"] {
+  color: #dc3545;
+  font-weight: bold;
 }

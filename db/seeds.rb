@@ -110,6 +110,27 @@ LOCATIONS = [
   "Zoom"
 ].freeze
 
+EVENT_CATEGORIES = [
+  "Networking",           # JavaScript Meetup
+  "Study",                # Ruby on Rails Workshop
+  "Talk",                 # Python Data Science Talk
+  "Talk",                 # UX Design Conference
+  "Networking",           # Startup Pitch Night
+  "Sport & Activity",     # Yoga & Wellness Class
+  "Networking",           # Networking Brunch
+  "Community",            # Photography Walk
+  "Community",            # Book Club Meeting
+  "Party & Social",       # Music Jam Session
+  "Study",                # Tech Startup Accelerator
+  "Talk",                 # Digital Marketing Summit
+  "Study",                # Advanced CSS Techniques
+  "Study",                # Cloud Architecture Masterclass
+  "Talk",                 # Blockchain & Web3 Summit
+  "Study",                # Mobile Development Sprint
+  "Study",                # AI Ethics Workshop
+  "Talk"                  # Sustainable Tech Conference
+].freeze
+
 # ------------------------------------------------------------
 # Users
 # ------------------------------------------------------------
@@ -167,6 +188,7 @@ EVENT_TITLES.each_with_index do |title, index|
     title: title,
     description: EVENT_DESCRIPTIONS[index],
     location: LOCATIONS.sample,
+    category: EVENT_CATEGORIES[index],
     starts_at: start_time,
     ends_at: end_time,
     capacity: Faker::Number.between(from: 10, to: 150),
@@ -185,6 +207,7 @@ friday_event = Event.create!(
   title: "Regular Friday Pub",
   description: "Regular Friday Pub – casual meetup, drinks, conversations.",
   location: "Butler - Bar, Café, Lounge, Düsseldorf",
+  category: "Party & Social",
   starts_at: Time.parse("2025-12-12 21:00"),
   ends_at: Time.parse("2025-12-13 01:00"),
   capacity: 50,
