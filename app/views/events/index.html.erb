@@ -1,44 +1,7 @@
 <!-- Shows header and username -->
 <div class="home-page">
-  <header class="home-header">
-    <div class="header-top">
-      <div class="welcome-text">
-        <p class="greeting">Welcome Back</p>
-        <h1 class="username">
-          <%= current_user&.first_name.presence ||
-              current_user&.email&.split('@')&.first&.capitalize ||
-              "Guest" %>
-        </h1>
-      </div>
-
-      <div class="header-actions">
-        <button class="notification-btn" aria-label="Notifications">
-          <span class="badge"></span>
-        </button>
-
-        <div class="profile-wrapper">
-          <% if current_user %>
-            <%= link_to edit_user_registration_path, class: "profile-btn" do %>
-              <span class="initials">
-                <%= (current_user.first_name.presence || current_user.email&.first).to_s.first.upcase %>
-              </span>
-            <% end %>
-          <% else %>
-            <%= link_to new_user_session_path, class: "profile-btn" do %>
-              <span class="initials">?</span>
-            <% end %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="header-subline">
-      <h2 class="page-title">Demo</h2>
-    </div>
-  </header>
-
   <!-- Renders search input form -->
-  <section class="search-section">
+  <section class="search-section search-section-no-header">
     <div class="search-card">
       <%= form_with url: events_path, method: :get, class: "search-form", local: true do |f| %>
         <div class="search-field">
