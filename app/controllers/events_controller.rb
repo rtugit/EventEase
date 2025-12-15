@@ -25,19 +25,15 @@ class EventsController < ApplicationController
     end
 
     # Search by title
-    if params[:title].present?
-      @events = @events.where("title ILIKE ?", "%#{params[:title]}%")
-    end
+    @events = @events.where("title ILIKE ?", "%#{params[:title]}%") if params[:title].present?
 
     # Filter by location
-    if params[:location].present?
-      @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
-    end
+    @events = @events.where("location ILIKE ?", "%#{params[:location]}%") if params[:location].present?
 
     # Filter by date
-    if params[:date].present?
-      @events = @events.where("DATE(starts_at) = ?", params[:date])
-    end
+    return if params[:date].blank?
+
+    @events = @events.where("DATE(starts_at) = ?", params[:date])
   end
 
   def show
