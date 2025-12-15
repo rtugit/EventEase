@@ -28,11 +28,14 @@
     <% end %>
 
     <% if event.location.present? %>
-      <p class="event-location"><%= event.location %></p>
+      <p class="event-location">
+        <i class="fa-solid fa-location-dot"></i>
+        <%= event.location %>
+      </p>
     <% end %>
   </div>
 
-  <div class="avatars">
+  <div class="avatars-guest">
     <% avatars = %w[/images/avatars/girl.png /images/avatars/girll.png /images/avatars/man.png /images/avatars/mann.png] %>
     <% registrations = event.registrations.limit(4).to_a %>
     <% registrations.each_with_index do |registration, index| %>
@@ -43,16 +46,16 @@
       <% initial = handle[0].to_s.upcase.presence || "?" %>
 
       <% if avatar_file.present? %>
-        <div class="avatar" title="<%= registration.name.presence || email %>">
+        <div class="avatar-guest" title="<%= registration.name.presence || email %>">
           <img src="<%= asset_path(avatar_file) %>" alt="<%= registration.name.presence || email %>">
         </div>
       <% else %>
-        <div class="avatar" title="<%= registration.name.presence || email %>"><%= initial %></div>
+        <div class="avatar-guest" title="<%= registration.name.presence || email %>"><%= initial %></div>
       <% end %>
     <% end %>
 
     <% if event.registrations.count > registrations.size %>
-      <div class="avatar avatar-more" title="<%= event.registrations.count - registrations.size %> more">
+      <div class="avatar-guest avatar-more" title="<%= event.registrations.count - registrations.size %> more">
         +<%= event.registrations.count - registrations.size %>
       </div>
     <% end %>

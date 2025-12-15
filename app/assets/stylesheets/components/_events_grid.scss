@@ -1,0 +1,234 @@
+// Events Grid & Card Styles - Responsive
+@import "../config/colors";
+@import "../config/fonts";
+
+// Events Section
+.events-section {
+  padding: 16px 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #122927;
+    margin: 0;
+  }
+
+  .see-all-link {
+    font-size: 14px;
+    color: #367C76;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Events Grid - Responsive
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+// Event Card
+.event-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px #367C76;
+  }
+}
+
+// Card Image
+.event-card-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: #122927;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #cccccc;
+  }
+}
+
+// Card Body
+.event-card-body {
+  padding: 16px;
+  flex: 1;
+}
+
+.event-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #122927;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.event-date {
+  font-size: 13px;
+  color: #367C76;
+  margin: 0 0 4px 0;
+}
+
+.event-location {
+  font-size: 13px;
+  color: #439891;
+  margin: 0;
+}
+
+// Avatars
+.avatars-guest {
+  display: flex;
+  align-items: center;
+  padding: 0 16px 16px 16px;
+}
+
+.avatar-guest {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e9fffd;
+  margin-left: -8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #367C76;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatar-more {
+  background-color: #c1f4f0;
+  color: #367C76;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+// Responsive Breakpoints
+@media (max-width: 1400px) {
+  .events-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .events-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .event-card-image {
+    height: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .event-card-image {
+    height: 140px;
+  }
+
+  .event-title {
+    font-size: 15px;
+  }
+
+  .event-date,
+  .event-location {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 540px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .event-card {
+    flex-direction: row;
+    height: 120px;
+  }
+
+  .event-card-image {
+    width: 120px;
+    height: 100%;
+    flex-shrink: 0;
+  }
+
+  .event-card-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .avatars {
+    display: none;
+  }
+}

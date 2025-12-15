@@ -39,3 +39,6 @@
 # Ignore Mac and Linux file system files
 *.swp
 .DS_Store
+
+# Do not push internal docs
+app/do_not_push_to_github_important/
