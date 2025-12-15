@@ -66,8 +66,12 @@
   <!-- Displays event category chips -->
   <section class="categories-section">
     <div class="categories-scroll">
-      <%= link_to events_path, class: "category-chip #{'active' unless params[:category]}" do %>
+      <%= link_to events_path, class: "category-chip #{'active' unless params[:category] || params[:filter] == 'my_events'}" do %>
         <span>All</span>
+      <% end %>
+
+      <%= link_to events_path(filter: 'my_events'), class: "category-chip #{'active' if params[:filter] == 'my_events'}" do %>
+        <span>My Events</span>
       <% end %>
 
       <%= link_to events_path(category: "music"), class: "category-chip #{'active' if params[:category] == 'music'}" do %>
@@ -88,62 +92,81 @@
     </div>
   </section>
 
-  <!-- Shows popular events list -->
-  <section class="events-section">
-    <div class="section-header">
-      <h3 class="section-title">Popular Event</h3>
-      <% if @popular_events.present? %>
-        <%= link_to "See all", events_path, class: "see-all-link" %>
-      <% end %>
-    </div>
+  <% if params[:filter] == 'my_events' %>
+    <!-- Shows My Events -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">My Events</h3>
+      </div>
 
-    <% if @popular_events.present? %>
-      <div class="events-grid">
-        <% @popular_events.each do |event| %>
-          <%= render "event_card", event: event %>
+      <% if @events.present? %>
+        <div class="events-grid">
+          <% @events.each do |event| %>
+            <%= render "event_card", event: event %>
+          <% end %>
+        </div>
+      <% else %>
+        <p>You haven't created or registered for any events yet.</p>
+      <% end %>
+    </section>
+  <% else %>
+    <!-- Shows popular events list -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">Popular Event</h3>
+        <% if @popular_events.present? %>
+          <%= link_to "See all", events_path, class: "see-all-link" %>
         <% end %>
       </div>
-    <% else %>
-      <p>You don’t have any events yet.</p>
-    <% end %>
-  </section>
 
-  <!-- Displays new events section -->
-  <section class="events-section">
-    <div class="section-header">
-      <h3 class="section-title">New Event</h3>
-      <%= link_to "Create event", new_event_path, class: "primary-link" %>
-    </div>
-
-    <% if @events.present? %>
-      <table class="events-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Date</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @events.each do |event| %>
-            <tr>
-              <td><%= event.title %></td>
-              <td><%= event.location %></td>
-              <td>
-                <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
-              </td>
-              <td class="text-end">
-                <%= link_to "View", event_path(event), class: "table-link" %>
-              </td>
-            </tr>
+      <% if @popular_events.present? %>
+        <div class="events-grid">
+          <% @popular_events.each do |event| %>
+            <%= render "event_card", event: event %>
           <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>You don’t have any events yet.</p>
-    <% end %>
-  </section>
+        </div>
+      <% else %>
+        <p>You don't have any events yet.</p>
+      <% end %>
+    </section>
+
+    <!-- Displays new events section -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">New Event</h3>
+        <%= link_to "Create event", new_event_path, class: "primary-link" %>
+      </div>
+
+      <% if @events.present? %>
+        <table class="events-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @events.each do |event| %>
+              <tr>
+                <td><%= event.title %></td>
+                <td><%= event.location %></td>
+                <td>
+                  <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
+                </td>
+                <td class="text-end">
+                  <%= link_to "View", event_path(event), class: "table-link" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>You don't have any events yet.</p>
+      <% end %>
+    </section>
+  <% end %>
 
   <!-- Renders minimal event list -->
   <section class="events-list-section">
