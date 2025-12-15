@@ -1,4 +1,6 @@
-<div class="personal-info-page">
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+<div class="personal-info-page" data-controller="camera">
   <div class="page-header">
     <%= link_to account_path, class: "back-arrow" do %>
       <i class="fa-solid fa-chevron-left"></i>
@@ -7,13 +9,27 @@
     <div class="header-spacer"></div>
   </div>
 
+<div class="profile-photo-section">
   <div class="profile-photo-section">
-    <div class="profile-photo">
-      <%= responsive_image(current_user, :photo, "eventease-logo.svg", class: "avatar-img") %>
-    </div>
+  <div class="profile-photo" data-action="click->camera#openCamera">
+    <% if current_user.photo.attached? %>
+      <%= image_tag current_user.photo, class: "avatar-img" %>
+    <% else %>
+      <div class="avatar-placeholder">
+        <%= current_user.first_name&.first&.upcase || "?" %>
+      </div>
+    <% end %>
+    <div class="photo-overlay">📷</div>
   </div>
+  <p class="photo-hint">Klicken zum Ändern</p>
+  <img data-camera-target="avatar" class="hidden">
+</div>
+  <p class="photo-hint">Klicken zum Ändern</p>
+  <img data-camera-target="avatar" class="hidden">
+</div>
 
   <%= form_with model: current_user, url: update_user_path(current_user), method: :patch, class: "personal-info-form" do |f| %>
+    <%= f.hidden_field :photo_data, data: { camera_target: "photoInput" } %>
     <div class="form-group">
       <label class="form-label">First Name</label>
       <%= f.text_field :first_name, class: "form-input", placeholder: "Enter your first name" %>
@@ -55,4 +71,22 @@
       <%= f.submit "Update Info", class: "submit-btn" %>
     </div>
   <% end %>
+  <div class="camera-modal" data-camera-target="modal">
+    <div class="camera-modal-content">
+      <button type="button" class="close-btn" data-action="click->camera#closeModal">✕</button>
+
+      <video data-camera-target="video" autoplay muted playsinline></video>
+      <img data-camera-target="preview" class="hidden">
+      <canvas data-camera-target="canvas" class="hidden"></canvas>
+
+      <p class="status" data-camera-target="status">Initialisiere...</p>
+
+      <div class="camera-actions">
+        <button type="button" data-camera-target="captureBtn" data-action="click->camera#capture" disabled>📸 Aufnehmen</button>
+        <button type="button" data-camera-target="saveBtn" data-action="click->camera#save" class="hidden">✅ Übernehmen</button>
+        <button type="button" data-action="click->camera#retake">🔄 Neu</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

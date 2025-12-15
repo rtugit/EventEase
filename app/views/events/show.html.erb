@@ -16,9 +16,9 @@
           </svg>
           <span>Edit</span>
         <% end %>
-      <%= link_to check_in_event_path(@event), class: "nav-action-button nav-edit-button" do %>
-        <span>Check-in</span>
-      <% end %>
+        <%= link_to check_in_event_path(@event), class: "nav-action-button nav-edit-button" do %>
+          <span>Check-in</span>
+        <% end %>
         <%= button_to event_path(@event),
                     method: :delete,
                     class: "nav-action-button nav-delete-button",
@@ -213,16 +213,20 @@
           <!-- Location Map Section (only in Details tab) -->
           <div class="location-map-section">
             <h2 class="section-title">Location</h2>
+
+            <%# Leaflet map container. Location is geocoded via Nominatim in the script below. %>
             <div id="event-map"
-                class="map-container"
-                data-location="<%= @event.location %>"
-                data-controller="map-placeholder">
-              <!-- TODO: Integrate Mapbox map here -->
-              <div class="map-placeholder">
-                <p>Map will be displayed here</p>
-                <p class="map-location-text"><%= @event.location %></p>
-              </div>
+                 class="map-container"
+                 data-location="<%= @event.location %>"
+                 style="height: 260px; border-radius: 16px; overflow: hidden;">
+              <noscript>
+                <p><%= @event.location %></p>
+              </noscript>
             </div>
+
+            <p class="map-location-text" style="margin-top: 10px;">
+              <%= @event.location %>
+            </p>
           </div>
         </div>
 
@@ -453,5 +457,65 @@
       <%= link_to "Join", new_user_session_path, class: "btn-join-event" %>
     <% end %>
   </div>
-
 </main>
+
+<script>
+  (function() {
+    const initLeafletMap = async () => {
+      const el = document.getElementById("event-map");
+      if (!el) return;
+
+      // If Leaflet isn't loaded yet, do nothing (prevents runtime error).
+      if (!window.L) return;
+
+      // Avoid double init (Turbo / repeated visits)
+      if (el.dataset.leafletInitialized === "true") return;
+      el.dataset.leafletInitialized = "true";
+
+      const location = el.dataset.location;
+      if (!location) return;
+
+      // Geocode via Nominatim (no key). Keep it lightweight.
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+
+      let lat = null, lon = null;
+      try {
+        const res = await fetch(url, { headers: { "Accept": "application/json" } });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          lat = parseFloat(data[0].lat);
+          lon = parseFloat(data[0].lon);
+        }
+      } catch (_) {
+        // fall back
+      }
+
+      // Fallback: Germany center (so map doesn't stay blank)
+      if (!lat || !lon) {
+        lat = 51.1657;
+        lon = 10.4515;
+      }
+
+      const map = L.map("event-map", { scrollWheelZoom: false }).setView([lat, lon], lat === 51.1657 ? 5 : 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      // Only add marker if we actually geocoded a specific place
+      if (!(lat === 51.1657 && lon === 10.4515)) {
+        L.marker([lat, lon]).addTo(map).bindPopup(location);
+      }
+
+      // When switching tabs back to Details, Leaflet sometimes needs a resize nudge.
+      const detailsTab = document.getElementById("details-tab");
+      if (detailsTab) {
+        detailsTab.addEventListener("click", () => {
+          setTimeout(() => map.invalidateSize(), 150);
+        });
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", initLeafletMap);
+    document.addEventListener("turbo:load", initLeafletMap);
+  })();
+</script>
