@@ -35,8 +35,19 @@
 // Events Grid - Responsive
 .events-grid {
   display: grid;
+  // Large screens: cap at 5 cards per row and center the grid
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  gap: 24px; // base spacing between cards
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+// Empty state message for "My Events"
+.no-events-message {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #5b6b6a;
 }
 
 // Event Card
@@ -101,6 +112,21 @@
   flex: 1;
 }
 
+.event-card-category-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #e6f5f3;
+  color: #367C76;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
 .event-title {
   font-size: 16px;
   font-weight: bold;
@@ -130,6 +156,7 @@
   display: flex;
   align-items: center;
   padding: 0 16px 16px 16px;
+  margin-top: 8px;
 }
 
 .avatar-guest {
@@ -212,11 +239,12 @@
 
   .event-card {
     flex-direction: row;
-    height: 120px;
+    height: auto;         // let the card grow with text + avatars
+    min-height: 180px;    // enough vertical space so avatars are visible
   }
 
   .event-card-image {
-    width: 120px;
+    width: 110px;         // slightly smaller image to free vertical space
     height: 100%;
     flex-shrink: 0;
   }
@@ -225,10 +253,12 @@
     padding: 12px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between; // text on top, avatars row at bottom
+    flex: 1 1 auto;
+    min-width: 0; // prevent text from forcing overflow
   }
 
-  .avatars {
-    display: none;
+  .avatars-guest {
+    padding: 4px 0 0 0; // small spacing above avatars inside body
   }
 }

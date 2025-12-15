@@ -49,7 +49,6 @@ class EventsController < ApplicationController
 
   def new
     @event = Event.new
-    @event.rundown_items.build
   end
 
   def edit
