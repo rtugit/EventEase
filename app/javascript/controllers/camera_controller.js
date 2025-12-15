@@ -1,51 +1,78 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["avatar", "modal", "video", "canvas", "preview", "status", "captureBtn", "saveBtn", "photoInput"]
+  static targets = ["avatar", "modal", "video", "canvas", "preview", "status", "captureBtn", "saveBtn", "retakeBtn", "photoInput"]
 
   async openCamera() {
-    console.log("openCamera gestartet")
+    console.log("openCamera started")
     this.modalTarget.classList.add("open")
     this.previewTarget.classList.add("hidden")
     this.videoTarget.classList.remove("hidden")
     this.captureBtnTarget.classList.remove("hidden")
+    this.captureBtnTarget.disabled = true
     this.saveBtnTarget.classList.add("hidden")
+    if (this.hasRetakeBtnTarget) {
+      this.retakeBtnTarget.classList.add("hidden")
+    }
 
-    this.statusTarget.textContent = "Lade Modelle..."
-
-    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model'
-    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
+    this.statusTarget.textContent = "Loading camera..."
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
       this.videoTarget.srcObject = stream
       this.stream = stream
-      this.statusTarget.textContent = ""
-      this.detectFace()
+      this.statusTarget.textContent = "Loading face detection..."
+
+      // Try to load face detection
+      try {
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model'
+        await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
+        this.statusTarget.textContent = ""
+        this.detectFace()
+      } catch (faceError) {
+        // Face detection failed, enable button anyway after short delay
+        console.warn("Face detection not available:", faceError)
+        this.statusTarget.textContent = "Camera ready"
+        this.captureBtnTarget.disabled = false
+      }
+
+      // Fallback: Enable button after 3 seconds regardless of face detection
+      setTimeout(() => {
+        if (this.captureBtnTarget.disabled) {
+          this.captureBtnTarget.disabled = false
+          this.statusTarget.textContent = "Camera ready"
+        }
+      }, 3000)
+
     } catch (error) {
       console.error(error)
-      this.statusTarget.textContent = "Kamera-Zugriff verweigert"
+      this.statusTarget.textContent = "Camera access denied"
     }
   }
 
   async detectFace() {
     if (!this.stream) return
 
-    const detection = await faceapi.detectSingleFace(
-      this.videoTarget,
-      new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-    )
+    try {
+      const detection = await faceapi.detectSingleFace(
+        this.videoTarget,
+        new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+      )
 
-    this.faceDetected = !!detection
-    this.captureBtnTarget.disabled = !this.faceDetected
-    this.statusTarget.textContent = this.faceDetected ? "✅ Gesicht erkannt" : "Bitte Gesicht zeigen..."
+      this.faceDetected = !!detection
+      this.captureBtnTarget.disabled = !this.faceDetected
+      this.statusTarget.textContent = this.faceDetected ? "✅ Face detected" : "Please show your face..."
 
-    requestAnimationFrame(() => this.detectFace())
+      requestAnimationFrame(() => this.detectFace())
+    } catch (error) {
+      console.warn("Face detection error:", error)
+      // If face detection fails, just enable the button
+      this.captureBtnTarget.disabled = false
+      this.statusTarget.textContent = "Camera ready"
+    }
   }
 
   capture() {
-    if (!this.faceDetected) return
-
     const canvas = this.canvasTarget
     canvas.width = this.videoTarget.videoWidth
     canvas.height = this.videoTarget.videoHeight
@@ -57,7 +84,10 @@ export default class extends Controller {
     this.videoTarget.classList.add("hidden")
     this.captureBtnTarget.classList.add("hidden")
     this.saveBtnTarget.classList.remove("hidden")
-    this.statusTarget.textContent = "Foto aufgenommen!"
+    if (this.hasRetakeBtnTarget) {
+      this.retakeBtnTarget.classList.remove("hidden")
+    }
+    this.statusTarget.textContent = "Photo captured!"
 
     this.stopCamera()
   }
@@ -67,11 +97,24 @@ export default class extends Controller {
   }
 
   save() {
-    this.photoInputTarget.value = this.photoData
-    if (this.hasAvatarTarget) {
-      this.avatarTarget.src = this.photoData
+    if (this.hasPhotoInputTarget && this.photoData) {
+      this.photoInputTarget.value = this.photoData
     }
-    this.closeModal()
+    if (this.hasAvatarTarget && this.photoData) {
+      this.avatarTarget.src = this.photoData
+      this.avatarTarget.classList.remove("hidden")
+    }
+    this.statusTarget.textContent = "Photo saved!"
+
+    // Submit the form after a short delay
+    setTimeout(() => {
+      this.closeModal()
+      // Find and submit the form
+      const form = this.photoInputTarget?.closest('form')
+      if (form) {
+        form.requestSubmit()
+      }
+    }, 500)
   }
 
   closeModal() {
