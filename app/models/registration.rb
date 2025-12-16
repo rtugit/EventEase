@@ -3,8 +3,20 @@ class Registration < ApplicationRecord
   belongs_to :user, optional: true
   has_many :reviews, dependent: :destroy
 
-  def reviewed?
-    reviews.present?
+  def reviewed?(event = nil)
+    if event
+      reviews.exists?(event: event)
+    else
+      reviews.present?
+    end
+  end
+
+  def review(event = nil)
+    if event
+      reviews.find_by(event: event)
+    else
+      reviews.first
+    end
   end
 
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -15,6 +27,14 @@ class Registration < ApplicationRecord
 
   # Sanitize inputs to prevent XSS
   before_save :sanitize_inputs
+
+  def check_in!
+    update!(status: "checked_in", check_in_at: Time.current)
+  end
+
+  def cancel!
+    update!(status: "cancelled", cancelled_at: Time.current)
+  end
 
   private
 
@@ -29,13 +49,5 @@ class Registration < ApplicationRecord
     return unless event.active_registrations_count >= event.capacity
 
     errors.add(:base, "This event is at full capacity. No more registrations can be accepted.")
-  end
-
-  def check_in!
-    update!(status: "checked_in", check_in_at: Time.current)
-  end
-
-  def cancel!
-    update!(status: "cancelled", cancelled_at: Time.current)
   end
 end

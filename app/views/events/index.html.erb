@@ -44,7 +44,51 @@
   </section>
 
   <!-- Displays event category chips -->
-  <section class="categories-section">
+  <section class="categories-section" data-controller="category-dropdown">
+    <!-- Hamburger button for mobile/tablet -->
+    <button type="button" 
+            class="category-dropdown-toggle"
+            data-category-dropdown-target="button"
+            data-action="click->category-dropdown#toggle"
+            aria-label="Toggle category menu">
+      <span class="dropdown-toggle-text">
+        <% if params[:category].present? %>
+          <%= params[:category] %>
+        <% elsif params[:filter] == 'my_events' %>
+          My Events
+        <% else %>
+          All Categories
+        <% end %>
+      </span>
+      <svg class="dropdown-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </button>
+
+    <!-- Dropdown menu for mobile/tablet -->
+    <div class="category-dropdown-menu" data-category-dropdown-target="menu">
+      <%= link_to events_path, 
+          class: "category-dropdown-item #{'active' unless params[:category] || params[:filter] == 'my_events'}",
+          data: { action: "click->category-dropdown#close" } do %>
+        <span>All</span>
+      <% end %>
+
+      <%= link_to events_path(filter: 'my_events'), 
+          class: "category-dropdown-item #{'active' if params[:filter] == 'my_events'}",
+          data: { action: "click->category-dropdown#close" } do %>
+        <span>My Events</span>
+      <% end %>
+
+      <% Event::CATEGORIES.each do |category| %>
+        <%= link_to events_path(category: category), 
+            class: "category-dropdown-item #{'active' if params[:category] == category}",
+            data: { action: "click->category-dropdown#close" } do %>
+          <span><%= category %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Horizontal scroll for desktop -->
     <div class="categories-scroll">
       <%= link_to events_path, class: "category-chip #{'active' unless params[:category] || params[:filter] == 'my_events'}" do %>
         <span>All</span>

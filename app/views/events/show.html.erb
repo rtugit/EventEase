@@ -261,7 +261,7 @@
             <h2 class="section-title">Reviews</h2>
 
             <% if @event.past? && user_signed_in? %>
-              <% if @user_registration && !@user_registration.reviewed? %>
+              <% if @user_registration && !@user_registration.reviewed?(@event) %>
                 <!-- Review Form -->
                 <div class="review-form-container">
                   <%= form_with(model: [@event, @event.reviews.build],
@@ -292,8 +292,8 @@
                     <%= form.submit "Submit Review", class: "btn-submit-review" %>
                   <% end %>
                 </div>
-              <% elsif @user_registration && @user_registration.reviewed? %>
-                <% user_review = @user_registration.review %>
+              <% elsif @user_registration && @user_registration.reviewed?(@event) %>
+                <% user_review = @user_registration.review(@event) %>
                 <% if user_review %>
                   <div class="review-form-container">
                     <p class="review-notice">You have already reviewed this event. You can edit or delete your review below.</p>
