@@ -1,9 +1,5 @@
-<!-- Shows header and username -->
 <div class="home-page">
-<!-- Renders search input form with autocomplete -->
-  <!-- Shows header and username -->
-<div class="home-page">
-<!-- Renders search input form with autocomplete -->
+  <!-- Renders search input form with autocomplete -->
   <section class="search-section">
     <div class="search-card">
       <%= form_with url: events_path, method: :get, class: "search-form", local: true do |f| %>
@@ -99,53 +95,7 @@
         <p>You don't have any events yet.</p>
       <% end %>
     </section>
-
-    <!-- Displays new events section -->
-    <section class="events-section">
-      <div class="section-header">
-        <h3 class="section-title">New Event</h3>
-        <%= link_to "Create event", new_event_path, class: "primary-link" %>
-      </div>
-
-      <% if @events.present? %>
-        <table class="events-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @events.each do |event| %>
-              <tr>
-                <td><%= event.title %></td>
-                <td><%= event.location %></td>
-                <td>
-                  <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
-                </td>
-                <td class="text-end">
-                  <%= link_to "View", event_path(event), class: "table-link" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p>You don't have any events yet.</p>
-      <% end %>
-    </section>
   <% end %>
-
-  <!-- Renders minimal event list -->
-  <section class="events-list-section">
-    <ul class="events-list">
-      <% @events.each do |event| %>
-        <li><%= link_to event.title, event_path(event) %></li>
-      <% end %>
-    </ul>
-  </section>
 
   <!-- Displays bottom navigation bar -->
   <nav class="bottom-nav">

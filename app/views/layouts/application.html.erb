@@ -26,7 +26,11 @@
     <% end %>
     <%= render "shared/flashes" %>
     <%= yield %>
-    
+
+    <% unless devise_controller? || (controller_name == 'pages' && action_name == 'landing') %>
+      <%= render "shared/footer" %>
+    <% end %>
+
     <%# AI Chatbot %>
     <%= render "layouts/chat_button" %>
     <%= render "layouts/chat_modal" %>
