@@ -29,7 +29,7 @@
 
         <div class="search-field">
           <label for="search_date">Date</label>
-          <%= date_field_tag :date, params[:date], id: "search_date" %>
+          <%= date_field_tag :date, params[:date], id: "search_date", required: false %>
         </div>
 
         <div class="search-action">
@@ -124,9 +124,6 @@
     <section class="events-section">
       <div class="section-header">
         <h3 class="section-title">Popular Event</h3>
-        <% if @popular_events.present? %>
-          <%= link_to "See all", events_path, class: "see-all-link" %>
-        <% end %>
       </div>
 
       <% if @popular_events.present? %>

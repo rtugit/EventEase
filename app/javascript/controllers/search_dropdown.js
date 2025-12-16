@@ -6,13 +6,29 @@ function initSearchDropdown() {
   const titleDropdown = document.getElementById('title-dropdown');
   const locationDropdown = document.getElementById('location-dropdown');
   const searchForm = document.querySelector('.search-form');
+  const dateInput = document.getElementById('search_date');
+
+  // Date input color handling
+  if (dateInput) {
+    if (dateInput.value) {
+      dateInput.classList.add('has-value');
+    }
+
+    dateInput.addEventListener('change', function() {
+      if (this.value) {
+        this.classList.add('has-value');
+      } else {
+        this.classList.remove('has-value');
+      }
+    });
+  }
 
   if (!titleInput || !locationInput) {
     console.log('Search inputs not found');
     return;
   }
 
-  console.log('Search dropdown initialized'); // Debug log
+  console.log('Search dropdown initialized');
 
   let debounceTimer;
 
