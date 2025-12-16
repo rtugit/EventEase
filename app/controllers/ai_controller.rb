@@ -5,11 +5,14 @@ class AiController < ApplicationController
   def chat
     user_message = params[:message]
     system_prompt = build_system_prompt(params[:options] || [])
+    model = ENV.fetch('LLM_MODEL', 'gpt-3.5-turbo')
 
-    response = RubyLLM.chat(messages: [{ role: 'system', content: system_prompt },
-                                       { role: 'user', content: user_message }])
+    # Using RubyLLM 1.9.1 syntax
+    chatter = RubyLLM.chat(model: model, provider: :openai, assume_model_exists: true)
+    chatter.with_instructions(system_prompt)
 
-    active_response = response[:choices]&.first&.dig(:message, :content) || "I'm not sure how to respond to that."
+    response = chatter.ask(user_message)
+    active_response = response&.content || "I'm not sure how to respond to that."
 
     render_success(active_response, :message)
   rescue StandardError => e
@@ -21,11 +24,15 @@ class AiController < ApplicationController
     prompt = params[:prompt]
     existing_text = params[:existing_text]
     action = params[:action]
+    model = ENV.fetch('LLM_MODEL', 'gpt-3.5-turbo')
 
     full_prompt = build_content_prompt(prompt, existing_text, action)
 
-    response = RubyLLM.complete(prompt: full_prompt, max_tokens: 500)
-    content = response[:choices]&.first&.dig(:text) || response[:choices]&.first&.dig(:message, :content)
+    # Using RubyLLM 1.9.1 syntax
+    chatter = RubyLLM.chat(model: model, provider: :openai, assume_model_exists: true)
+    response = chatter.ask(full_prompt)
+
+    content = response&.content
 
     render_success(content.to_s.strip, :content)
   rescue StandardError => e

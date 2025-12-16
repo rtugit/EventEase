@@ -49,3 +49,9 @@ app/do_not_push_to_github_important/
 # NO FILES/FOLDERS WITH 'do not'
 *do\ not*
 *do_not*
+
+# Artifact Media
+*.webp
+*.mp4
+*_proof.png
+*_screenshot.png
