@@ -5,28 +5,28 @@
 /* Floating Chat Button */
 .chat-float-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 1.25rem; /* 20px */
+  right: 1.25rem;
   z-index: 1000;
 }
 
 .float-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   background-color: #122927;
   color: #ffffff;
   border: none;
-  border-radius: 50px;
-  padding: 12px 20px;
+  border-radius: 3.125rem; /* 50px */
+  padding: 0.75rem 1.25rem; /* 12px 20px - Keeping as FAB Standard */
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(18, 41, 39, 0.3);
+  box-shadow: 0 0.25rem 0.75rem rgba(18, 41, 39, 0.3);
   transition: all 0.3s ease;
 }
 
 .float-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(18, 41, 39, 0.4);
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.375rem 1rem rgba(18, 41, 39, 0.4);
 }
 
 .float-btn:active {
@@ -38,16 +38,15 @@
 }
 
 .float-btn_text {
-  color: #122927;
+  color: inherit;
   flex-grow: 1;
   flex-shrink: 1;
-  font-size: 14px;
+  font-size: 0.875rem; /* 14px */
   font-weight: 700;
   text-align: center;
   text-wrap: nowrap;
-  background: #ffffff;
-  padding: 6px 10px;
-  border-radius: 999px;
+  background: transparent;
+  padding: 0.375rem 0.625rem;
 }
 
 /* Hide float button when modal is active */
@@ -82,25 +81,25 @@
   z-index: unset !important;
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   pointer-events: auto;
   position: relative;
   z-index: 999;
   border: 1px solid #dce3e1;
-  border-radius: 5px;
+  border-radius: 0.3125rem; /* 5px */
   flex: 1 1 auto;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.875rem; /* 14px */
   line-height: 1.5;
-  width: 440px;
+  width: 27.5rem; /* 440px */
   max-width: 90vw;
-  height: 600px;
+  height: 37.5rem; /* 600px */
   max-height: 80vh;
   background: #ffffff;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  margin-bottom: 80px;
-  margin-right: 20px;
+  margin-bottom: 5rem;
+  margin-right: 1.25rem;
 }
 
 /* Chatbot Header */
@@ -108,14 +107,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   background: #122927;
   color: #ffffff;
-  border-bottom: 1px solid #ffffff22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
 }
 
 .chatbot-header_title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -124,7 +123,7 @@
   border: none;
   color: #ffffff;
   cursor: pointer;
-  padding: 4px;
+  padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,17 +139,17 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 1.25rem;
   overflow-y: auto;
-  gap: 16px;
+  gap: 1rem;
   background: #fdfefe;
 }
 
 .chatbot-greeting {
   background: #f5f8f7;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   color: #333333;
 }
@@ -159,20 +158,20 @@
 .chatbot-options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .chatbot-option {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.4;
   color: #333333;
 }
@@ -183,8 +182,8 @@
 }
 
 .chatbot-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 1.125rem;
+  height: 1.125rem;
   cursor: pointer;
   accent-color: #122927;
 }
@@ -193,16 +192,16 @@
 .chatbot-messages {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-  min-height: 120px;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  min-height: 7.5rem;
 }
 
 .chat-message {
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
   max-width: 85%;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
   word-wrap: break-word;
 }
@@ -211,35 +210,35 @@
   background: #122927;
   color: #ffffff;
   align-self: flex-end;
-  border-radius: 12px 12px 0 12px;
+  border-radius: 0.75rem 0.75rem 0 0.75rem;
 }
 
 .chat-message.ai {
   background: #f5f8f7;
   color: #333333;
   align-self: flex-start;
-  border-radius: 12px 12px 12px 0;
+  border-radius: 0.75rem 0.75rem 0.75rem 0;
 }
 
 /* Chatbot Footer */
 .chatbot-footer {
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   border-top: 1px solid #e0e0e0;
   background: #ffffff;
 }
 
 .chatbot-form {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .chatbot-input {
   flex: 1;
-  padding: 10px 14px;
+  padding: 0.625rem 0.875rem;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-family: inherit;
   transition: border-color 0.2s;
 }
@@ -253,8 +252,8 @@
   background: #122927;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  padding: 10px 14px;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem; /* Standardized to small button size */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -273,7 +272,7 @@
 
 .chatbot-disclaimer {
   margin: 0;
-  font-size: 11px;
+  font-size: 0.6875rem; /* 11px */
   color: #666666;
   text-align: center;
   line-height: 1.4;
@@ -286,8 +285,8 @@
   }
 
   .float-btn {
-    width: 56px;
-    height: 56px;
+    width: 3.5rem;
+    height: 3.5rem;
     padding: 0;
     justify-content: center;
     border-radius: 50%;
@@ -312,18 +311,18 @@
 .chatbot-loading {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
   background: #f5f8f7;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   color: #666666;
 }
 
 .chatbot-loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #e0e0e0;
+  width: 1rem;
+  height: 1rem;
+  border: 0.125rem solid #e0e0e0;
   border-top-color: #122927;
   border-radius: 50%;
   animation: spinner 0.8s linear infinite;
