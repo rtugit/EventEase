@@ -42,3 +42,10 @@
 
 # Do not push internal docs
 app/do_not_push_to_github_important/
+
+# NO MARKDOWN FILES
+*.md
+
+# NO FILES/FOLDERS WITH 'do not'
+*do\ not*
+*do_not*
