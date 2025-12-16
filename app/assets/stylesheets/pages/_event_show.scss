@@ -8,117 +8,82 @@
   padding-bottom: 100px; // Space for sticky join button
 }
 
-// Navigation Header
-.event-nav-header {
+// Back Navigation
+.event-back-nav {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 16px 20px;
   background-color: $background;
-  border-bottom: 1px solid $light-gray;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background-color: $background;
 
-  .nav-back-button {
-    display: flex;
+  .back-button {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    color: $primary-font;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: $light-gray;
-    }
-  }
-
-  .nav-title {
-    font-family: $headers-font;
-    font-size: 18px;
-    font-weight: 600;
-    color: $primary-font;
-    margin: 0;
-    flex: 1;
-    text-align: center;
-  }
-
-  .nav-actions {
-    display: flex;
     gap: 8px;
-    align-items: center;
-  }
-
-  .nav-action-button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    font-family: $body-font;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    color: $sub-font-green;
     text-decoration: none;
-    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    transition: color 0.2s ease;
 
     svg {
-      flex-shrink: 0;
-    }
-
-    span {
-      white-space: nowrap;
+      width: 20px;
+      height: 20px;
     }
 
     &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    &:active {
-      transform: translateY(0);
+      color: $button-color;
     }
   }
 
-  .nav-edit-button {
-    background-color: $sub-font-green;
-    color: white;
-
-    &:hover {
-      background-color: darken($sub-font-green, 10%);
-    }
-  }
-
-  .nav-delete-button {
-    background-color: $red;
-    color: white;
-
-    &:hover {
-      background-color: darken($red, 10%);
-    }
-  }
-
-  .nav-menu-button {
+  .event-owner-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    color: $primary-font;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+    gap: 8px;
+  }
 
-    &:hover {
-      background-color: $light-gray;
+  .owner-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &.edit-btn {
+      background-color: $sub-font-green;
+      color: white;
+
+      &:hover {
+        background-color: darken($sub-font-green, 10%);
+      }
+    }
+
+    &.checkin-btn {
+      background-color: $button-color;
+      color: white;
+
+      &:hover {
+        background-color: lighten($button-color, 10%);
+      }
+    }
+
+    &.delete-btn {
+      background-color: $red;
+      color: white;
+
+      &:hover {
+        background-color: darken($red, 10%);
+      }
     }
   }
 }
@@ -620,7 +585,6 @@
       color: $sub-font-gray;
       margin-right: 8px;
     }
-
   }
 
   .empty-state {
@@ -727,12 +691,6 @@
     margin-bottom: 12px;
     flex-wrap: wrap;
     gap: 12px;
-
-    .review-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
 
     .review-actions {
       display: flex;
@@ -904,5 +862,3 @@
     }
   }
 }
-
-

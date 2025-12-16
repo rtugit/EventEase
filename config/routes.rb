@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "pages#landing"
 
+  get 'events/search_suggestions', to: 'events#search_suggestions'
+
   resources :events do
     member do
       get :check_in
