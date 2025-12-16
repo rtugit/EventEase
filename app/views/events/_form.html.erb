@@ -38,16 +38,8 @@
                 },
                 wrapper_html: { class: "form-group" } %>
 
-    <%= f.input :description,
-                required: true,
-                as: :text,
-                label: "Description",
-                placeholder: "Describe your event...",
-                input_html: { 
-                  class: "form-control",
-                  rows: 5
-                },
-                wrapper_html: { class: "form-group" } %>
+    <%# AI-Enhanced Description Field %>
+    <%= render "events/description_field", f: f %>
 
     <%= f.input :location,
                 required: true,

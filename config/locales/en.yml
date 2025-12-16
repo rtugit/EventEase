@@ -52,3 +52,7 @@ en:
           attributes:
             email:
               taken: "is already registered for this event"
+        review:
+          attributes:
+            registration_id:
+              taken: "has already reviewed this event"

@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :organizer, class_name: "User"
   has_many :registrations, dependent: :destroy, inverse_of: :event, counter_cache: true
-  has_many :active_registrations, -> { where.not(status: 'cancelled') }, class_name: 'Registration'
+  has_many :active_registrations, -> { where.not(status: 'cancelled') }, class_name: 'Registration', inverse_of: :event # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :rundown_items, dependent: :destroy
   has_many :reviews, dependent: :destroy
 
@@ -57,7 +57,7 @@ class Event < ApplicationRecord
   delegate :count, to: :active_registrations, prefix: true
 
   # Check if event has available spots
-  def has_available_spots?
+  def available_spots?
     return true if capacity.nil? # Unlimited capacity
 
     active_registrations_count < capacity
