@@ -4,7 +4,7 @@
 
 // Events Section
 .events-section {
-  padding: 16px 0;
+  padding: 16px 20px;
 }
 
 .section-header {
@@ -208,6 +208,18 @@
   .events-grid {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-section {
+    padding: 16px 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .events-section {
+    padding: 16px 12px;
   }
 }
 

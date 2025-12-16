@@ -1,6 +1,6 @@
 class Event < ApplicationRecord
   belongs_to :organizer, class_name: "User"
-  has_many :registrations, dependent: :destroy, inverse_of: :event, counter_cache: true
+  has_many :registrations, dependent: :destroy, inverse_of: :event, counter_cache: :registrations_count
   has_many :active_registrations, -> { where.not(status: 'cancelled') }, class_name: 'Registration', inverse_of: :event # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :rundown_items, dependent: :destroy
   has_many :reviews, dependent: :destroy

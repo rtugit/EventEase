@@ -43,7 +43,7 @@ class ReviewsController < ApplicationController
       return
     end
 
-    return unless @registration.reviewed?
+    return unless @registration.reviewed?(@event)
 
     redirect_to event_path(@event, anchor: "reviews-panel"), alert: "You have already reviewed this event."
     return
