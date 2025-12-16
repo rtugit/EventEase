@@ -299,6 +299,14 @@
           background-color: $light-gray;
           color: $primary-font;
         }
+
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+          display: block;
+        }
       }
     }
 
@@ -593,6 +601,34 @@
     color: $sub-font-gray;
     text-align: center;
     padding: 40px 20px;
+  }
+}
+
+// Avatar Styles (General)
+.guest-avatar,
+.reviewer-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: $sub-font-green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .avatar-initials {
+    color: white;
+    font-weight: 600;
+    font-family: $body-font;
   }
 }
 

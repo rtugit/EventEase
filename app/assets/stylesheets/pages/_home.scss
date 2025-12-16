@@ -276,8 +276,129 @@
   padding: 0 20px;
   margin-top: 24px;
   margin-bottom: 28px;
+  position: relative;
 }
 
+// Hamburger dropdown button (mobile/tablet)
+.category-dropdown-toggle {
+  display: flex; // Shown on mobile/tablet
+  width: 100%;
+  padding: 12px 16px;
+  background: $background;
+  border: 2px solid $light-gray;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $sub-font-gray;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  .dropdown-toggle-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .dropdown-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  &.active {
+    border-color: $sub-font-green;
+    color: $sub-font-green;
+
+    .dropdown-icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+// Dropdown menu (mobile/tablet)
+.category-dropdown-menu {
+  display: none; // Hidden on desktop
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 20px;
+  right: 20px;
+  background: #ffffff;
+  border: 2px solid $light-gray;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: $light-gray transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $light-gray;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: darken($light-gray, 10%);
+  }
+
+  &.active {
+    display: block;
+  }
+
+  @media (min-width: 769px) {
+    display: none !important;
+  }
+}
+
+.category-dropdown-item {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $sub-font-gray;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    background: #f5f5f5;
+    color: $sub-font-green;
+    text-decoration: none;
+  }
+
+  &.active {
+    background: $button-color;
+    color: #ffffff;
+
+    &:hover {
+      background: darken($button-color, 5%);
+      color: #ffffff;
+    }
+  }
+}
+
+// Horizontal scroll (desktop)
 .categories-scroll {
   display: flex;
   gap: 10px;
@@ -287,6 +408,10 @@
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
     display: none;
   }
 }

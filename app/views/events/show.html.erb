@@ -110,7 +110,7 @@
         <div class="attendee-avatars">
           <% @event.registrations.limit(3).each do |reg| %>
             <div class="attendee-avatar" title="<%= reg.name.presence || reg.email %>">
-              <%= (reg.name.presence || reg.email).first.upcase %>
+              <%= render_avatar(reg, size: 32) %>
             </div>
           <% end %>
           <% if @event.registrations.count > 3 %>
@@ -237,6 +237,9 @@
               <ul class="guests-list">
                 <% @event.registrations.each do |registration| %>
                   <li class="guest-item">
+                    <div class="guest-avatar" style="margin-right: 12px;">
+                      <%= render_avatar(registration, size: 40) %>
+                    </div>
                     <div class="guest-info">
                       <strong class="guest-name"><%= registration.name.presence || registration.email %></strong>
                       <span class="guest-email">(<%= registration.email %>)</span>
@@ -261,7 +264,7 @@
             <h2 class="section-title">Reviews</h2>
 
             <% if @event.past? && user_signed_in? %>
-              <% if @user_registration && !@user_registration.reviewed? %>
+              <% if @user_registration && !@user_registration.reviewed?(@event) %>
                 <!-- Review Form -->
                 <div class="review-form-container">
                   <%= form_with(model: [@event, @event.reviews.build],
@@ -292,14 +295,17 @@
                     <%= form.submit "Submit Review", class: "btn-submit-review" %>
                   <% end %>
                 </div>
-              <% elsif @user_registration && @user_registration.reviewed? %>
-                <% user_review = @user_registration.review %>
+              <% elsif @user_registration && @user_registration.reviewed?(@event) %>
+                <% user_review = @user_registration.review(@event) %>
                 <% if user_review %>
                   <div class="review-form-container">
                     <p class="review-notice">You have already reviewed this event. You can edit or delete your review below.</p>
                     <div class="review-edit-form" data-controller="review-edit">
                       <div class="review-item" data-review-edit-target="display">
                         <div class="review-header">
+                          <div class="reviewer-avatar" style="margin-right: 12px;">
+                            <%= render_avatar(current_user, size: 40) %>
+                          </div>
                           <div class="reviewer-info">
                             <strong class="reviewer-name">Your Review</strong>
                             <div class="review-rating">
@@ -389,6 +395,9 @@
                   <% next if is_own_review %>
                   <div class="review-item">
                     <div class="review-header">
+                      <div class="reviewer-avatar" style="margin-right: 12px;">
+                        <%= render_avatar(review.registration, size: 40) %>
+                      </div>
                       <div class="reviewer-info">
                         <strong class="reviewer-name"><%= review.registration.name.presence || review.registration.email %></strong>
                         <div class="review-rating">

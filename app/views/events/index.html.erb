@@ -1,9 +1,5 @@
-<!-- Shows header and username -->
 <div class="home-page">
-<!-- Renders search input form with autocomplete -->
-  <!-- Shows header and username -->
-<div class="home-page">
-<!-- Renders search input form with autocomplete -->
+  <!-- Renders search input form with autocomplete -->
   <section class="search-section">
     <div class="search-card">
       <%= form_with url: events_path, method: :get, class: "search-form", local: true do |f| %>
@@ -44,7 +40,51 @@
   </section>
 
   <!-- Displays event category chips -->
-  <section class="categories-section">
+  <section class="categories-section" data-controller="category-dropdown">
+    <!-- Hamburger button for mobile/tablet -->
+    <button type="button" 
+            class="category-dropdown-toggle"
+            data-category-dropdown-target="button"
+            data-action="click->category-dropdown#toggle"
+            aria-label="Toggle category menu">
+      <span class="dropdown-toggle-text">
+        <% if params[:category].present? %>
+          <%= params[:category] %>
+        <% elsif params[:filter] == 'my_events' %>
+          My Events
+        <% else %>
+          All Categories
+        <% end %>
+      </span>
+      <svg class="dropdown-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </button>
+
+    <!-- Dropdown menu for mobile/tablet -->
+    <div class="category-dropdown-menu" data-category-dropdown-target="menu">
+      <%= link_to events_path, 
+          class: "category-dropdown-item #{'active' unless params[:category] || params[:filter] == 'my_events'}",
+          data: { action: "click->category-dropdown#close" } do %>
+        <span>All</span>
+      <% end %>
+
+      <%= link_to events_path(filter: 'my_events'), 
+          class: "category-dropdown-item #{'active' if params[:filter] == 'my_events'}",
+          data: { action: "click->category-dropdown#close" } do %>
+        <span>My Events</span>
+      <% end %>
+
+      <% Event::CATEGORIES.each do |category| %>
+        <%= link_to events_path(category: category), 
+            class: "category-dropdown-item #{'active' if params[:category] == category}",
+            data: { action: "click->category-dropdown#close" } do %>
+          <span><%= category %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Horizontal scroll for desktop -->
     <div class="categories-scroll">
       <%= link_to events_path, class: "category-chip #{'active' unless params[:category] || params[:filter] == 'my_events'}" do %>
         <span>All</span>
@@ -96,53 +136,7 @@
         <p>You don't have any events yet.</p>
       <% end %>
     </section>
-
-    <!-- Displays new events section -->
-    <section class="events-section">
-      <div class="section-header">
-        <h3 class="section-title">New Event</h3>
-        <%= link_to "Create event", new_event_path, class: "primary-link" %>
-      </div>
-
-      <% if @events.present? %>
-        <table class="events-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @events.each do |event| %>
-              <tr>
-                <td><%= event.title %></td>
-                <td><%= event.location %></td>
-                <td>
-                  <%= l(event.starts_at, format: :short) if event.respond_to?(:starts_at) && event.starts_at.present? %>
-                </td>
-                <td class="text-end">
-                  <%= link_to "View", event_path(event), class: "table-link" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p>You don't have any events yet.</p>
-      <% end %>
-    </section>
   <% end %>
-
-  <!-- Renders minimal event list -->
-  <section class="events-list-section">
-    <ul class="events-list">
-      <% @events.each do |event| %>
-        <li><%= link_to event.title, event_path(event) %></li>
-      <% end %>
-    </ul>
-  </section>
 
   <!-- Displays bottom navigation bar -->
   <nav class="bottom-nav">

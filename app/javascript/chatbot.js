@@ -49,6 +49,25 @@ function initChatbot() {
     }
   };
 
+  // Handle option clicks - populate input immediately
+  chatOptions.forEach(checkbox => {
+    checkbox.onclick = function() {
+      // Uncheck other options
+      chatOptions.forEach(cb => {
+        if (cb !== checkbox) cb.checked = false;
+      });
+
+      // Populate input with the option text
+      const optionText = checkbox.nextElementSibling.textContent.trim();
+      if (checkbox.checked) {
+        chatInput.value = optionText;
+        chatInput.focus();
+      } else {
+        chatInput.value = '';
+      }
+    };
+  });
+
   // Handle chat form submission
   if (chatForm) {
     chatForm.onsubmit = async function(e) {
@@ -57,10 +76,8 @@ function initChatbot() {
       const message = chatInput.value.trim();
       if (!message) return;
 
-      // Get selected options
-      const selectedOptions = Array.from(chatOptions)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+      // Uncheck all options before sending
+      chatOptions.forEach(cb => cb.checked = false);
 
       // Add user message to chat
       addMessage(message, 'user', chatMessages);
@@ -78,7 +95,7 @@ function initChatbot() {
           },
           body: JSON.stringify({
             message: message,
-            options: selectedOptions
+            options: [] // no longer sending options as context, message is self-contained
           })
         });
 
@@ -91,9 +108,6 @@ function initChatbot() {
         } else {
           addMessage('Sorry, I encountered an error. Please try again.', 'ai', chatMessages);
         }
-
-        // Uncheck options after first response
-        chatOptions.forEach(cb => cb.checked = false);
 
       } catch (error) {
         console.error('Chat error:', error);
