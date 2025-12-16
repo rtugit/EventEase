@@ -369,7 +369,6 @@
   }
 }
 
-
 .event-card {
   flex-shrink: 0;
   width: 100%;
@@ -487,9 +486,11 @@
   }
 }
 
+
 //.event-card-content {
 //  padding: 12px;
 //}
+
 
 .event-card-body {
   padding: 12px;
@@ -643,7 +644,11 @@
     width: 80px;
     height: 80px;
     margin: 0 auto 16px;
-    background: linear-gradient(135deg, rgba($sub-font-green, 0.15) 0%, rgba($point-color, 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba($sub-font-green, 0.15) 0%,
+      rgba($point-color, 0.1) 100%
+    );
     border-radius: 50%;
     display: flex;
     align-items: center;

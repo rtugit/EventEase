@@ -13,6 +13,7 @@ class RegistrationsController < ApplicationController
   # POST /events/:event_id/registrations
   def create
     @registration = @event.registrations.build(registration_params)
+    @registration.user = current_user if user_signed_in?
 
     if @registration.save
       redirect_to event_path(@event), notice: t('.success')

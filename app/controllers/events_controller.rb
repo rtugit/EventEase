@@ -30,8 +30,8 @@ class EventsController < ApplicationController
       sanitized_term = ActiveRecord::Base.connection.quote_string(search_term)
 
       @events = @events
-        .where("title ILIKE ?", "%#{search_term}%")
-        .order(Arel.sql("
+                .where("title ILIKE ?", "%#{search_term}%")
+                .order(Arel.sql("
           CASE
             WHEN LOWER(title) = LOWER('#{sanitized_term}') THEN 1
             WHEN LOWER(title) LIKE LOWER('#{sanitized_term}%') THEN 2
@@ -42,8 +42,8 @@ class EventsController < ApplicationController
 
       if @popular_events.present?
         @popular_events = @popular_events
-          .where("title ILIKE ?", "%#{search_term}%")
-          .order(Arel.sql("
+                          .where("title ILIKE ?", "%#{search_term}%")
+                          .order(Arel.sql("
             CASE
               WHEN LOWER(title) = LOWER('#{sanitized_term}') THEN 1
               WHEN LOWER(title) LIKE LOWER('#{sanitized_term}%') THEN 2
@@ -62,7 +62,11 @@ class EventsController < ApplicationController
 
     # Filter by date
     if params[:date].present?
-      search_date = Date.parse(params[:date]) rescue nil
+      search_date = begin
+        Date.parse(params[:date])
+      rescue StandardError
+        nil
+      end
       if search_date
         @events = @events.where("DATE(starts_at) = ?", search_date)
         @popular_events = @popular_events.where("DATE(starts_at) = ?", search_date)
@@ -96,9 +100,9 @@ class EventsController < ApplicationController
       when 'title'
         # Get matching event titles
         titles = Event.where("title ILIKE ?", "%#{query}%")
-                .distinct
-                .limit(8)
-                .pluck(:title)
+                      .distinct
+                      .limit(8)
+                      .pluck(:title)
 
         suggestions = titles.map do |title|
           {
