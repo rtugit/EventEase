@@ -160,7 +160,7 @@
   width: 100%;
   padding: 10px 15px 10px 0;
   font-size: 14px;
-  color: #434242;
+  color: #367C76;
   background: transparent;
   border-bottom: 1px solid #e5e5e5;
   transition: border-color 0.2s ease;
@@ -170,8 +170,19 @@
     border-bottom-color: #367C76;
   }
 
+  // When option is selected, change text color
+  &.has-value {
+    color: #434242;
+  }
+
   option {
     padding: 10px;
+    color: #434242;
+  }
+
+  // First option (placeholder) stays green
+  option:first-child {
+    color: #367C76;
   }
 }
 

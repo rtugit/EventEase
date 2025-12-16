@@ -5,4 +5,4 @@ import "@popperjs/core"
 import "bootstrap"
 import "chatbot"
 import "controllers/search_dropdown"
-
+import "controllers/personal_info"
