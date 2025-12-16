@@ -11,7 +11,7 @@ class EventsController < ApplicationController
                                          .or(Registration.where(email: current_user.email))
                                          .pluck(:event_id)
       all_my_event_ids = (my_event_ids + registered_event_ids).uniq
-      
+
       @events = Event.where(id: all_my_event_ids).includes(:registrations, :organizer).order(starts_at: :asc)
     else
       # Fetch current user's events (organizer's own events)
@@ -24,20 +24,109 @@ class EventsController < ApplicationController
       @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
     end
 
-    # Search by title
+    # Filter by title - prioritize exact/starting matches first
     if params[:title].present?
-      @events = @events.where("title ILIKE ?", "%#{params[:title]}%")
+      search_term = params[:title].strip
+      sanitized_term = ActiveRecord::Base.connection.quote_string(search_term)
+
+      @events = @events
+        .where("title ILIKE ?", "%#{search_term}%")
+        .order(Arel.sql("
+          CASE
+            WHEN LOWER(title) = LOWER('#{sanitized_term}') THEN 1
+            WHEN LOWER(title) LIKE LOWER('#{sanitized_term}%') THEN 2
+            WHEN LOWER(title) LIKE LOWER('% #{sanitized_term}%') THEN 3
+            ELSE 4
+          END, title ASC
+        "))
+
+      if @popular_events.present?
+        @popular_events = @popular_events
+          .where("title ILIKE ?", "%#{search_term}%")
+          .order(Arel.sql("
+            CASE
+              WHEN LOWER(title) = LOWER('#{sanitized_term}') THEN 1
+              WHEN LOWER(title) LIKE LOWER('#{sanitized_term}%') THEN 2
+              WHEN LOWER(title) LIKE LOWER('% #{sanitized_term}%') THEN 3
+              ELSE 4
+            END, title ASC
+          "))
+      end
     end
 
     # Filter by location
     if params[:location].present?
       @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
+      @popular_events = @popular_events.where("location ILIKE ?", "%#{params[:location]}%")
     end
 
     # Filter by date
     if params[:date].present?
-      @events = @events.where("DATE(starts_at) = ?", params[:date])
+      search_date = Date.parse(params[:date]) rescue nil
+      if search_date
+        @events = @events.where("DATE(starts_at) = ?", search_date)
+        @popular_events = @popular_events.where("DATE(starts_at) = ?", search_date)
+      end
     end
+
+    # Filter by category
+    if params[:category].present?
+      @events = @events.where(category: params[:category])
+      @popular_events = @popular_events.where(category: params[:category])
+    end
+
+    # Order by date (only if not searching by title, since title search has its own ordering)
+    unless params[:title].present?
+      @events = @events.order(starts_at: :desc)
+      @popular_events = @popular_events&.order(starts_at: :desc)
+    end
+
+    @popular_events = @popular_events&.limit(10)
+  end
+
+  # Autocomplete suggestions endpoint
+  def search_suggestions
+    query = params[:q].to_s.strip
+    type = params[:type].to_s
+
+    suggestions = []
+
+    if query.length >= 2
+      case type
+      when 'title'
+        # Get matching event titles
+        titles = Event.where("title ILIKE ?", "%#{query}%")
+                .distinct
+                .limit(8)
+                .pluck(:title)
+
+        suggestions = titles.map do |title|
+          {
+            value: title,
+            label: title,
+            icon: 'fa-calendar-days'
+          }
+        end
+
+      when 'location'
+        # Get matching locations
+        locations = Event.where("location ILIKE ?", "%#{query}%")
+                         .select(:location)
+                         .distinct
+                         .limit(8)
+                         .pluck(:location)
+
+        suggestions = locations.compact.map do |location|
+          {
+            value: location,
+            label: location,
+            icon: 'fa-location-dot'
+          }
+        end
+      end
+    end
+
+    render json: suggestions
   end
 
   def show
