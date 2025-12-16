@@ -1,0 +1,35 @@
+<div class="form-group ai-description-field">
+  <div class="ai-write-header">
+    <%= f.label :description, "Description", class: "form-label" %>
+    <button type="button" id="aiWriteBtn" class="ai-write-btn" aria-label="AI Write">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ai-write-icon" aria-hidden="true">
+        <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path>
+        <path d="M20 2v4"></path>
+        <path d="M22 4h-4"></path>
+        <circle cx="4" cy="20" r="2"></circle>
+      </svg>
+      AI Write
+    </button>
+  </div>
+
+  <div id="aiPromptContainer" class="ai-prompt-container" style="display: none;">
+    <label for="aiPromptInput" class="sr-only">Prompt</label>
+    <input type="text" id="aiPromptInput" class="form-control ai-prompt-input" placeholder="Ask Eventes to draft or enhance your event description...">
+    <div class="ai-prompt-actions">
+      <button type="button" id="aiGenerateBtn" class="btn btn-sm btn-primary">Generate</button>
+      <button type="button" id="aiEnhanceBtn" class="btn btn-sm btn-outline-primary">Enhance Existing</button>
+      <button type="button" id="aiCancelBtn" class="btn btn-sm btn-link">Cancel</button>
+    </div>
+    <div id="aiLoading" class="ai-loading" style="display: none;">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span>Creating copy...</span>
+    </div>
+  </div>
+
+  <%= f.text_area :description,
+                  required: true,
+                  class: "form-control",
+                  id: "eventDescription",
+                  rows: 6,
+                  placeholder: "Describe your event..." %>
+</div>

@@ -9,7 +9,7 @@ class AccountsController < ApplicationController
     if handle_photo_upload && current_user.update(user_params)
       redirect_to personal_info_path, notice: "Profile updated successfully!"
     else
-      render :personal_info, status: :unprocessable_entity
+      render :personal_info, status: :unprocessable_content
     end
   end
 
@@ -34,7 +34,7 @@ class AccountsController < ApplicationController
           content_type: 'image/jpeg'
         )
         true
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error("Photo upload error: #{e.message}")
         false
       end

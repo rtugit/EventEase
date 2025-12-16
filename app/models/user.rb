@@ -2,7 +2,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable
 
   validates :first_name, presence: true, length: { maximum: 255 }
   validates :last_name, presence: true, length: { maximum: 255 }
@@ -23,8 +23,14 @@ class User < ApplicationRecord
   private
 
   def sanitize_inputs
-    self.first_name = ActionController::Base.helpers.sanitize(first_name, tags: [], attributes: []) if first_name.present?
+    if first_name.present?
+      self.first_name = ActionController::Base.helpers.sanitize(first_name, tags: [],
+                                                                            attributes: [])
+    end
     self.last_name = ActionController::Base.helpers.sanitize(last_name, tags: [], attributes: []) if last_name.present?
-    self.phone_number = ActionController::Base.helpers.sanitize(phone_number, tags: [], attributes: []) if phone_number.present?
+    return if phone_number.blank?
+
+    self.phone_number = ActionController::Base.helpers.sanitize(phone_number, tags: [],
+                                                                              attributes: [])
   end
 end

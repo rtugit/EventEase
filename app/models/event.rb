@@ -30,11 +30,10 @@ class Event < ApplicationRecord
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validate :ends_at_after_starts_at
 
-  # Sanitize HTML content to prevent XSS attacks
-  before_save :sanitize_inputs
-
   # Set virtual attributes from starts_at when loading the model
   after_initialize :set_date_time_from_starts_at
+  # Sanitize HTML content to prevent XSS attacks
+  before_save :sanitize_inputs
 
   # Enable nested attributes for rundown items
   accepts_nested_attributes_for :rundown_items, allow_destroy: true, reject_if: :all_blank
@@ -55,9 +54,7 @@ class Event < ApplicationRecord
   after_update :enforce_capacity_limit
 
   # Count active registrations (not cancelled)
-  def active_registrations_count
-    active_registrations.count
-  end
+  delegate :count, to: :active_registrations, prefix: true
 
   # Check if event has available spots
   def has_available_spots?
@@ -94,7 +91,10 @@ class Event < ApplicationRecord
     self.title = ActionController::Base.helpers.sanitize(title, tags: [], attributes: []) if title.present?
     self.location = ActionController::Base.helpers.sanitize(location, tags: [], attributes: []) if location.present?
     # Description can include basic formatting
-    self.description = ActionController::Base.helpers.sanitize(description, tags: %w[p br ul ol li strong em], attributes: []) if description.present?
+    return if description.blank?
+
+    self.description = ActionController::Base.helpers.sanitize(description, tags: %w[p br ul ol li strong em],
+                                                                            attributes: [])
   end
 
   def enforce_capacity_limit

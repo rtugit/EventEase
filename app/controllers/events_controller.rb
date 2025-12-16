@@ -11,7 +11,7 @@ class EventsController < ApplicationController
                                          .or(Registration.where(email: current_user.email))
                                          .pluck(:event_id)
       all_my_event_ids = (my_event_ids + registered_event_ids).uniq
-      
+
       @events = Event.where(id: all_my_event_ids).includes(:registrations, :organizer).order(starts_at: :asc)
     else
       # Fetch current user's events (organizer's own events)
@@ -25,19 +25,15 @@ class EventsController < ApplicationController
     end
 
     # Search by title
-    if params[:title].present?
-      @events = @events.where("title ILIKE ?", "%#{params[:title]}%")
-    end
+    @events = @events.where("title ILIKE ?", "%#{params[:title]}%") if params[:title].present?
 
     # Filter by location
-    if params[:location].present?
-      @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
-    end
+    @events = @events.where("location ILIKE ?", "%#{params[:location]}%") if params[:location].present?
 
     # Filter by date
-    if params[:date].present?
-      @events = @events.where("DATE(starts_at) = ?", params[:date])
-    end
+    return if params[:date].blank?
+
+    @events = @events.where("DATE(starts_at) = ?", params[:date])
   end
 
   def show
@@ -94,10 +90,6 @@ class EventsController < ApplicationController
   end
 
   private
-
-  def authorize_organizer
-    redirect_to event_path(@event), alert: "You are not authorized to perform this action." unless @event.organizer == current_user
-  end
 
   def set_event
     @event = Event.find(params[:id])

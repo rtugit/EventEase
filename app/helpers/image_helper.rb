@@ -10,17 +10,21 @@ module ImageHelper
   #
   def responsive_image(record, key = :photo, fallback = "eventease-logo.svg", attachment: nil, **options)
     classes = options.delete(:class)
-    
+
     # Extract Cloudinary transformation options
     cloudinary_transforms = {}
-    [:height, :width, :crop, :gravity, :quality].each do |attr|
+    %i[height width crop gravity quality].each do |attr|
       cloudinary_transforms[attr] = options.delete(attr) if options.key?(attr)
     end
-    
+
     # Get the attachment - handle both has_one and has_many
     att = attachment
     if att.nil? && record
-      attr = record.public_send(key) rescue nil
+      attr = begin
+        record.public_send(key)
+      rescue StandardError
+        nil
+      end
       # If it's a collection (has_many_attached), get the first blob
       if attr.respond_to?(:first)
         att = attr.first&.blob

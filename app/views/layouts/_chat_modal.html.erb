@@ -1,0 +1,67 @@
+<div class="chatbot-overlay" id="chatbotOverlay">
+  <div class="chatbot" id="chatbotModal">
+    <div class="chatbot-header">
+      <div class="chatbot-header_title">
+        <strong>Eventes AI Assistant</strong>
+      </div>
+      <button class="chatbot-close" id="chatCloseBtn" aria-label="Close chat">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="chatbot-body">
+      <div class="chatbot-greeting">
+        <p><strong>Hello, how can I help you today?</strong></p>
+      </div>
+
+      <div class="chatbot-options">
+        <label class="chatbot-option">
+          <input type="checkbox" name="chat_option" value="create_event" class="chatbot-checkbox">
+          <span>I want to create an event</span>
+        </label>
+        <label class="chatbot-option">
+          <input type="checkbox" name="chat_option" value="sell_tickets" class="chatbot-checkbox">
+          <span>I need help selling tickets</span>
+        </label>
+        <label class="chatbot-option">
+          <input type="checkbox" name="chat_option" value="manage_event" class="chatbot-checkbox">
+          <span>I want to manage my event</span>
+        </label>
+        <label class="chatbot-option">
+          <input type="checkbox" name="chat_option" value="event_promotion" class="chatbot-checkbox">
+          <span>I need help with event promotion</span>
+        </label>
+        <label class="chatbot-option">
+          <input type="checkbox" name="chat_option" value="ticket_pricing" class="chatbot-checkbox">
+          <span>I have questions about ticket pricing</span>
+        </label>
+      </div>
+
+      <div class="chatbot-messages" id="chatMessages">
+        <!-- Chat messages will appear here -->
+      </div>
+    </div>
+
+    <div class="chatbot-footer">
+      <form class="chatbot-form" id="chatForm">
+        <input 
+          type="text" 
+          class="chatbot-input" 
+          id="chatInput" 
+          placeholder="Ask Eventes anything..."
+          autocomplete="off"
+        >
+        <button type="submit" class="chatbot-send" aria-label="Send message">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+      <p class="chatbot-disclaimer">Eventes can make mistakes. Double-check replies.</p>
+    </div>
+  </div>
+</div>
