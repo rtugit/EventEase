@@ -88,10 +88,10 @@
   ul {
     margin: 8px 0 0 0;
     padding-left: 20px;
-    
+
     li {
       margin-bottom: 4px;
-      
+
       strong {
         color: #dc3545;
       }
@@ -129,4 +129,105 @@ form abbr[title] {
 form label abbr[title="required"] {
   color: #dc3545;
   font-weight: bold;
+}
+
+// Edit User Page Styles
+
+.edit-user-page {
+  color: #122927;
+  background-color: #F8FFFE;
+  max-width: auto;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.password-field-wrapper {
+  position: relative;
+
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 33px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #888888;
+    font-size: 16px;
+    z-index: 10;
+
+    &:hover {
+      color: #367C76;
+    }
+  }
+
+  input.password-input {
+    padding-right: 45px;
+  }
+
+  .hint,
+  .form-text,
+  .help-block {
+    color: #367C76;
+  }
+}
+
+.form-actions {
+  margin-top: 32px;
+  margin-bottom: 48px;
+
+  .btn-update {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #122927;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #367C76;
+    }
+  }
+}
+
+.cancel-account-section {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222222;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #888888;
+    margin-bottom: 16px;
+  }
+
+  .btn-danger {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #cc0000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #dc3545;
+    }
+  }
 }
