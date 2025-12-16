@@ -25,4 +25,7 @@ Rails.application.routes.draw do
   get '/dashboard', to: 'dashboard#index'
   get 'account/personal_info', to: 'accounts#personal_info', as: :personal_info
   patch 'account/update', to: 'accounts#update', as: :update_user
+  post 'ai/chat', to: 'ai#chat'
+  post 'ai/generate_content', to: 'ai#generate_content'
 end
+

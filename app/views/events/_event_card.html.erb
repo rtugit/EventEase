@@ -34,23 +34,20 @@
       </p>
     <% end %>
 
-    <div class="avatars-guest">
-      <% avatars = %w[/images/avatars/girl.png /images/avatars/girll.png /images/avatars/man.png /images/avatars/mann.png] %>
-      <% registrations = event.registrations.limit(4).to_a %>
-      <% registrations.each_with_index do |registration, index| %>
-        <% email = registration.email.to_s %>
-        <% hash_index = Zlib.crc32(email) % avatars.size rescue 0 %>
-        <% avatar_file = avatars[hash_index] %>
-        <% handle = email.split("@").first %>
-        <% initial = handle[0].to_s.upcase.presence || "?" %>
+    <% if event.organizer.present? %>
+      <div class="organizer-info" style="display: flex; align-items: center; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+        <%= render_avatar(event.organizer, size: 24) %>
+        <span class="organizer-name" style="font-size: 13px; color: #5b6b6a;">Hosted by <%= event.organizer.first_name %></span>
+      </div>
+    <% end %>
 
-        <% if avatar_file.present? %>
-          <div class="avatar-guest" title="<%= registration.name.presence || email %>">
-            <img src="<%= asset_path(avatar_file) %>" alt="<%= registration.name.presence || email %>">
-          </div>
-        <% else %>
-          <div class="avatar-guest" title="<%= registration.name.presence || email %>"><%= initial %></div>
-        <% end %>
+    <div class="avatars-guest">
+      <% registrations = event.registrations.limit(4).to_a %>
+
+      <% registrations.each do |registration| %>
+        <div class="avatar-guest" title="<%= registration.name.presence || registration.email %>">
+          <%= render_avatar(registration, size: 24) %>
+        </div>
       <% end %>
 
       <% if event.registrations.count > registrations.size %>
