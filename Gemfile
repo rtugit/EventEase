@@ -84,3 +84,4 @@ gem "dotenv-rails", groups: %i[development test]
 # Image upload service
 gem "cloudinary"
 gem "ruby_llm"
+gem "ruby-openai"

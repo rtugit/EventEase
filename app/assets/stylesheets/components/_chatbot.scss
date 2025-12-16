@@ -333,3 +333,8 @@
     transform: rotate(360deg);
   }
 }
+
+/* Hide Ask Eventes floating button */
+.chat-float-container {
+  display: none !important;
+}

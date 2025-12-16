@@ -33,21 +33,16 @@
                 autofocus: true,
                 label: "Event Title",
                 placeholder: "Enter event title",
-                input_html: { 
-                  class: "form-control"
-                },
+                input_html: { class: "form-control" },
                 wrapper_html: { class: "form-group" } %>
 
-    <%# AI-Enhanced Description Field %>
     <%= render "events/description_field", f: f %>
 
     <%= f.input :location,
                 required: true,
                 label: "Location",
                 placeholder: "e.g. Berlin, Germany",
-                input_html: { 
-                  class: "form-control"
-                },
+                input_html: { class: "form-control" },
                 wrapper_html: { class: "form-group" } %>
 
     <%= f.input :category,
@@ -55,9 +50,7 @@
                 label: "Event Category",
                 collection: Event::CATEGORIES,
                 prompt: "Select a category",
-                input_html: { 
-                  class: "form-control"
-                },
+                input_html: { class: "form-control" },
                 wrapper_html: { class: "form-group" } %>
 
     <div class="row">
@@ -66,9 +59,7 @@
           <%= f.label :event_date, class: "form-label" do %>
             Date <abbr title="required">*</abbr>
           <% end %>
-          <%= f.date_field :event_date,
-                          required: true,
-                          class: "form-control" %>
+          <%= f.date_field :event_date, required: true, class: "form-control" %>
         </div>
       </div>
       <div class="col-md-6">
@@ -76,9 +67,7 @@
           <%= f.label :event_time, class: "form-label" do %>
             Time <abbr title="required">*</abbr>
           <% end %>
-          <%= f.time_field :event_time,
-                          required: true,
-                          class: "form-control" %>
+          <%= f.time_field :event_time, required: true, class: "form-control" %>
         </div>
       </div>
     </div>
@@ -87,83 +76,57 @@
                 required: false,
                 label: "Capacity",
                 placeholder: "Leave empty for unlimited",
-                input_html: { 
-                  class: "form-control",
-                  type: "number",
-                  min: 1
-                },
+                input_html: { class: "form-control", type: "number", min: 1 },
                 wrapper_html: { class: "form-group" } %>
 
     <div class="rundown-section" data-controller="rundown-items">
       <h3>Event Rundown</h3>
-      
+
       <div data-rundown-items-target="container">
         <%= f.fields_for :rundown_items do |rundown_form| %>
           <div class="rundown-item" data-rundown-items-target="item">
             <%= rundown_form.hidden_field :id if rundown_form.object.persisted? %>
-            
+
             <div class="form-group">
               <%= rundown_form.label :heading, "Heading", class: "form-label" %>
-              <%= rundown_form.text_field :heading,
-                                          class: "form-control",
-                                          placeholder: "Enter heading" %>
+              <%= rundown_form.text_field :heading, class: "form-control", placeholder: "Enter heading" %>
             </div>
-            
+
             <div class="form-group">
               <%= rundown_form.label :description, "Description", class: "form-label" %>
-              <%= rundown_form.text_area :description,
-                                        class: "form-control",
-                                        rows: 3,
-                                        placeholder: "Enter description" %>
+              <%= rundown_form.text_area :description, class: "form-control", rows: 3, placeholder: "Enter description" %>
             </div>
-            
+
             <%= rundown_form.hidden_field :position, value: rundown_form.index %>
             <%= rundown_form.hidden_field :_destroy, value: false, data: { rundown_items_target: "destroyField" } %>
-            
-            <button type="button" 
-                    class="btn btn-sm btn-outline-danger" 
-                    data-action="click->rundown-items#removeItem">
+
+            <button type="button" class="btn btn-sm btn-outline-danger" data-action="click->rundown-items#removeItem">
               Remove
             </button>
           </div>
         <% end %>
       </div>
-      
-      <button type="button" 
-              class="btn btn-sm btn-outline-primary" 
-              data-action="click->rundown-items#addItem">
+
+      <button type="button" class="btn btn-sm btn-outline-primary" data-action="click->rundown-items#addItem">
         Add Another Item
       </button>
-      
+
       <template data-rundown-items-target="template">
         <div class="rundown-item" data-rundown-items-target="item">
           <div class="form-group">
             <label class="form-label">Heading</label>
-            <input type="text" 
-                   name="event[rundown_items_attributes][NEW_INDEX][heading]" 
-                   class="form-control"
-                   placeholder="Enter heading" />
+            <input type="text" name="event[rundown_items_attributes][NEW_INDEX][heading]" class="form-control" placeholder="Enter heading" />
           </div>
-          
+
           <div class="form-group">
             <label class="form-label">Description</label>
-            <textarea name="event[rundown_items_attributes][NEW_INDEX][description]" 
-                      class="form-control"
-                      rows="3"
-                      placeholder="Enter description"></textarea>
+            <textarea name="event[rundown_items_attributes][NEW_INDEX][description]" class="form-control" rows="3" placeholder="Enter description"></textarea>
           </div>
-          
-          <input type="hidden" 
-                 name="event[rundown_items_attributes][NEW_INDEX][position]" 
-                 value="NEW_INDEX" />
-          <input type="hidden" 
-                 name="event[rundown_items_attributes][NEW_INDEX][_destroy]" 
-                 value="false"
-                 data-rundown-items-target="destroyField" />
-          
-          <button type="button" 
-                  class="btn btn-sm btn-outline-danger" 
-                  data-action="click->rundown-items#removeItem">
+
+          <input type="hidden" name="event[rundown_items_attributes][NEW_INDEX][position]" value="NEW_INDEX" />
+          <input type="hidden" name="event[rundown_items_attributes][NEW_INDEX][_destroy]" value="false" data-rundown-items-target="destroyField" />
+
+          <button type="button" class="btn btn-sm btn-outline-danger" data-action="click->rundown-items#removeItem">
             Remove
           </button>
         </div>
@@ -171,30 +134,60 @@
     </div>
 
     <div class="event-photo-section">
+      <div class="ai-photo-header">
+        <label class="form-label">Event Photo</label>
+        <button type="button" id="aiImageBtn" class="ai-write-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ai-write-icon">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          AI Image
+        </button>
+      </div>
+
+      <div id="aiImagePromptContainer" class="ai-prompt-container" style="display: none;">
+        <input type="text" id="aiImagePromptInput" class="form-control ai-prompt-input" placeholder="Describe the image you want to generate...">
+        <div class="ai-prompt-actions">
+          <button type="button" id="aiImageGenerateBtn" class="btn btn-sm btn-primary">Generate Image</button>
+          <button type="button" id="aiImageCancelBtn" class="btn btn-sm btn-link">Cancel</button>
+        </div>
+        <div id="aiImageLoading" class="ai-loading" style="display: none;">
+          <span class="spinner-border spinner-border-sm" role="status"></span>
+          <span>Generating image... (this may take 10-20 seconds)</span>
+        </div>
+      </div>
+
+      <!-- AI Image Preview (shown after generation) -->
+      <div id="aiImagePreview" class="ai-image-preview" style="display: none; margin: 1rem 0;">
+        <p style="font-size: 14px; color: #367C76; margin-bottom: 8px; font-weight: 500;">Generated Image:</p>
+        <img id="aiGeneratedImage" src="" alt="AI Generated Image" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #367C76;">
+        <div style="margin-top: 10px;">
+          <button type="button" id="aiImageUseBtn" class="btn btn-sm btn-primary">Use this image</button>
+          <button type="button" id="aiImageRegenerateBtn" class="btn btn-sm btn-outline-secondary" style="margin-left: 8px;">Generate new</button>
+        </div>
+      </div>
+
+      <!-- Selected AI Image (shown after clicking "Use this image") -->
+      <div id="aiImageSelected" style="display: none; margin: 1rem 0; padding: 12px; background: #e8f5e9; border-radius: 8px; border: 1px solid #28a745;">
+        <p style="font-size: 14px; color: #28a745; margin-bottom: 8px; font-weight: 500;">✓ AI Image will be used:</p>
+        <img id="aiSelectedImage" src="" alt="Selected AI Image" style="max-width: 100%; max-height: 250px; border-radius: 8px;">
+      </div>
+
+      <input type="hidden" id="aiImageUrl" name="event[ai_image_url]" value="">
+
       <%= f.input :photos,
                   required: false,
-                  label: "Event Photo",
+                  label: false,
                   as: :file,
-                  input_html: { 
-                    multiple: true,
-                    accept: "image/*",
-                    class: "form-control"
-                  },
+                  input_html: { multiple: true, accept: "image/*", class: "form-control", id: "eventPhotosInput" },
                   wrapper_html: { class: "form-group" },
                   hint: "Upload a photo for your event" %>
-      
+
       <% if event.photos.attached? && !event.new_record? %>
         <div class="photo-preview">
           <p>Current photo:</p>
-          <%= responsive_image(nil,
-                               :photo,
-                               "eventease-logo.svg",
-                               attachment: event.photos.first,
-                               height: 200,
-                               width: 400,
-                               crop: :fill,
-                               class: "img-fluid",
-                               style: "max-width: 100%; border-radius: 8px;") %>
+          <%= responsive_image(nil, :photo, "eventease-logo.svg", attachment: event.photos.first, height: 200, width: 400, crop: :fill, class: "img-fluid", style: "max-width: 100%; border-radius: 8px;") %>
           <p>Upload a new photo to replace it</p>
         </div>
       <% end %>
@@ -206,3 +199,118 @@
   </div>
 <% end %>
 
+<script>
+function initAIImageButton() {
+  const aiImageBtn = document.getElementById('aiImageBtn');
+  const aiImagePromptContainer = document.getElementById('aiImagePromptContainer');
+  const aiImageCancelBtn = document.getElementById('aiImageCancelBtn');
+  const aiImageGenerateBtn = document.getElementById('aiImageGenerateBtn');
+  const aiImageLoading = document.getElementById('aiImageLoading');
+  const aiImagePromptInput = document.getElementById('aiImagePromptInput');
+  const aiImagePreview = document.getElementById('aiImagePreview');
+  const aiGeneratedImage = document.getElementById('aiGeneratedImage');
+  const aiImageUseBtn = document.getElementById('aiImageUseBtn');
+  const aiImageRegenerateBtn = document.getElementById('aiImageRegenerateBtn');
+  const aiImageUrlInput = document.getElementById('aiImageUrl');
+  const aiImageSelected = document.getElementById('aiImageSelected');
+  const aiSelectedImage = document.getElementById('aiSelectedImage');
+
+  if (aiImageBtn && !aiImageBtn.dataset.initialized) {
+    aiImageBtn.dataset.initialized = 'true';
+
+    aiImageBtn.addEventListener('click', function() {
+      aiImagePromptContainer.style.display = 'block';
+      aiImagePromptInput.focus();
+    });
+  }
+
+  if (aiImageCancelBtn && !aiImageCancelBtn.dataset.initialized) {
+    aiImageCancelBtn.dataset.initialized = 'true';
+
+    aiImageCancelBtn.addEventListener('click', function() {
+      aiImagePromptContainer.style.display = 'none';
+      aiImagePromptInput.value = '';
+    });
+  }
+
+  if (aiImageGenerateBtn && !aiImageGenerateBtn.dataset.initialized) {
+    aiImageGenerateBtn.dataset.initialized = 'true';
+
+    aiImageGenerateBtn.addEventListener('click', async function() {
+      const prompt = aiImagePromptInput.value.trim();
+      if (!prompt) {
+        alert('Please enter an image description');
+        return;
+      }
+
+      aiImageLoading.style.display = 'flex';
+      aiImageGenerateBtn.disabled = true;
+      aiImagePreview.style.display = 'none';
+      aiImageSelected.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/ai_images', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await response.json();
+
+        if (data.image_url) {
+          aiGeneratedImage.src = data.image_url;
+          aiImagePreview.style.display = 'block';
+          aiImageUrlInput.value = data.image_url;
+          aiImagePromptContainer.style.display = 'none';
+        } else {
+          alert('Error: ' + (data.error || 'Failed to generate image'));
+        }
+      } catch (error) {
+        alert('Error generating image: ' + error.message);
+      } finally {
+        aiImageLoading.style.display = 'none';
+        aiImageGenerateBtn.disabled = false;
+      }
+    });
+  }
+
+  if (aiImageRegenerateBtn && !aiImageRegenerateBtn.dataset.initialized) {
+    aiImageRegenerateBtn.dataset.initialized = 'true';
+
+    aiImageRegenerateBtn.addEventListener('click', function() {
+      aiImagePreview.style.display = 'none';
+      aiImagePromptContainer.style.display = 'block';
+      aiImagePromptInput.focus();
+    });
+  }
+
+  if (aiImageUseBtn && !aiImageUseBtn.dataset.initialized) {
+    aiImageUseBtn.dataset.initialized = 'true';
+
+    aiImageUseBtn.addEventListener('click', function() {
+      // Copy image to selected preview
+      aiSelectedImage.src = aiGeneratedImage.src;
+      aiImageSelected.style.display = 'block';
+
+      // Hide the generation preview
+      aiImagePreview.style.display = 'none';
+
+      // Update button to show success
+      aiImageBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Image Ready
+      `;
+      aiImageBtn.style.backgroundColor = '#28a745';
+      aiImageBtn.style.borderColor = '#28a745';
+      aiImageBtn.style.color = 'white';
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initAIImageButton);
+document.addEventListener('turbo:load', initAIImageButton);
+</script>
