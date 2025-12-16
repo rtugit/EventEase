@@ -54,20 +54,10 @@
         <span>My Events</span>
       <% end %>
 
-      <%= link_to events_path(category: "music"), class: "category-chip #{'active' if params[:category] == 'music'}" do %>
-        <span>Music</span>
-      <% end %>
-
-      <%= link_to events_path(category: "art"), class: "category-chip #{'active' if params[:category] == 'art'}" do %>
-        <span>Art</span>
-      <% end %>
-
-      <%= link_to events_path(category: "sports"), class: "category-chip #{'active' if params[:category] == 'sports'}" do %>
-        <span>Sports</span>
-      <% end %>
-
-      <%= link_to events_path(category: "food"), class: "category-chip #{'active' if params[:category] == 'food'}" do %>
-        <span>Food</span>
+      <% Event::CATEGORIES.each do |category| %>
+        <%= link_to events_path(category: category), class: "category-chip #{'active' if params[:category] == category}" do %>
+          <span><%= category %></span>
+        <% end %>
       <% end %>
     </div>
   </section>
