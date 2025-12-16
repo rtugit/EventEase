@@ -12,11 +12,11 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
 
   <body>
-    <% unless devise_controller? || (controller_name == 'events' && action_name == 'show') || (controller_name == 'pages' && action_name == 'landing') %>
+    <% unless devise_controller? || (controller_name == 'pages' && action_name == 'landing') %>
       <%= render "shared/navbar" %>
     <% end %>
     <%= render "shared/flashes" %>

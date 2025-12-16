@@ -1,56 +1,50 @@
 <main class="event-show">
-  <!-- Navigation Header -->
-  <nav class="event-nav-header">
-    <%= link_to events_path, class: "nav-back-button" do %>
+  <!-- Back Button -->
+  <div class="event-back-nav">
+    <%= link_to events_path, class: "back-button" do %>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
       </svg>
+      <span>Back to Events</span>
     <% end %>
-    <h1 class="nav-title">Event Details</h1>
+
     <% if user_signed_in? && @event.organizer == current_user %>
-      <div class="nav-actions">
-        <%= link_to edit_event_path(@event), class: "nav-action-button nav-edit-button" do %>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="event-owner-actions">
+        <%= link_to edit_event_path(@event), class: "owner-action-btn edit-btn" do %>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
           </svg>
-          <span>Edit</span>
+          Edit
         <% end %>
-        <%= link_to check_in_event_path(@event), class: "nav-action-button nav-edit-button" do %>
-          <span>Check-in</span>
+        <%= link_to check_in_event_path(@event), class: "owner-action-btn checkin-btn" do %>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Check-in
         <% end %>
         <%= button_to event_path(@event),
                     method: :delete,
-                    class: "nav-action-button nav-delete-button",
+                    class: "owner-action-btn delete-btn",
                     form: {
                       data: {
                         confirm: "Are you sure you want to delete this event? This action cannot be undone."
                       }
                     } do %>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            <line x1="10" y1="11" x2="10" y2="17"></line>
-            <line x1="14" y1="11" x2="14" y2="17"></line>
           </svg>
-          <span>Delete</span>
+          Delete
         <% end %>
       </div>
-    <% else %>
-      <button type="button" class="nav-menu-button" aria-label="More options">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="1"/>
-          <circle cx="12" cy="5" r="1"/>
-          <circle cx="12" cy="19" r="1"/>
-        </svg>
-      </button>
     <% end %>
-  </nav>
+  </div>
 
   <!-- Main Event Image Section -->
   <section class="event-image-section">
     <% if @event.photos.attached? %>
       <div class="event-image-container">
-        <%# Use responsive_image helper to handle Cloudinary/ActiveStorage separation %>
         <%= responsive_image(@event, :photos, alt: @event.title, class: "event-image") %>
         <%= cl_image_tag @event.photos.first.key,
                         height: 600,
@@ -219,7 +213,6 @@
           <div class="location-map-section">
             <h2 class="section-title">Location</h2>
 
-            <%# Leaflet map container. Location is geocoded via Nominatim in the script below. %>
             <div id="event-map"
                  class="map-container"
                  data-location="<%= @event.location %>"
@@ -432,7 +425,6 @@
   <div class="join-button-container">
     <% if user_signed_in? %>
       <% if @user_registration %>
-        <!-- User has joined - show Unjoin button -->
         <%= button_to "Unjoin",
                     event_registration_path(@event, @user_registration),
                     method: :delete,
@@ -446,7 +438,6 @@
                     },
                     data: { registration_target: "submitButton" } %>
       <% else %>
-        <!-- User hasn't joined - show Join button -->
         <%= form_with(model: [@event, @event.registrations.build],
                     url: event_registrations_path(@event),
                     method: :post,
@@ -470,17 +461,14 @@
       const el = document.getElementById("event-map");
       if (!el) return;
 
-      // If Leaflet isn't loaded yet, do nothing (prevents runtime error).
       if (!window.L) return;
 
-      // Avoid double init (Turbo / repeated visits)
       if (el.dataset.leafletInitialized === "true") return;
       el.dataset.leafletInitialized = "true";
 
       const location = el.dataset.location;
       if (!location) return;
 
-      // Geocode via Nominatim (no key). Keep it lightweight.
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
 
       let lat = null, lon = null;
@@ -492,10 +480,8 @@
           lon = parseFloat(data[0].lon);
         }
       } catch (_) {
-        // fall back
       }
 
-      // Fallback: Germany center (so map doesn't stay blank)
       if (!lat || !lon) {
         lat = 51.1657;
         lon = 10.4515;
@@ -506,12 +492,10 @@
         attribution: "&copy; OpenStreetMap contributors"
       }).addTo(map);
 
-      // Only add marker if we actually geocoded a specific place
       if (!(lat === 51.1657 && lon === 10.4515)) {
         L.marker([lat, lon]).addTo(map).bindPopup(location);
       }
 
-      // When switching tabs back to Details, Leaflet sometimes needs a resize nudge.
       const detailsTab = document.getElementById("details-tab");
       if (detailsTab) {
         detailsTab.addEventListener("click", () => {
