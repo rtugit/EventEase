@@ -11,25 +11,34 @@
   margin-bottom: 0.5rem;
 }
 
-/* Updated to #122927 theme */
+.ai-photo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Green outlined pill button style */
 .ai-write-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #122927;
-  background-color: rgba(18, 41, 39, 0.08);
-  padding: 0.5rem 1rem; /* Standardizing small pill button: 8px 16px */
-  border: 1px solid rgba(18, 41, 39, 0.2);
+  color: #367C76;
+  background-color: rgba(54, 124, 118, 0.08);
+  padding: 0.5rem 1rem;
+  border: 1.5px solid #367C76;
   border-radius: 999px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .ai-write-btn:hover {
-  background-color: rgba(18, 41, 39, 0.15);
-  border-color: rgba(18, 41, 39, 0.3);
-  color: #122927;
+  background-color: rgba(54, 124, 118, 0.15);
+  color: #2d6a65;
+  border-color: #2d6a65;
 }
 
 .ai-write-icon {
@@ -42,21 +51,21 @@
   margin-bottom: 1rem;
   background: #f8f9fa;
   padding: 1rem;
-  border-radius: 0.5rem; /* 8px */
+  border-radius: 0.5rem;
   border: 1px solid #e9ecef;
 }
 
 .ai-prompt-input {
   font-size: 0.9rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem; /* 6px */
+  border-radius: 0.375rem;
   border-color: #ced4da;
   margin-bottom: 0;
 }
 
 .ai-prompt-input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(18, 41, 39, 0.15); /* 3px approx */
-  border-color: #122927;
+  box-shadow: 0 0 0 0.2rem rgba(54, 124, 118, 0.15);
+  border-color: #367C76;
 }
 
 /* Actions & Buttons */
@@ -67,11 +76,10 @@
   margin-top: 0.75rem;
 }
 
-/* Enforce consistent button styling */
 .ai-prompt-actions .btn {
-  border-radius: 0.5rem; /* 8px */
-  font-size: 0.875rem; /* 14px */
-  padding: 0.5rem 1rem; /* 8px 16px - Matches .btn-sm */
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
   font-weight: 600;
 }
 

@@ -153,7 +153,10 @@ class EventsController < ApplicationController
     @event = current_user.events.build(event_params)
     combine_date_time(@event)
     assign_rundown_positions(@event)
+
     if @event.save
+      # Attach AI image AFTER successful save (so it doesn't get overwritten)
+      attach_ai_image(@event)
       redirect_to event_path(@event), notice: t('.success')
     else
       render :new, status: :unprocessable_content
@@ -163,7 +166,15 @@ class EventsController < ApplicationController
   def update
     combine_date_time(@event)
     assign_rundown_positions(@event)
+
+    # Remove empty photos from params to prevent overwriting existing/AI images
+    if params[:event][:photos].blank? || params[:event][:photos].all?(&:blank?)
+      params[:event].delete(:photos)
+    end
+
     if @event.update(event_params)
+      # Attach AI image AFTER successful update (so it doesn't get overwritten)
+      attach_ai_image(@event)
       redirect_to event_path(@event), notice: t('.success')
     else
       render :edit, status: :unprocessable_content
@@ -232,6 +243,32 @@ class EventsController < ApplicationController
 
     event.rundown_items.reject(&:marked_for_destruction?).each_with_index do |item, index|
       item.position = index + 1
+    end
+  end
+
+  def attach_ai_image(event)
+    ai_image_url = params.dig(:event, :ai_image_url)
+    return if ai_image_url.blank?
+
+    begin
+      require 'open-uri'
+
+      # Download the image from OpenAI's temporary URL
+      downloaded_image = URI.open(ai_image_url)
+
+      # Generate a unique filename
+      filename = "ai_generated_#{Time.current.to_i}.png"
+
+      # Attach the image to the event
+      event.photos.attach(
+        io: downloaded_image,
+        filename: filename,
+        content_type: 'image/png'
+      )
+
+      Rails.logger.info "AI Image attached successfully: #{filename}"
+    rescue StandardError => e
+      Rails.logger.error "Failed to attach AI image: #{e.message}"
     end
   end
 
