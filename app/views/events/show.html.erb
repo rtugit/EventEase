@@ -221,6 +221,10 @@
           <div class="location-map-section">
             <h2 class="section-title">Location</h2>
 
+            <p class="rundown-item-title" style="margin-bottom: 12px;">
+              <%= @event.location %>
+            </p>
+
             <div id="event-map"
                 class="map-container"
                 data-location="<%= @event.location %>"
@@ -229,10 +233,6 @@
                 <p><%= @event.location %></p>
               </noscript>
             </div>
-
-            <p class="map-location-text" style="margin-top: 10px;">
-              <%= @event.location %>
-            </p>
           </div>
         </div>
 

@@ -21,13 +21,22 @@
   </head>
 
   <body>
-    <% unless devise_controller? || (controller_name == 'pages' && action_name == 'landing') %>
+    <% hide_layout = (controller_name == 'sessions') ||
+                    (controller_name == 'registrations' && action_name == 'new') ||
+                    (controller_name == 'passwords') ||
+                    (controller_name == 'pages' && action_name == 'landing') %>
+
+    <% unless hide_layout %>
       <%= render "shared/navbar" %>
     <% end %>
-    <%= render "shared/flashes" %>
-    <%= yield %>
 
-    <% unless devise_controller? || (controller_name == 'pages' && action_name == 'landing') %>
+    <%= render "shared/flashes" %>
+
+    <main>
+      <%= yield %>
+    </main>
+
+    <% unless hide_layout %>
       <%= render "shared/footer" %>
     <% end %>
 
