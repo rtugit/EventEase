@@ -12,21 +12,49 @@ class EventsController < ApplicationController
                                          .pluck(:event_id)
       all_my_event_ids = (my_event_ids + registered_event_ids).uniq
 
-      @events = Event.where(id: all_my_event_ids).includes(:registrations, :organizer).order(starts_at: :asc)
-
       # My Upcoming Events - my events starting within the next 7 days
       @my_upcoming_events = Event.where(id: all_my_event_ids)
                                  .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
                                  .order(starts_at: :asc)
                                  .includes(:registrations, :organizer)
+
+      # My Events - alle (kann Duplikate mit Upcoming haben)
+      @events = Event.where(id: all_my_event_ids)
+                     .includes(:registrations, :organizer)
+                     .order(starts_at: :asc)
     else
       # Fetch current user's events (organizer's own events)
       @events = current_user.events.includes(:registrations).order(starts_at: :asc)
     end
 
-    # Fetch popular and upcoming events for discovery (only PUBLIC events, not filtering my events)
+    # Fetch popular and upcoming events for discovery
     unless params[:filter] == 'my_events'
-      @popular_events = Event.public_events
+      # Get IDs of private events the user can see (organizer or registered)
+      my_private_event_ids = current_user.events.private_events.pluck(:id)
+      registered_private_event_ids = Registration.where(user_id: current_user.id)
+                                                  .or(Registration.where(email: current_user.email))
+                                                  .joins(:event)
+                                                  .where(events: { private: true })
+                                                  .pluck(:event_id)
+      visible_private_event_ids = (my_private_event_ids + registered_private_event_ids).uniq
+
+      # Build the visibility condition
+      if visible_private_event_ids.any?
+        visibility_condition = Event.where(private: false).or(Event.where(id: visible_private_event_ids))
+      else
+        visibility_condition = Event.where(private: false)
+      end
+
+      # Upcoming events - events starting soon (future events sorted by start date)
+      @upcoming_events = visibility_condition
+                              .where(status: 'published')
+                              .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
+                              .order(starts_at: :asc)
+                              .includes(:registrations)
+                              .limit(10)
+
+      # Show public events + private events user has access to (kann Duplikate mit Upcoming haben)
+      @popular_events = visibility_condition
                              .where(status: 'published')
                              .left_outer_joins(:registrations)
                              .group('events.id')
@@ -34,14 +62,6 @@ class EventsController < ApplicationController
                              .order('COUNT(registrations.id) DESC')
                              .includes(:registrations)
                              .limit(10)
-
-      # Upcoming events - events starting soon (future events sorted by start date)
-      @upcoming_events = Event.public_events
-                              .where(status: 'published')
-                              .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
-                              .order(starts_at: :asc)
-                              .includes(:registrations)
-                              .limit(10)
     end
 
     # Filter by title - prioritize exact/starting matches first

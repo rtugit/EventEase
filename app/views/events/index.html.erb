@@ -103,23 +103,6 @@
   </section>
 
   <% if params[:filter] == 'my_events' %>
-    <!-- Shows My Events -->
-    <section class="events-section">
-      <div class="section-header">
-        <h3 class="section-title">My Events</h3>
-      </div>
-
-      <% if @events.present? %>
-        <div class="events-grid">
-          <% @events.each do |event| %>
-            <%= render "event_card", event: event %>
-          <% end %>
-        </div>
-      <% else %>
-        <p class="no-events-message">You haven't created or registered for any events yet.</p>
-      <% end %>
-    </section>
-
     <!-- Shows My Upcoming Events -->
     <section class="events-section">
       <div class="section-header">
@@ -136,24 +119,24 @@
         <p class="no-events-message">No upcoming events at the moment.</p>
       <% end %>
     </section>
-  <% else %>
-    <!-- Shows Popular Events -->
+
+    <!-- Shows My Events -->
     <section class="events-section">
       <div class="section-header">
-        <h3 class="section-title">Events</h3>
+        <h3 class="section-title">My Events</h3>
       </div>
 
-      <% if @popular_events.present? %>
+      <% if @events.present? %>
         <div class="events-grid">
-          <% @popular_events.each do |event| %>
+          <% @events.each do |event| %>
             <%= render "event_card", event: event %>
           <% end %>
         </div>
       <% else %>
-        <p class="no-events-message">No any events at the moment.</p>
+        <p class="no-events-message">You haven't created or registered for any events yet.</p>
       <% end %>
     </section>
-
+  <% else %>
     <!-- Shows Upcoming Events -->
     <section class="events-section">
       <div class="section-header">
@@ -168,6 +151,23 @@
         </div>
       <% else %>
         <p class="no-events-message">No upcoming events at the moment.</p>
+      <% end %>
+    </section>
+
+    <!-- Shows Popular Events -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">Events</h3>
+      </div>
+
+      <% if @popular_events.present? %>
+        <div class="events-grid">
+          <% @popular_events.each do |event| %>
+            <%= render "event_card", event: event %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="no-events-message">No events at the moment.</p>
       <% end %>
     </section>
   <% end %>
