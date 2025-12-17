@@ -1,0 +1,84 @@
+// app/assets/stylesheets/components/_private_toggle.scss
+
+.private-event-toggle {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+
+  .toggle-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .toggle-container {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .toggle-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+
+    &:checked + .toggle-slider {
+      background: #367C76;
+
+      &::before {
+        transform: translateX(24px);
+      }
+    }
+
+    &:focus + .toggle-slider {
+      box-shadow: 0 0 0 3px rgba(54, 124, 118, 0.25);
+    }
+  }
+
+  .toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    border-radius: 28px;
+    transition: all 0.3s ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .toggle-label-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .toggle-title {
+    font-weight: 600;
+    color: #212529;
+    font-size: 1rem;
+  }
+
+  .toggle-hint {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+  }
+}

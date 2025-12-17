@@ -18,10 +18,10 @@ class EventsController < ApplicationController
       @events = current_user.events.includes(:registrations).order(starts_at: :asc)
     end
 
-    # Fetch popular and upcoming events for discovery (only if not filtering my events)
+    # Fetch popular and upcoming events for discovery (only PUBLIC events, not filtering my events)
     unless params[:filter] == 'my_events'
-      @popular_events = Event.where(status: 'published').popular.includes(:registrations)
-      @new_events = Event.where(status: 'published').upcoming.includes(:registrations)
+      @popular_events = Event.public_events.where(status: 'published').popular.includes(:registrations)
+      @new_events = Event.public_events.where(status: 'published').upcoming.includes(:registrations)
     end
 
     # Filter by title - prioritize exact/starting matches first
@@ -57,7 +57,7 @@ class EventsController < ApplicationController
     # Filter by location
     if params[:location].present?
       @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
-      @popular_events = @popular_events.where("location ILIKE ?", "%#{params[:location]}%")
+      @popular_events = @popular_events.where("location ILIKE ?", "%#{params[:location]}%") if @popular_events
     end
 
     # Filter by date
@@ -69,14 +69,14 @@ class EventsController < ApplicationController
       end
       if search_date
         @events = @events.where("DATE(starts_at) = ?", search_date)
-        @popular_events = @popular_events.where("DATE(starts_at) = ?", search_date)
+        @popular_events = @popular_events.where("DATE(starts_at) = ?", search_date) if @popular_events
       end
     end
 
     # Filter by category
     if params[:category].present?
       @events = @events.where(category: params[:category])
-      @popular_events = @popular_events.where(category: params[:category])
+      @popular_events = @popular_events.where(category: params[:category]) if @popular_events
     end
 
     # Order by date (only if not searching by title, since title search has its own ordering)
@@ -88,7 +88,7 @@ class EventsController < ApplicationController
     @popular_events = @popular_events&.limit(10)
   end
 
-  # Autocomplete suggestions endpoint
+  # Autocomplete suggestions endpoint (only search public events)
   def search_suggestions
     query = params[:q].to_s.strip
     type = params[:type].to_s
@@ -98,8 +98,9 @@ class EventsController < ApplicationController
     if query.length >= 2
       case type
       when 'title'
-        # Get matching event titles
-        titles = Event.where("title ILIKE ?", "%#{query}%")
+        # Get matching event titles (only public events)
+        titles = Event.public_events
+                      .where("title ILIKE ?", "%#{query}%")
                       .distinct
                       .limit(8)
                       .pluck(:title)
@@ -113,8 +114,9 @@ class EventsController < ApplicationController
         end
 
       when 'location'
-        # Get matching locations
-        locations = Event.where("location ILIKE ?", "%#{query}%")
+        # Get matching locations (only public events)
+        locations = Event.public_events
+                         .where("location ILIKE ?", "%#{query}%")
                          .select(:location)
                          .distinct
                          .limit(8)
@@ -214,6 +216,7 @@ class EventsController < ApplicationController
       :category,
       :event_date,
       :event_time,
+      :private,
       photos: [],
       rundown_items_attributes: %i[id heading description position _destroy]
     )
