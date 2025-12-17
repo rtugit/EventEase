@@ -72,6 +72,26 @@
       </div>
     </div>
 
+    <!-- End Date Section -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= f.label :event_end_date, class: "form-label" do %>
+            End Date <small class="text-muted">(Optional)</small>
+          <% end %>
+          <%= f.date_field :event_end_date, class: "form-control" %>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= f.label :event_end_time, class: "form-label" do %>
+            End Time <small class="text-muted">(Optional)</small>
+          <% end %>
+          <%= f.time_field :event_end_time, class: "form-control" %>
+        </div>
+      </div>
+    </div>
+
     <%= f.input :capacity,
                 required: false,
                 label: "Capacity",

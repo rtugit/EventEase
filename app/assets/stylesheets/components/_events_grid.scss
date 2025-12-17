@@ -153,11 +153,11 @@
 
 // Organizer Info inside card
 .organizer-info {
-  .avatar-image,
-  .avatar-initials {
+  .avatar-image, .avatar-initials {
     border-radius: 50%;
-    border: 2px solid #e9fffd;
-    box-sizing: content-box; // Ensure border sits outside the defined size
+    border: 2px solid #5A7863; // Updated color as requested in prompt #5A7863 (though prompt said #e9fffd previously, wait... check prompt again. Prompt: "#5A7863")
+    // Wait, the new prompt says: "color #5A7863". The previous one used a lighter one. I will use the NEW requested color #5A7863.
+    box-sizing: content-box;
   }
 }
 
