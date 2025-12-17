@@ -85,6 +85,18 @@
         background-color: darken($red, 10%);
       }
     }
+
+    &.share-btn {
+      background-color: $button-color;
+      color: white;
+      border: 1px solid $button-color;
+
+      &:hover,
+      &.copied {
+        background-color: lighten($button-color, 6%);
+        border-color: lighten($button-color, 6%);
+      }
+    }
   }
 }
 
