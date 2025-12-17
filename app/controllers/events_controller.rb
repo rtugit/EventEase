@@ -18,10 +18,17 @@ class EventsController < ApplicationController
                                  .order(starts_at: :asc)
                                  .includes(:registrations, :organizer)
 
-      # My Events - alle (kann Duplikate mit Upcoming haben)
+      # My Events - FUTURE events (excluding duplicates if desired, but for now just all future)
       @events = Event.where(id: all_my_event_ids)
+                     .where('starts_at >= ?', Time.current)
                      .includes(:registrations, :organizer)
                      .order(starts_at: :asc)
+
+      # My Past Events
+      @my_past_events = Event.where(id: all_my_event_ids)
+                             .where('starts_at < ?', Time.current)
+                             .includes(:registrations, :organizer)
+                             .order(starts_at: :desc)
     else
       # Fetch current user's events (organizer's own events)
       @events = current_user.events.includes(:registrations).order(starts_at: :asc)
@@ -32,10 +39,10 @@ class EventsController < ApplicationController
       # Get IDs of private events the user can see (organizer or registered)
       my_private_event_ids = current_user.events.private_events.pluck(:id)
       registered_private_event_ids = Registration.where(user_id: current_user.id)
-                                                  .or(Registration.where(email: current_user.email))
-                                                  .joins(:event)
-                                                  .where(events: { private: true })
-                                                  .pluck(:event_id)
+                                                 .or(Registration.where(email: current_user.email))
+                                                 .joins(:event)
+                                                 .where(events: { private: true })
+                                                 .pluck(:event_id)
       visible_private_event_ids = (my_private_event_ids + registered_private_event_ids).uniq
 
       # Build the visibility condition
@@ -47,21 +54,21 @@ class EventsController < ApplicationController
 
       # Upcoming events - events starting soon (future events sorted by start date)
       @upcoming_events = visibility_condition
-                              .where(status: 'published')
-                              .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
-                              .order(starts_at: :asc)
-                              .includes(:registrations)
-                              .limit(10)
+                         .where(status: 'published')
+                         .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
+                         .order(starts_at: :asc)
+                         .includes(:registrations)
+                         .limit(10)
 
       # Show public events + private events user has access to (kann Duplikate mit Upcoming haben)
       @popular_events = visibility_condition
-                             .where(status: 'published')
-                             .left_outer_joins(:registrations)
-                             .group('events.id')
-                             .select('events.*, COUNT(registrations.id) AS registrations_count')
-                             .order('COUNT(registrations.id) DESC')
-                             .includes(:registrations)
-                             .limit(10)
+                        .where(status: 'published')
+                        .left_outer_joins(:registrations)
+                        .group('events.id')
+                        .select('events.*, COUNT(registrations.id) AS registrations_count')
+                        .order('COUNT(registrations.id) DESC')
+                        .includes(:registrations)
+                        .limit(10)
     end
 
     # Filter by title - prioritize exact/starting matches first
@@ -113,9 +120,9 @@ class EventsController < ApplicationController
     end
 
     # Order by date (only if not searching by title, since title search has its own ordering)
-    unless params[:title].present?
-      @events = @events.order(starts_at: :desc)
-    end
+    return if params[:title].present?
+
+    @events = @events.order(starts_at: :desc)
   end
 
   # Autocomplete suggestions endpoint (only search public events)
@@ -196,15 +203,16 @@ class EventsController < ApplicationController
   end
 
   def update
-    combine_date_time(@event)
     assign_rundown_positions(@event)
 
     # Remove empty photos from params to prevent overwriting existing/AI images
-    if params[:event][:photos].blank? || params[:event][:photos].all?(&:blank?)
-      params[:event].delete(:photos)
-    end
+    params[:event].delete(:photos) if params[:event][:photos].blank? || params[:event][:photos].all?(&:blank?)
 
-    if @event.update(event_params)
+    # Assign new attributes first so we can recalculate starts_at from them
+    @event.assign_attributes(event_params)
+    combine_date_time(@event)
+
+    if @event.save
       # Attach AI image AFTER successful update (so it doesn't get overwritten)
       attach_ai_image(@event)
       redirect_to event_path(@event), notice: t('.success')
@@ -246,6 +254,8 @@ class EventsController < ApplicationController
       :category,
       :event_date,
       :event_time,
+      :event_end_date,
+      :event_end_time,
       :private,
       photos: [],
       rundown_items_attributes: %i[id heading description position _destroy]
@@ -253,21 +263,38 @@ class EventsController < ApplicationController
   end
 
   def combine_date_time(event)
-    return unless event.event_date.present? && event.event_time.present?
+    # 1. Update starts_at
+    if event.event_date.present? && event.event_time.present?
+      begin
+        date = Date.parse(event.event_date)
+        time = Time.zone.parse(event.event_time)
+        event.starts_at = Time.zone.local(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.min
+        )
+      rescue ArgumentError => e
+        Rails.logger.error("Failed to parse start date/time: #{e.message}")
+      end
+    end
+
+    # 2. Update ends_at
+    return unless event.event_end_date.present? && event.event_end_time.present?
 
     begin
-      date = Date.parse(event.event_date)
-      time = Time.zone.parse(event.event_time)
-      event.starts_at = Time.zone.local(
-        date.year,
-        date.month,
-        date.day,
-        time.hour,
-        time.min
+      end_date = Date.parse(event.event_end_date)
+      end_time = Time.zone.parse(event.event_end_time)
+      event.ends_at = Time.zone.local(
+        end_date.year,
+        end_date.month,
+        end_date.day,
+        end_time.hour,
+        end_time.min
       )
     rescue ArgumentError => e
-      # If parsing fails, leave starts_at as is (will be validated by model)
-      Rails.logger.error("Failed to parse date/time: #{e.message}")
+      Rails.logger.error("Failed to parse end date/time: #{e.message}")
     end
   end
 
