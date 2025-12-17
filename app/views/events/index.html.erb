@@ -42,7 +42,7 @@
   <!-- Displays event category chips -->
   <section class="categories-section" data-controller="category-dropdown">
     <!-- Hamburger button for mobile/tablet -->
-    <button type="button" 
+    <button type="button"
             class="category-dropdown-toggle"
             data-category-dropdown-target="button"
             data-action="click->category-dropdown#toggle"
@@ -63,20 +63,20 @@
 
     <!-- Dropdown menu for mobile/tablet -->
     <div class="category-dropdown-menu" data-category-dropdown-target="menu">
-      <%= link_to events_path, 
+      <%= link_to events_path,
           class: "category-dropdown-item #{'active' unless params[:category] || params[:filter] == 'my_events'}",
           data: { action: "click->category-dropdown#close" } do %>
         <span>All</span>
       <% end %>
 
-      <%= link_to events_path(filter: 'my_events'), 
+      <%= link_to events_path(filter: 'my_events'),
           class: "category-dropdown-item #{'active' if params[:filter] == 'my_events'}",
           data: { action: "click->category-dropdown#close" } do %>
         <span>My Events</span>
       <% end %>
 
       <% Event::CATEGORIES.each do |category| %>
-        <%= link_to events_path(category: category), 
+        <%= link_to events_path(category: category),
             class: "category-dropdown-item #{'active' if params[:category] == category}",
             data: { action: "click->category-dropdown#close" } do %>
           <span><%= category %></span>
@@ -119,11 +119,28 @@
         <p class="no-events-message">You haven't created or registered for any events yet.</p>
       <% end %>
     </section>
-  <% else %>
-    <!-- Shows popular events list -->
+
+    <!-- Shows My Upcoming Events -->
     <section class="events-section">
       <div class="section-header">
-        <h3 class="section-title">Popular Event</h3>
+        <h3 class="section-title">My Upcoming Events</h3>
+      </div>
+
+      <% if @my_upcoming_events.present? %>
+        <div class="events-grid">
+          <% @my_upcoming_events.each do |event| %>
+            <%= render "event_card", event: event %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="no-events-message">No upcoming events at the moment.</p>
+      <% end %>
+    </section>
+  <% else %>
+    <!-- Shows Popular Events -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">Events</h3>
       </div>
 
       <% if @popular_events.present? %>
@@ -133,7 +150,24 @@
           <% end %>
         </div>
       <% else %>
-        <p>You don't have any events yet.</p>
+        <p class="no-events-message">No any events at the moment.</p>
+      <% end %>
+    </section>
+
+    <!-- Shows Upcoming Events -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">Upcoming Events</h3>
+      </div>
+
+      <% if @upcoming_events.present? %>
+        <div class="events-grid">
+          <% @upcoming_events.each do |event| %>
+            <%= render "event_card", event: event %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="no-events-message">No upcoming events at the moment.</p>
       <% end %>
     </section>
   <% end %>
