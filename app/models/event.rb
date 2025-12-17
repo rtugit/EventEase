@@ -48,6 +48,10 @@ class Event < ApplicationRecord
   # New events = upcoming soonest
   scope :upcoming, -> { order(starts_at: :asc).limit(10) }
 
+  # Private/Public event scopes
+  scope :public_events, -> { where(private: false) }
+  scope :private_events, -> { where(private: true) }
+
   has_many_attached :photos
 
   # Callback to handle capacity reduction

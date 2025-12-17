@@ -79,6 +79,20 @@
                 input_html: { class: "form-control", type: "number", min: 1 },
                 wrapper_html: { class: "form-group" } %>
 
+    <!-- Private Event Toggle -->
+    <div class="form-group private-event-toggle">
+      <div class="toggle-wrapper">
+        <label class="toggle-container">
+          <%= f.check_box :private, class: "toggle-checkbox", id: "private-toggle" %>
+          <span class="toggle-slider"></span>
+        </label>
+        <div class="toggle-label-content">
+          <span class="toggle-title">Private Event</span>
+          <span class="toggle-hint">Only accessible via direct link – won't appear in public listings</span>
+        </div>
+      </div>
+    </div>
+
     <div class="rundown-section" data-controller="rundown-items">
       <h3>Event Rundown</h3>
 
