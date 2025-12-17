@@ -26,12 +26,12 @@ EVENT_IMAGES = [
   "public/images/photo-3.jpg"
 ].freeze
 
-AVATAR_IMAGES = [
-  "public/images/avatars/girl.png",
-  "public/images/avatars/girll.png",
-  "public/images/avatars/man.png",
-  "public/images/avatars/mann.png"
-].freeze
+# 1. Load all avatar files
+AVATAR_DIR = Rails.root.join("public/images/avatars")
+# Sort to ensure consistent order before shuffling if needed, 
+# though we shuffle anyway.
+ALL_AVATAR_FILES = Dir.children(AVATAR_DIR).sort
+puts "Found #{ALL_AVATAR_FILES.count} avatar files."
 
 # ------------------------------------------------------------
 # Reset data
@@ -46,33 +46,60 @@ User.destroy_all
 # ------------------------------------------------------------
 # Users
 # ------------------------------------------------------------
-puts "Creating organizer users..."
+puts "Creating users..."
+
+# Separate avatars for system users and general pool
+# We'll take the first few for organizers to ensure consistency, or random
+# Let's just shuffle them to make it fun but ensure distinct ones
+shuffled_avatars = ALL_AVATAR_FILES.shuffle
+system_avatars = shuffled_avatars.pop(7) # 5 organizers + demo + duck
+attendee_avatars = shuffled_avatars # The rest
+
 organizers = []
 
+# 1. Create 5 Organizers
 5.times do |i|
+  avatar_file = system_avatars.pop
+  # Use filename as name if it looks like a name (has space), else Faker
+  base_name = File.basename(avatar_file, ".*")
+  if base_name.include?(" ")
+    first_name, last_name = base_name.split(" ", 2)
+  else
+    first_name = Faker::Name.first_name
+    last_name = Faker::Name.last_name
+  end
+
   user = User.create!(
     email: "organizer#{i + 1}@eventease.com",
     password: "password123",
     password_confirmation: "password123",
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
+    first_name: first_name,
+    last_name: last_name,
     time_zone: "Europe/Berlin"
   )
-  attach_if_exists(user.photo, AVATAR_IMAGES.sample, content_type: "image/png")
+  attach_if_exists(user.photo, "public/images/avatars/#{avatar_file}", content_type: "image/jpeg")
   organizers << user
+  puts "Created Organizer: #{user.full_name}"
 end
+
+# 2. Demo User
+demo_avatar = system_avatars.pop
+user_name = File.basename(demo_avatar, ".*")
+first, last = user_name.include?(" ") ? user_name.split(" ", 2) : ["Demo", "User"]
 
 demo_user = User.create!(
   email: "demo@example.com",
   password: "password",
   password_confirmation: "password",
-  first_name: "Demo",
-  last_name: "User",
+  first_name: first,
+  last_name: last,
   time_zone: "Europe/Berlin"
 )
-attach_if_exists(demo_user.photo, AVATAR_IMAGES.sample, content_type: "image/png")
+attach_if_exists(demo_user.photo, "public/images/avatars/#{demo_avatar}", content_type: "image/jpeg")
 organizers << demo_user
 
+# 3. DuckDuckGo User
+duck_avatar = system_avatars.pop
 duck_user = User.create!(
   email: "duckduckgo@email.com",
   password: "password",
@@ -81,8 +108,44 @@ duck_user = User.create!(
   last_name: "Duck Go",
   time_zone: "Europe/Berlin"
 )
-attach_if_exists(duck_user.photo, AVATAR_IMAGES.sample, content_type: "image/png")
+attach_if_exists(duck_user.photo, "public/images/avatars/#{duck_avatar}", content_type: "image/jpeg")
 organizers << duck_user
+
+# 4. Create Pool of Attendee Users from remaining Avatars
+puts "Creating attendee user pool (#{attendee_avatars.count} users)..."
+attendee_users = []
+
+attendee_avatars.each do |filename|
+  base_name = File.basename(filename, ".*")
+  
+  # Heuristics to get a clean name
+  clean_name = base_name.gsub(/[-_]/, " ").gsub(/\d+/, "").strip
+  clean_name = "User #{SecureRandom.hex(2)}" if clean_name.blank?
+
+  if clean_name.include?(" ")
+    first_name, last_name = clean_name.split(" ", 2)
+  else
+    first_name = clean_name
+    last_name = "User"
+  end
+
+  # Generate email based on name to look realistic
+  email_name = clean_name.downcase.gsub(/[^a-z0-9]/, ".")
+  email = "#{email_name}.#{SecureRandom.hex(2)}@example.com"
+
+  user = User.create!(
+    email: email,
+    password: "password",
+    password_confirmation: "password",
+    first_name: first_name,
+    last_name: last_name,
+    time_zone: "Europe/Berlin"
+  )
+  attach_if_exists(user.photo, "public/images/avatars/#{filename}", content_type: "image/jpeg")
+  attendee_users << user
+end
+puts "Created #{attendee_users.count} attendee users."
+
 
 # ------------------------------------------------------------
 # Events Data
@@ -773,9 +836,14 @@ events.each do |event|
   # Should not happen given our seeds, but safety first
   max_limit = 3 if max_limit < 3
   
+  # Shuffle attendees so we don't always pick the same ones in order
+  possible_attendees = attendee_users.shuffle
+  
   Faker::Number.between(from: 3, to: max_limit).times do
-    email = Faker::Internet.unique.email
-    next if Registration.exists?(event: event, email: email)
+    attendee = possible_attendees.pop
+    break unless attendee # allow breaking if we run out of unique users (unlikely)
+    
+    next if Registration.exists?(event: event, user: attendee)
 
     status = %w[registered registered registered checked_in cancelled].sample
     
@@ -786,8 +854,9 @@ events.each do |event|
 
     Registration.create!(
       event: event,
-      email: email,
-      name: Faker::Name.name,
+      user: attendee,
+      email: attendee.email,
+      name: attendee.full_name,
       status: status,
       check_in_at: status == "checked_in" ? Faker::Time.between(from: event.starts_at, to: Time.current) : nil,
       cancelled_at: status == "cancelled" ? Faker::Time.between(from: event.registration_open_from, to: Time.current) : nil
@@ -796,6 +865,8 @@ events.each do |event|
 end
 
 puts "✅ SEED DATA CREATED SUCCESSFULLY"
-puts "Users: #{User.count}"
+puts "System Users (Organizers): #{organizers.count}"
+puts "Attendee Users: #{attendee_users.count}"
+puts "Total Users: #{User.count}"
 puts "Events: #{Event.count}"
 puts "Registrations: #{Registration.count}"
