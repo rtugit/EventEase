@@ -661,9 +661,9 @@ past_events.each_with_index do |event_data, index|
   puts "Created Past Event: #{event.title} on #{event.starts_at}"
 end
 
-# 2. Future 28 events: Dec 20 2025 to June 30 2026
+# 2. Future 28 events: Dec 17 2025 to June 30 2026
 future_events = EVENTS_DATA[12..-1]
-start_range = Date.new(2025, 12, 20)
+start_range = Date.new(2025, 12, 17)
 end_range = Date.new(2026, 6, 30)
 date_range = (start_range..end_range).to_a
 
