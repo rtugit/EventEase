@@ -661,13 +661,61 @@ past_events.each_with_index do |event_data, index|
   puts "Created Past Event: #{event.title} on #{event.starts_at}"
 end
 
-# 2. Future 28 events: Dec 17 2025 to June 30 2026
-future_events = EVENTS_DATA[12..-1]
-start_range = Date.new(2025, 12, 17)
+# 2. Future events
+# Part A: Next 7 Days (Dec 17 - Dec 23) - Force 7 events
+upcoming_week_events = EVENTS_DATA[12...19]
+upcoming_week_events.each_with_index do |event_data, index|
+  date = Date.new(2025, 12, 17) + index.days
+  date_str = date.strftime("%Y-%m-%d")
+
+  starts_at = Time.zone.parse("#{date_str} #{event_data[:event_time]}")
+  ends_at_time = Time.zone.parse("#{date_str} #{event_data[:end_time]}")
+  if ends_at_time < starts_at
+    ends_at_time += 1.day
+  end
+
+  event = Event.create!(
+    organizer: organizers.sample,
+    title: event_data[:title],
+    description: event_data[:description],
+    location: event_data[:location],
+    category: event_data[:category],
+    starts_at: starts_at,
+    ends_at: ends_at_time,
+    capacity: event_data[:capacity],
+    status: "published",
+    registration_open_from: starts_at - 14.days,
+    registration_open_until: starts_at - 1.hour
+  )
+
+  attach_if_exists(event.photos, EVENT_IMAGES.sample, content_type: "image/jpeg")
+
+  if event_data[:rundown].present?
+    items = event_data[:rundown].split(', ')
+    items.each_with_index do |item_str, i|
+      parts = item_str.split(' - ', 2)
+      heading = parts[0]
+      description = parts[1] || item_str
+      
+      RundownItem.create!(
+        event: event,
+        heading: heading,
+        description: description,
+        position: i + 1
+      )
+    end
+  end
+
+  puts "Created Force Upcoming Event: #{event.title} on #{event.starts_at}"
+end
+
+# Part B: Remaining Future Events (Dec 24 2025 to June 30 2026)
+remaining_future_events = EVENTS_DATA[19..-1]
+start_range = Date.new(2025, 12, 24)
 end_range = Date.new(2026, 6, 30)
 date_range = (start_range..end_range).to_a
 
-future_events.each do |event_data|
+remaining_future_events.each do |event_data|
   # Pick a random date
   date = date_range.sample
   date_str = date.strftime("%Y-%m-%d")
