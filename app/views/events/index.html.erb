@@ -148,6 +148,23 @@
         <p class="no-events-message">You haven't created or registered for any events yet.</p>
       <% end %>
     </section>
+
+    <!-- Shows My Past Events -->
+    <section class="events-section">
+      <div class="section-header">
+        <h3 class="section-title">My Past Events</h3>
+      </div>
+
+      <% if @my_past_events.present? %>
+        <div class="events-grid">
+          <% @my_past_events.each do |event| %>
+            <%= render "event_card", event: event %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="no-events-message">No past events.</p>
+      <% end %>
+    </section>
   <% else %>
     <!-- Shows Upcoming Events -->
     <section class="events-section">

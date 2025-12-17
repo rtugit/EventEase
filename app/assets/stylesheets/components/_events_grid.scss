@@ -22,7 +22,7 @@
 
   .see-all-link {
     font-size: 14px;
-    color: #367C76;
+    color: #367c76;
     text-decoration: none;
     font-weight: 500;
 
@@ -63,7 +63,7 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px #367C76;
+    box-shadow: 0 8px 24px #367c76;
   }
 }
 
@@ -121,7 +121,7 @@
   font-weight: 600;
   text-transform: uppercase;
   background: #e6f5f3;
-  color: #367C76;
+  color: #367c76;
   margin-bottom: 8px;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -141,7 +141,7 @@
 
 .event-date {
   font-size: 13px;
-  color: #367C76;
+  color: #367c76;
   margin: 0 0 4px 0;
 }
 
@@ -151,11 +151,21 @@
   margin: 0;
 }
 
+// Organizer Info inside card
+.organizer-info {
+  .avatar-image, .avatar-initials {
+    border-radius: 50%;
+    border: 2px solid #5A7863; // Updated color as requested in prompt #5A7863 (though prompt said #e9fffd previously, wait... check prompt again. Prompt: "#5A7863")
+    // Wait, the new prompt says: "color #5A7863". The previous one used a lighter one. I will use the NEW requested color #5A7863.
+    box-sizing: content-box;
+  }
+}
+
 // Avatars
 .avatars-guest {
   display: flex;
   align-items: center;
-  padding: 0 16px 16px 16px;
+  padding: 0 0 16px 0; // Removing horizontal padding to align with text
   margin-top: 8px;
 }
 
@@ -172,7 +182,7 @@
   font-size: 12px;
   font-weight: 600;
   color: #ffffff;
-  background-color: #367C76;
+  background-color: #367c76;
 
   &:first-child {
     margin-left: 0;
@@ -198,7 +208,7 @@
 
 .avatar-more {
   background-color: #c1f4f0;
-  color: #367C76;
+  color: #367c76;
   font-size: 11px;
   font-weight: 600;
 }
@@ -262,12 +272,12 @@
 
   .event-card {
     flex-direction: row;
-    height: auto;         // let the card grow with text + avatars
-    min-height: 180px;    // enough vertical space so avatars are visible
+    height: auto; // let the card grow with text + avatars
+    min-height: 180px; // enough vertical space so avatars are visible
   }
 
   .event-card-image {
-    width: 110px;         // slightly smaller image to free vertical space
+    width: 110px; // slightly smaller image to free vertical space
     height: 100%;
     flex-shrink: 0;
   }

@@ -10,7 +10,7 @@ class Event < ApplicationRecord
   end
 
   # Virtual attributes for date/time form fields
-  attr_accessor :event_date, :event_time
+  attr_accessor :event_date, :event_time, :event_end_date, :event_end_time
 
   CATEGORIES = [
     "Networking",
@@ -30,8 +30,8 @@ class Event < ApplicationRecord
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validate :ends_at_after_starts_at
 
-  # Set virtual attributes from starts_at when loading the model
-  after_initialize :set_date_time_from_starts_at
+  # Set virtual attributes from starts_at/ends_at when loading the model
+  after_initialize :set_date_time_from_db_columns
   # Sanitize HTML content to prevent XSS attacks
   before_save :sanitize_inputs
 
@@ -76,11 +76,16 @@ class Event < ApplicationRecord
 
   private
 
-  def set_date_time_from_starts_at
-    return if starts_at.blank?
+  def set_date_time_from_db_columns
+    if starts_at.present?
+      self.event_date ||= starts_at.strftime("%Y-%m-%d")
+      self.event_time ||= starts_at.strftime("%H:%M")
+    end
 
-    self.event_date ||= starts_at.strftime("%Y-%m-%d")
-    self.event_time ||= starts_at.strftime("%H:%M")
+    return unless ends_at.present?
+
+    self.event_end_date ||= ends_at.strftime("%Y-%m-%d")
+    self.event_end_time ||= ends_at.strftime("%H:%M")
   end
 
   def ends_at_after_starts_at

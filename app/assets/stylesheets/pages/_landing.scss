@@ -16,36 +16,27 @@
 
 /* Logo top */
 .splash-logo img {
-  width: 380px;
+  width: 280px;
   height: auto;
-  margin-bottom: 12px;   /* was 32px — now tighter */
+  margin-bottom: 24px;
 }
 
 /* "EventEase" */
 .splash-title {
   font-size: 56px;
   font-weight: 700;
-  margin-bottom: 32px;   /* bigger gap BELOW the title */
+  margin-bottom: 12px;
   color: #ffffff;
-  line-height: 1;        /* eliminates vertical offset/shift */
+  line-height: 1;
   text-align: center;
 }
 
-/* "Discover Events Around You" */
+/* Tagline */
 .splash-tagline {
-  font-size: 28px;
-  font-weight: 500;
-  margin-bottom: 20px;
-  line-height: 1.3;
-  color: #ffffff;
-}
-
-/* subtitle */
-.splash-tagline {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 32px;
   line-height: 1.4;
-  margin-bottom: 20px;
   color: #ffffff;
   text-align: center;
 }
@@ -53,12 +44,12 @@
 /* Button */
 .splash-btn {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 16px 80px;
   border-radius: 999px;
   background-color: #073a36;
   color: #ffffff;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   border: none;
 }
