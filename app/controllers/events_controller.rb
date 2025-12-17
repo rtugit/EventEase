@@ -13,6 +13,12 @@ class EventsController < ApplicationController
       all_my_event_ids = (my_event_ids + registered_event_ids).uniq
 
       @events = Event.where(id: all_my_event_ids).includes(:registrations, :organizer).order(starts_at: :asc)
+
+      # My Upcoming Events - my events starting within the next 7 days
+      @my_upcoming_events = Event.where(id: all_my_event_ids)
+                                 .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
+                                 .order(starts_at: :asc)
+                                 .includes(:registrations, :organizer)
     else
       # Fetch current user's events (organizer's own events)
       @events = current_user.events.includes(:registrations).order(starts_at: :asc)
@@ -20,8 +26,22 @@ class EventsController < ApplicationController
 
     # Fetch popular and upcoming events for discovery (only PUBLIC events, not filtering my events)
     unless params[:filter] == 'my_events'
-      @popular_events = Event.public_events.where(status: 'published').popular.includes(:registrations)
-      @new_events = Event.public_events.where(status: 'published').upcoming.includes(:registrations)
+      @popular_events = Event.public_events
+                             .where(status: 'published')
+                             .left_outer_joins(:registrations)
+                             .group('events.id')
+                             .select('events.*, COUNT(registrations.id) AS registrations_count')
+                             .order('COUNT(registrations.id) DESC')
+                             .includes(:registrations)
+                             .limit(10)
+
+      # Upcoming events - events starting soon (future events sorted by start date)
+      @upcoming_events = Event.public_events
+                              .where(status: 'published')
+                              .where('starts_at >= ? AND starts_at <= ?', Time.current, 1.week.from_now)
+                              .order(starts_at: :asc)
+                              .includes(:registrations)
+                              .limit(10)
     end
 
     # Filter by title - prioritize exact/starting matches first
@@ -40,24 +60,15 @@ class EventsController < ApplicationController
           END, title ASC
         "))
 
-      if @popular_events.present?
-        @popular_events = @popular_events
-                          .where("title ILIKE ?", "%#{search_term}%")
-                          .order(Arel.sql("
-            CASE
-              WHEN LOWER(title) = LOWER('#{sanitized_term}') THEN 1
-              WHEN LOWER(title) LIKE LOWER('#{sanitized_term}%') THEN 2
-              WHEN LOWER(title) LIKE LOWER('% #{sanitized_term}%') THEN 3
-              ELSE 4
-            END, title ASC
-          "))
-      end
+      @popular_events = @popular_events&.where("title ILIKE ?", "%#{search_term}%")
+      @upcoming_events = @upcoming_events&.where("title ILIKE ?", "%#{search_term}%")
     end
 
     # Filter by location
     if params[:location].present?
       @events = @events.where("location ILIKE ?", "%#{params[:location]}%")
-      @popular_events = @popular_events.where("location ILIKE ?", "%#{params[:location]}%") if @popular_events
+      @popular_events = @popular_events&.where("location ILIKE ?", "%#{params[:location]}%")
+      @upcoming_events = @upcoming_events&.where("location ILIKE ?", "%#{params[:location]}%")
     end
 
     # Filter by date
@@ -69,23 +80,22 @@ class EventsController < ApplicationController
       end
       if search_date
         @events = @events.where("DATE(starts_at) = ?", search_date)
-        @popular_events = @popular_events.where("DATE(starts_at) = ?", search_date) if @popular_events
+        @popular_events = @popular_events&.where("DATE(starts_at) = ?", search_date)
+        @upcoming_events = @upcoming_events&.where("DATE(starts_at) = ?", search_date)
       end
     end
 
     # Filter by category
     if params[:category].present?
       @events = @events.where(category: params[:category])
-      @popular_events = @popular_events.where(category: params[:category]) if @popular_events
+      @popular_events = @popular_events&.where(category: params[:category])
+      @upcoming_events = @upcoming_events&.where(category: params[:category])
     end
 
     # Order by date (only if not searching by title, since title search has its own ordering)
     unless params[:title].present?
       @events = @events.order(starts_at: :desc)
-      @popular_events = @popular_events&.order(starts_at: :desc)
     end
-
-    @popular_events = @popular_events&.limit(10)
   end
 
   # Autocomplete suggestions endpoint (only search public events)
