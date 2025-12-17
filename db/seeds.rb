@@ -58,7 +58,7 @@ organizers = []
     last_name: Faker::Name.last_name,
     time_zone: "Europe/Berlin"
   )
-  attach_if_exists(user.photo, AVATAR_IMAGES.sample, content_type: "image/png") if rand < 0.5
+  attach_if_exists(user.photo, AVATAR_IMAGES.sample, content_type: "image/png")
   organizers << user
 end
 
@@ -714,6 +714,40 @@ future_events.each do |event_data|
   puts "Created Future Event: #{event.title} on #{event.starts_at}"
 end
 
+# ------------------------------------------------------------
+# Registrations
+# ------------------------------------------------------------
+puts "Creating registrations..."
+events = Event.all
+events.each do |event|
+  # Ensure at least 3 attendees, up to capacity (or 15 if capacity is large/nil)
+  max_limit = event.capacity ? [15, event.capacity].min : 15
+  # Should not happen given our seeds, but safety first
+  max_limit = 3 if max_limit < 3
+  
+  Faker::Number.between(from: 3, to: max_limit).times do
+    email = Faker::Internet.unique.email
+    next if Registration.exists?(event: event, email: email)
+
+    status = %w[registered registered registered checked_in cancelled].sample
+    
+    # Don't check in if event is in future
+    if status == "checked_in" && event.starts_at > Time.current
+      status = "registered"
+    end
+
+    Registration.create!(
+      event: event,
+      email: email,
+      name: Faker::Name.name,
+      status: status,
+      check_in_at: status == "checked_in" ? Faker::Time.between(from: event.starts_at, to: Time.current) : nil,
+      cancelled_at: status == "cancelled" ? Faker::Time.between(from: event.registration_open_from, to: Time.current) : nil
+    )
+  end
+end
+
 puts "✅ SEED DATA CREATED SUCCESSFULLY"
 puts "Users: #{User.count}"
 puts "Events: #{Event.count}"
+puts "Registrations: #{Registration.count}"
