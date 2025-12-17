@@ -2,19 +2,20 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static values = { url: String }
+  static targets = ["label"]
 
   copy(event) {
     event.preventDefault()
     const url = this.urlValue || window.location.href
-    const button = this.element
 
     const onSuccess = () => {
-      button.dataset.originalText ||= button.textContent
-      button.textContent = "Copied!"
-      button.classList.add("copied")
+      const label = this.labelTarget
+      label.dataset.originalText ||= label.textContent
+      label.textContent = "Copied!"
+      this.element.classList.add("copied")
       setTimeout(() => {
-        button.textContent = button.dataset.originalText
-        button.classList.remove("copied")
+        label.textContent = label.dataset.originalText
+        this.element.classList.remove("copied")
       }, 1500)
     }
 
@@ -46,4 +47,3 @@ export default class extends Controller {
     }
   }
 }
-
