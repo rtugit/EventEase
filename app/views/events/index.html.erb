@@ -1,4 +1,4 @@
-<div class="home-page">
+<div class="home-page" data-controller="sort-events">
   <!-- Renders search input form with autocomplete -->
   <section class="search-section">
     <div class="search-card">
@@ -130,7 +130,7 @@
             <option value="popular" <%= 'selected' if params[:sort].blank? || params[:sort] == 'popular' %>>Most Popular</option>
             <option value="title_asc" <%= 'selected' if params[:sort] == 'title_asc' %>>Title (A-Z)</option>
             <option value="title_desc" <%= 'selected' if params[:sort] == 'title_desc' %>>Title (Z-A)</option>
-            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Earliest)</option>
+            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Oldest)</option>
             <option value="date_desc" <%= 'selected' if params[:sort] == 'date_desc' %>>Date (Latest)</option>
             <option value="location_asc" <%= 'selected' if params[:sort] == 'location_asc' %>>Location (A-Z)</option>
             <option value="location_desc" <%= 'selected' if params[:sort] == 'location_desc' %>>Location (Z-A)</option>
@@ -199,7 +199,7 @@
             <option value="popular" <%= 'selected' if params[:sort].blank? || params[:sort] == 'popular' %>>Most Popular</option>
             <option value="title_asc" <%= 'selected' if params[:sort] == 'title_asc' %>>Title (A-Z)</option>
             <option value="title_desc" <%= 'selected' if params[:sort] == 'title_desc' %>>Title (Z-A)</option>
-            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Earliest)</option>
+            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Oldest)</option>
             <option value="date_desc" <%= 'selected' if params[:sort] == 'date_desc' %>>Date (Latest)</option>
             <option value="location_asc" <%= 'selected' if params[:sort] == 'location_asc' %>>Location (A-Z)</option>
             <option value="location_desc" <%= 'selected' if params[:sort] == 'location_desc' %>>Location (Z-A)</option>

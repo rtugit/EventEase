@@ -37,17 +37,6 @@ class EventsController < ApplicationController
         # Default: date ascending (earliest first)
         @events.order(starts_at: :asc)
       end
-      # My Events - FUTURE events (excluding duplicates if desired, but for now just all future)
-      #@events = Event.where(id: all_my_event_ids)
-      #               .where('starts_at >= ?', Time.current)
-      #               .includes(:registrations, :organizer)
-      #              .order(starts_at: :asc)
-
-      # My Past Events
-      #@my_past_events = Event.where(id: all_my_event_ids)
-      #                       .where('starts_at < ?', Time.current)
-      #                       .includes(:registrations, :organizer)
-      #                      .order(starts_at: :desc)
     else
       @events = current_user.events.includes(:registrations).order(starts_at: :asc)
     end
@@ -87,14 +76,14 @@ class EventsController < ApplicationController
 
       @popular_events = all_events_base
       # Show public events + private events user has access to (kann Duplikate mit Upcoming haben)
-      #@popular_events = visibility_condition
-      #                  .where(status: 'published')
-      #                  .left_outer_joins(:registrations)
-      #                  .group('events.id')
-      #                  .select('events.*, COUNT(registrations.id) AS registrations_count')
-      #                  .order('COUNT(registrations.id) DESC')
-      #                  .includes(:registrations)
-      #                  .limit(10)
+      @popular_events = visibility_condition
+                        .where(status: 'published')
+                        .left_outer_joins(:registrations)
+                        .group('events.id')
+                        .select('events.*, COUNT(registrations.id) AS registrations_count')
+                        .order('COUNT(registrations.id) DESC')
+                        .includes(:registrations)
+                        .limit(10)
     end
 
     # Filter by title
@@ -169,10 +158,6 @@ class EventsController < ApplicationController
         @popular_events = @popular_events.limit(20)
       end
     end
-    # Order by date (only if not searching by title, since title search has its own ordering)
-    #return if params[:title].present?
-
-    #@events = @events.order(starts_at: :desc)
   end
 
   # Autocomplete suggestions endpoint (only search public events)
