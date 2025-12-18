@@ -54,7 +54,9 @@
 .event-card {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   background: #ffffff;
+  border: 2px solid $sub-font-green;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -64,6 +66,7 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 24px #367c76;
+    border: 0px;
   }
 }
 
