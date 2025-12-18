@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       end
     end
     resources :reviews, only: [:create, :update, :destroy]
+    resources :comments, only: [:create, :update, :destroy]
   end
 
   namespace :api do

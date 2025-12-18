@@ -4,6 +4,7 @@ class Event < ApplicationRecord
   has_many :active_registrations, -> { where.not(status: 'cancelled') }, class_name: 'Registration', inverse_of: :event # rubocop:disable Rails/HasManyOrHasOneDependent
   has_many :rundown_items, dependent: :destroy
   has_many :reviews, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   def past?
     starts_at.present? && starts_at < Time.current
