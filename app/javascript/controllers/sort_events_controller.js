@@ -1,4 +1,10 @@
-function initSortEvents() {
+import { Controller } from "@hotwired/stimulus"
+
+// Connects to data-controller="sort-events"
+export default class extends Controller {
+  connect() {
+  console.log("Hello")
+  function initSortEvents() {
   // Remove old listeners first
   const oldSelect = document.getElementById('sort-events');
   if (oldSelect) {
@@ -57,3 +63,6 @@ function initSortEvents() {
 document.addEventListener('DOMContentLoaded', initSortEvents);
 document.addEventListener('turbo:load', initSortEvents);
 document.addEventListener('turbo:render', initSortEvents);
+
+  }
+}

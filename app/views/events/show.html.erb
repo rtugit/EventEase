@@ -1,11 +1,8 @@
 <main class="event-show">
   <!-- Back Button -->
   <div class="event-back-nav">
-    <%= link_to events_path, class: "back-button" do %>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-      <span>Back to Events</span>
+    <%= link_to events_path, class: "back-arrow" do %>
+      <i class="fa-solid fa-chevron-left"></i>
     <% end %>
 
     <% if user_signed_in? && @event.organizer == current_user %>
@@ -111,6 +108,26 @@
           <span class="event-category-badge"><%= @event.category %></span>
         <% end %>
       </div>
+      <!-- Date and Time Line -->
+      <p class="event-datetime-main">
+        <svg class="datetime-icon" width="16" height="16" viewBox="0 2 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <% if @event.starts_at.present? %>
+          <%= @event.starts_at.strftime("%d.%m.%Y") %>
+          <% if @event.ends_at.present? && @event.ends_at.to_date != @event.starts_at.to_date %>
+            - <%= @event.ends_at.strftime("%d.%m.%Y") %>
+          <% end %>
+          <span class="datetime-separator"> <i class="fa-regular fa-clock"></i> </span>
+          <%= @event.starts_at.strftime("%H:%M") %>
+          <% if @event.ends_at.present? %>
+            - <%= @event.ends_at.strftime("%H:%M") %>
+          <% end %>
+        <% end %>
+      </p>
       <p class="event-location-main">
         <svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
