@@ -146,6 +146,66 @@ attendee_avatars.each do |filename|
 end
 puts "Created #{attendee_users.count} attendee users."
 
+# 5. Specific User: Ahmed Nadir
+ahmed = User.find_by(first_name: "Ahmed", last_name: "Nadir")
+if ahmed
+  attach_if_exists(ahmed.photo, "public/images/avatars/Ahmed_Nadir_Profile.jpeg", content_type: "image/jpeg")
+  puts "Assigned avatar to Ahmed Nadir"
+end
+
+# 6. Specific Event: Regular Friday Pub
+# Ensure it exists and has guests
+target_organizer = ahmed || organizers.first
+pub_event = Event.find_or_create_by!(
+  title: "Regular Friday Pub",
+  organizer: target_organizer
+) do |e|
+  e.description = "Weekly social gathering for the team."
+  e.location = "The Local Pub"
+  e.category = "Party & Social"
+  e.starts_at = Time.zone.now.next_occurring(:friday).change(hour: 18, min: 0)
+  e.ends_at = Time.zone.now.next_occurring(:friday).change(hour: 23, min: 0)
+  e.capacity = 50
+  e.status = "published"
+end
+
+# Assign 10 random guests
+puts "Assigning 10 guests to Regular Friday Pub..."
+attendee_users.sample(10).each do |guest|
+  Registration.create!(
+    event: pub_event,
+    user: guest,
+    email: guest.email,
+    status: "registered"
+  )
+rescue ActiveRecord::RecordInvalid
+  # Ignore if already registered
+end
+
+# 7. Specific Images for Events
+# Assign images to events matching specific titles
+image_assignments = {
+  "Paris Art Workshop - Watercolor Painting" => "Paris Art Workshop - Watercolor Painting.png",
+  "London Comedy Night - Stand Up Showcase" => "London_Comedy.avif",
+  "Berlin Outdoor Adventure - Urban Hiking" => "Berlin Outdoor Adventure - Urban Hiking.jpg",
+  "London Book Club - Contemporary Fiction" => "London Book Club - Contemporary Fiction.jpg",
+  "London Running Club - Thames Riverside" => "London Running Club - Thames Riverside.jpeg",
+  "Paris Internationals - Afterwork Social" => "Paris Internationals - Afterwork Social.jpg"
+}
+
+puts "Assigning specific images to events..."
+image_assignments.each do |title, filename|
+  event = Event.find_by(title: title)
+  if event
+    # Remove existing photos to ensure the specific one is the main one or only one
+    event.photos.purge
+    attach_if_exists(event.photos, "public/images/#{filename}", content_type: "image/#{File.extname(filename).delete('.')}")
+    puts "Assigned #{filename} to #{title}"
+  else
+    puts "Event not found for image assignment: #{title}"
+  end
+end
+
 
 # ------------------------------------------------------------
 # Events Data
