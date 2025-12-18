@@ -120,10 +120,22 @@
       <% end %>
     </section>
 
-    <!-- Shows My Events -->
+    <!-- Shows My Events with Sort -->
     <section class="events-section">
       <div class="section-header">
         <h3 class="section-title">My Events</h3>
+
+        <div class="sort-dropdown">
+          <select id="sort-events" class="sort-select">
+            <option value="popular" <%= 'selected' if params[:sort].blank? || params[:sort] == 'popular' %>>Most Popular</option>
+            <option value="title_asc" <%= 'selected' if params[:sort] == 'title_asc' %>>Title (A-Z)</option>
+            <option value="title_desc" <%= 'selected' if params[:sort] == 'title_desc' %>>Title (Z-A)</option>
+            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Earliest)</option>
+            <option value="date_desc" <%= 'selected' if params[:sort] == 'date_desc' %>>Date (Latest)</option>
+            <option value="location_asc" <%= 'selected' if params[:sort] == 'location_asc' %>>Location (A-Z)</option>
+            <option value="location_desc" <%= 'selected' if params[:sort] == 'location_desc' %>>Location (Z-A)</option>
+          </select>
+        </div>
       </div>
 
       <% if @events.present? %>
@@ -171,10 +183,28 @@
       <% end %>
     </section>
 
-    <!-- Shows Popular Events -->
+    <!-- Shows All Events with Sort -->
     <section class="events-section">
       <div class="section-header">
-        <h3 class="section-title">Events</h3>
+        <h3 class="section-title">
+          <% if params[:category].present? %>
+            <%= params[:category] %> Events
+          <% else %>
+            All Events
+          <% end %>
+        </h3>
+
+        <div class="sort-dropdown">
+          <select id="sort-events" class="sort-select">
+            <option value="popular" <%= 'selected' if params[:sort].blank? || params[:sort] == 'popular' %>>Most Popular</option>
+            <option value="title_asc" <%= 'selected' if params[:sort] == 'title_asc' %>>Title (A-Z)</option>
+            <option value="title_desc" <%= 'selected' if params[:sort] == 'title_desc' %>>Title (Z-A)</option>
+            <option value="date_asc" <%= 'selected' if params[:sort] == 'date_asc' %>>Date (Earliest)</option>
+            <option value="date_desc" <%= 'selected' if params[:sort] == 'date_desc' %>>Date (Latest)</option>
+            <option value="location_asc" <%= 'selected' if params[:sort] == 'location_asc' %>>Location (A-Z)</option>
+            <option value="location_desc" <%= 'selected' if params[:sort] == 'location_desc' %>>Location (Z-A)</option>
+          </select>
+        </div>
       </div>
 
       <% if @popular_events.present? %>
