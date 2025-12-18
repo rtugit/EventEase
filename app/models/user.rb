@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :events, class_name: "Event", foreign_key: "organizer_id", inverse_of: :organizer,
                     dependent: :destroy
   has_many :registrations, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_one_attached :photo
 
   # Sanitize inputs to prevent XSS
